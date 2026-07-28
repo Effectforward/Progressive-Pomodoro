@@ -30,21 +30,21 @@
   /* Settings: force top tabs on mobile regardless of layout preference */
   .settings-body.layout-sidebar { grid-template-columns: 1fr; }
   .settings-body.layout-sidebar .settings-tabs-sidebar { display: none; }
-  .settings-body.layout-sidebar .settings-tabs-top { display: flex; overflow-x: hidden; gap: 0; justify-content: space-evenly; }
-  .settings-body.layout-sidebar .settings-tabs-top .settings-tab-btn {
-    border-left: none;
-    border-bottom: 2px solid transparent;
-    padding: var(--space-sm) var(--space-xs);
-    margin-left: 0;
-    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
-    flex-shrink: 0;
-    font-size: 13px;
-  }
-  .settings-body.layout-sidebar .settings-tabs-top .settings-tab-btn.active {
-    border-bottom-color: var(--accent);
-    border-left-color: transparent;
-  }
-  .settings-body.layout-top .settings-tabs-top { gap: 0; overflow-x: hidden; justify-content: space-evenly; }
+   .settings-body.layout-sidebar .settings-tabs-top { display: flex; overflow-x: auto; gap: 0; justify-content: space-evenly; }
+   .settings-body.layout-sidebar .settings-tabs-top .settings-tab-btn {
+     border-left: none;
+     border-bottom: 2px solid transparent;
+     padding: var(--space-sm) var(--space-xs);
+     margin-left: 0;
+     border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+     flex-shrink: 0;
+     font-size: 13px;
+   }
+   .settings-body.layout-sidebar .settings-tabs-top .settings-tab-btn.active {
+     border-bottom-color: var(--accent);
+     border-left-color: transparent;
+   }
+   .settings-body.layout-top .settings-tabs-top { gap: 0; overflow-x: auto; justify-content: space-evenly; }
   .settings-panels { padding: var(--space-md); }
   .theme-picker-grid { grid-template-columns: repeat(2, 1fr); }
 
@@ -57,4 +57,22 @@
 @media (hover: none) and (pointer: coarse) {
   .settings-panels { scrollbar-width: none; }
   .settings-panels::-webkit-scrollbar { display: none; }
+}
+
+/* Mobile viewport: show horizontal scrollbar on settings panels for overflow */
+@media (max-width: 600px) {
+  .settings-panels {
+    scrollbar-width: thin;
+  }
+  .settings-panels::-webkit-scrollbar {
+    display: block;
+    height: 4px;
+  }
+  .settings-panels::-webkit-scrollbar-thumb {
+    background: var(--muted);
+    border-radius: 3px;
+  }
+  .settings-panels::-webkit-scrollbar-track {
+    background: transparent;
+  }
 }
