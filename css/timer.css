@@ -1,0 +1,103 @@
+/* ─── Timer Card ────────────────────────────────────────────────────────── */
+
+.timer-card {
+  max-width: 440px;
+  margin: 0 auto var(--space-2xl) auto;
+  padding: var(--space-3xl) var(--space-xl);
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  text-align: center;
+  transition: background var(--dur-normal) var(--ease-out),
+              box-shadow var(--dur-normal) var(--ease-out),
+              zoom var(--dur-fast) var(--ease-out);
+}
+
+.mode-tabs {
+  display: inline-flex;
+  gap: var(--space-xs);
+  background: var(--bg);
+  padding: var(--space-xs);
+  border-radius: 99px;
+  margin-bottom: var(--space-2xl);
+}
+
+.mode-tab {
+  padding: var(--space-sm) var(--space-xl);
+  border-radius: 99px;
+  border: none;
+  background: transparent;
+  font-weight: 800;
+  font-size: 15px;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.mode-tab.active {
+  background: var(--card);
+  color: var(--accent);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Timer display */
+.timer-display {
+  margin-bottom: var(--space-2xl);
+}
+
+.ring-wrap {
+  position: relative;
+  display: inline-block;
+  margin-bottom: var(--space-lg);
+}
+
+.progress-ring {
+  display: block;
+  overflow: visible;
+}
+
+/* When a decision panel is open, dim the timer */
+body.decision-active .timer-display {
+  opacity: 0.4;
+  transition: opacity var(--dur-normal) var(--ease-out);
+}
+body:not(.decision-active) .timer-display {
+  opacity: 1;
+  transition: opacity var(--dur-normal) var(--ease-out);
+}
+
+.ring-bg {
+  stroke: var(--ring-bg);
+  transition: stroke var(--dur-normal) var(--ease-out);
+}
+
+.ring {
+  stroke: var(--accent);
+  transition: stroke-dashoffset 0.25s linear, stroke var(--dur-normal) var(--ease-out);
+}
+
+[data-mode="break"] .ring {
+  stroke: color-mix(in srgb, var(--accent) 50%, var(--bg));
+}
+[data-mode="break"] .ring-wrap .time {
+  color: color-mix(in srgb, var(--text) 60%, var(--bg));
+}
+
+.ring-wrap .time {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--timer-size);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+.controls {
+  display: flex;
+  gap: var(--space-md);
+  justify-content: center;
+  align-items: center;
+}

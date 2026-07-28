@@ -1,0 +1,277 @@
+/* ─── Tasks & History Cards ─────────────────────────────────────────────── */
+
+/* Grid for Tasks/History */
+.bottom-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-xl);
+  pointer-events: none;
+}
+
+.bottom-grid > * {
+  pointer-events: auto;
+}
+
+body.no-sessions #historyCard {
+  display: none;
+}
+
+@media(min-width: 768px) {
+  .bottom-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.glass-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: var(--space-2xl);
+  box-shadow: var(--shadow);
+}
+
+.tasks-card.empty .card-header,
+.tasks-card.empty .task-controls {
+  display: none;
+}
+
+.add-task-btn {
+  background: none;
+  border: 1px dashed var(--border);
+  border-radius: 99px;
+  padding: var(--space-sm) var(--space-lg);
+  width: 100%;
+  color: var(--muted);
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  justify-content: center;
+  transition: border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+.add-task-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-xl);
+}
+
+.card-header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  text-wrap: balance;
+}
+
+.card-header h2 i {
+  color: var(--accent);
+  font-size: 24px;
+}
+
+.card-hint {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+/* Tasks */
+.task-controls {
+  display: flex;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-xl);
+}
+
+.task-controls input {
+  flex: 1;
+  padding: var(--space-md) var(--space-md);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  transition: border-color var(--dur-normal) var(--ease-out);
+}
+
+.task-controls input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.task-controls button {
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+}
+
+.task-list,
+.session-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.task-list li,
+.session-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-md) var(--space-md);
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+}
+
+.task-list li:hover {
+  border-color: var(--border);
+}
+
+.task-item.active {
+  border-color: color-mix(in srgb, var(--accent) 35%, transparent);
+}
+.task-item.active .task-text {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-2xl) var(--space-md);
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.empty-hint {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.task-item-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.task-item-left input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  flex: 0 0 22px;
+  border: 2px solid var(--border);
+  border-radius: 7px;
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+  transition: background var(--dur-normal) var(--ease-out),
+              border-color var(--dur-normal) var(--ease-out);
+}
+.task-item-left input[type="checkbox"]:hover {
+  border-color: var(--accent);
+}
+.task-item-left input[type="checkbox"]:checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.task-item-left input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: 3px;
+  width: 5px;
+  height: 10px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+.task-item-left input[type="checkbox"]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.task-text {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.task-item-left input[type="checkbox"]:checked + .task-text {
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+
+.task-actions {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.task-actions button {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  padding: var(--space-xs);
+  border-radius: var(--radius-sm);
+}
+
+.task-actions button:hover {
+  background: var(--card);
+  color: var(--accent);
+}
+
+.task-actions button i {
+  font-size: 20px;
+}
+
+/* History */
+.session-left {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.session-rating {
+  font-weight: 800;
+  font-size: 16px;
+  text-transform: capitalize;
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.session-meta {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.session-badge {
+  background: var(--ring-bg);
+  color: var(--accent);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: 99px;
+  font-size: 13px;
+  font-weight: 800;
+}

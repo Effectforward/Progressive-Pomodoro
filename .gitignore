@@ -1,0 +1,10 @@
+node_modules/
+test-results/
+trash/
+playwright.config.js
+package.json
+package-lock.json
+npm-debug.log*
+audit-docs/
+.DS_Store
+.git_old/

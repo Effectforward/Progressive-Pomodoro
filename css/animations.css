@@ -1,0 +1,176 @@
+/* ─── Animations ─────────────────────────────────────────────────────────── */
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Duration picker entrance */
+.duration-picker:not(.hidden) {
+  animation: fadeSlideUp var(--dur-slow) var(--ease-spring) both;
+}
+
+/* Rating entrance */
+.rating:not(.hidden) {
+  animation: fadeSlideUp var(--dur-slow) var(--ease-spring) both;
+}
+
+/* List item stagger */
+.task-list li,
+.session-list li {
+  animation: fadeSlideUp var(--dur-normal) var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * 40ms);
+}
+
+/* ─── Hover effects (desktop only) ─────────────────────────────────────── */
+
+@media (hover: hover) {
+  .icon-btn {
+    transition: transform var(--dur-fast) var(--ease-spring),
+                box-shadow var(--dur-normal) var(--ease-out),
+                border-color var(--dur-normal) var(--ease-out),
+                color var(--dur-normal) var(--ease-out),
+                background var(--dur-normal) var(--ease-out);
+  }
+  .icon-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .icon-btn:active {
+    transform: translateY(0) scale(0.97);
+    transition-duration: 80ms;
+  }
+
+  .primary-btn {
+    transition: transform var(--dur-fast) var(--ease-spring),
+                box-shadow var(--dur-normal) var(--ease-out),
+                background var(--dur-normal) var(--ease-out);
+  }
+  .primary-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px color-mix(in srgb, var(--accent) 28%, transparent);
+  }
+  .primary-btn:active {
+    transform: translateY(0) scale(0.97);
+    transition-duration: 80ms;
+  }
+
+  .secondary-btn {
+    transition: transform var(--dur-fast) var(--ease-spring),
+                background var(--dur-normal) var(--ease-out),
+                box-shadow var(--dur-normal) var(--ease-out);
+  }
+  .secondary-btn:hover:not([disabled]) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  }
+  .secondary-btn:active:not([disabled]) {
+    transform: translateY(0) scale(0.97);
+    transition-duration: 80ms;
+  }
+
+  .rating-buttons button {
+    transition: transform var(--dur-fast) var(--ease-spring),
+                border-color var(--dur-normal) var(--ease-out),
+                box-shadow var(--dur-normal) var(--ease-out),
+                background var(--dur-normal) var(--ease-out);
+  }
+  .rating-buttons button:hover {
+    transform: translateY(-3px) scale(1.03);
+    border-color: var(--accent);
+    box-shadow: 0 6px 16px color-mix(in srgb, var(--accent) 15%, transparent);
+  }
+  .rating-buttons button:active {
+    transform: translateY(0) scale(0.96);
+    transition-duration: 80ms;
+  }
+
+  .picker-adjust {
+    transition: transform var(--dur-fast) var(--ease-spring),
+                border-color var(--dur-normal) var(--ease-out),
+                background var(--dur-normal) var(--ease-out);
+  }
+  .picker-adjust:hover {
+    transform: scale(1.1);
+    border-color: var(--accent);
+  }
+  .picker-adjust:active {
+    transform: scale(0.9);
+    transition-duration: 80ms;
+  }
+
+  .glass-card {
+    transition: transform var(--dur-normal) var(--ease-spring),
+                box-shadow var(--dur-slow) var(--ease-out);
+  }
+  .glass-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.06);
+  }
+
+  .mode-tab {
+    transition: color var(--dur-normal) var(--ease-out),
+                background var(--dur-normal) var(--ease-out),
+                box-shadow var(--dur-normal) var(--ease-out);
+  }
+  .mode-tab:hover:not(.active) {
+    color: var(--text);
+  }
+
+  .task-list li {
+    transition: transform var(--dur-fast) var(--ease-spring),
+                border-color var(--dur-normal) var(--ease-out),
+                box-shadow var(--dur-normal) var(--ease-out);
+  }
+  .task-list li:hover {
+    border-color: var(--border);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  }
+
+  .dropdown-menu button {
+    transition: background var(--dur-fast) var(--ease-out),
+                color var(--dur-fast) var(--ease-out),
+                transform var(--dur-fast) var(--ease-spring);
+  }
+  .dropdown-menu button:hover {
+    transform: translateX(4px);
+  }
+
+  .modal-header button {
+    transition: background var(--dur-fast) var(--ease-out),
+                transform var(--dur-fast) var(--ease-spring);
+  }
+  .modal-header button:hover {
+    transform: rotate(90deg);
+  }
+
+  .task-actions button {
+    transition: background var(--dur-fast) var(--ease-out),
+                color var(--dur-fast) var(--ease-out),
+                transform var(--dur-fast) var(--ease-spring);
+  }
+  .task-actions button:hover {
+    transform: scale(1.15);
+  }
+
+  .text-btn {
+    transition: color var(--dur-fast) var(--ease-out),
+                transform var(--dur-fast) var(--ease-spring);
+  }
+  .text-btn:hover {
+    color: var(--accent);
+    transform: translateY(-1px);
+  }
+}
+
+/* ─── Reduced motion ────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

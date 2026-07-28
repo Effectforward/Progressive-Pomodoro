@@ -1,0 +1,644 @@
+/* ─── Settings Modal ────────────────────────────────────────────────────── */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 200;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--dur-normal) var(--ease-out),
+              visibility var(--dur-normal) var(--ease-out);
+  backdrop-filter: blur(4px);
+  transition-behavior: allow-discrete;
+}
+
+.modal:not(.hidden) {
+  opacity: 1;
+  visibility: visible;
+  @starting-style {
+    opacity: 0;
+  }
+}
+
+.modal-content {
+  background: var(--card);
+  padding: var(--space-3xl);
+  border-radius: var(--radius);
+  width: 90%;
+  max-width: 543px;
+  transform: scale(0.92) translateY(8px);
+  transition: transform var(--dur-slow) var(--ease-spring);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+.modal:not(.hidden) .modal-content {
+  transform: scale(1) translateY(0);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.modal-header h3 {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: 20px;
+  font-weight: 800;
+  text-wrap: balance;
+}
+
+.modal-header button {
+  background: var(--bg);
+  border: none;
+  padding: var(--space-sm);
+  border-radius: 50%;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.modal-content form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.modal-content label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.modal-content input,
+.modal-content select {
+  padding: var(--space-md) var(--space-lg);
+  border-radius: 99px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* Dropdowns get rounded-rectangle corners, not pill */
+.modal-content select {
+  border-radius: 12px;
+}
+
+.modal-content input:focus,
+.modal-content select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* Custom select */
+.select-wrap {
+  position: relative;
+  display: inline-block;
+}
+.select-wrap::after {
+  content: '';
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid var(--muted);
+  pointer-events: none;
+}
+.modal-content .select-wrap select {
+  width: 100%;
+  padding-right: 36px;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  min-width: 130px;
+  border-radius: 12px;
+}
+
+/* Setting row — select, custom input, and hint on one line */
+.setting-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+#autoRestartCustom {
+  width: 70px;
+  padding: var(--space-sm) var(--space-md);
+  font-size: 15px;
+}
+
+.modal-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: var(--space-lg) 0;
+}
+
+#settingsForm .text-btn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  padding: var(--space-xs);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  transition: color var(--dur-fast) var(--ease-out);
+}
+#settingsForm .text-btn:hover {
+  color: var(--accent);
+}
+
+#settingsForm .confirm-panel--restart {
+  margin: var(--space-sm) 0;
+}
+
+.modal-actions {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.modal-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+/* ─── Card Customization settings ──────────────────────────────────────── */
+
+.card-settings-group {
+  border: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.card-settings-group legend {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: var(--space-sm);
+  padding: 0;
+}
+
+.card-setting-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-sm) 0;
+}
+
+.card-setting-label {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.card-setting-label i {
+  font-size: 18px;
+  color: var(--accent);
+}
+
+/* ── Settings Tabs ──────────────────────────────────────────────────────── */
+
+.settings-body {
+  display: grid;
+  gap: 0;
+  min-width: 0;
+}
+
+/* Sidebar layout */
+.settings-body.layout-sidebar {
+  grid-template-columns: 120px 1fr;
+}
+
+.settings-body.layout-sidebar .settings-tabs-sidebar {
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--border);
+  padding: var(--space-sm) 0;
+}
+
+.settings-body.layout-sidebar .settings-tabs-top {
+  display: none;
+}
+
+/* Top layout */
+.settings-body.layout-top {
+  grid-template-columns: 1fr;
+  overflow: hidden;
+}
+
+.settings-body.layout-top .settings-tabs-top {
+  display: flex;
+  gap: var(--space-xs);
+  border-bottom: 1px solid var(--border);
+  padding: 0 0 var(--space-sm) 0;
+  overflow-x: auto;
+}
+
+.settings-body.layout-top .settings-tabs-sidebar {
+  display: none;
+}
+
+/* Tab buttons — sidebar style */
+.settings-tab-btn {
+  background: transparent;
+  border: none;
+  border-left: 3px solid transparent;
+  padding: var(--space-md) var(--space-lg);
+  margin-left: -3px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--muted);
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  transition: color var(--dur-fast), border-color var(--dur-fast);
+  white-space: nowrap;
+}
+
+.settings-tab-btn i {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.settings-tab-btn:hover {
+  color: var(--text);
+}
+
+.settings-tab-btn.active {
+  color: var(--accent);
+  border-left-color: var(--accent);
+}
+
+/* Tab buttons — top style */
+.settings-body.layout-top .settings-tab-btn {
+  border-left: none;
+  border-bottom: 2px solid transparent;
+  padding: var(--space-sm) var(--space-md);
+  margin-left: -3px;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  flex-shrink: 0;
+}
+
+.settings-body.layout-top .settings-tab-btn.active {
+  border-bottom-color: var(--accent);
+  border-left-color: transparent;
+}
+
+/* Tab panels */
+.settings-panels {
+  padding: var(--space-lg) var(--space-xl);
+  max-height: clamp(200px, 50dvh, 350px);
+  overflow-x: auto;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.settings-body.layout-top .settings-panels {
+  padding: var(--space-lg) var(--space-xl);
+}
+
+.settings-panel {
+  display: none;
+}
+
+.settings-panel.active {
+  display: block;
+  animation: panelFadeIn var(--dur-normal) var(--ease-out);
+  @starting-style {
+    animation: panelFadeIn var(--dur-normal) var(--ease-out);
+  }
+}
+
+@keyframes panelFadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Settings fieldsets */
+.settings-fieldset {
+  border: none;
+  padding: 0;
+  margin: 0 0 var(--space-lg) 0;
+}
+
+.settings-fieldset legend {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-sm);
+  padding: 0;
+  display: block;
+  width: 100%;
+}
+
+/* Settings field hint link */
+.field-hint-link {
+  display: inline-block;
+  font-size: 12px;
+  color: var(--muted);
+  text-decoration: none;
+  margin-bottom: var(--space-md);
+}
+
+.field-hint-link:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+/* Settings Slider */
+.settings-slider {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--border, rgba(0,0,0,0.12));
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.settings-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+.settings-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+.settings-slider:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Timer tab field layout */
+.field-label {
+  display: block;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: var(--space-md);
+}
+
+.field-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-top: var(--space-xs);
+}
+
+.field-row input[type="number"],
+.field-row .select-wrap {
+  flex: 1;
+}
+
+.field-row .settings-slider {
+  flex: 1;
+  min-width: 0;
+  width: 0;
+}
+
+.field-row .field-hint {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* Theme picker grid */
+.theme-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-sm);
+  overflow: hidden;
+}
+
+.theme-picker-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: var(--space-sm) var(--space-xs);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--card);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
+}
+
+.theme-picker-btn i {
+  font-size: 18px;
+}
+
+.theme-picker-btn:hover {
+  border-color: var(--accent);
+}
+
+.theme-picker-btn.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+/* Timer size picker */
+.timer-size-grid {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.timer-size-btn {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-md);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--card);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color var(--dur-fast);
+}
+
+.timer-size-btn:hover {
+  border-color: var(--accent);
+}
+
+.timer-size-btn.active {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Layout picker */
+.layout-picker {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.layout-option {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--card);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color var(--dur-fast);
+}
+
+.layout-option:hover {
+  border-color: var(--accent);
+}
+
+.layout-option.active {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Data section */
+.data-danger-section {
+  padding: var(--space-md) 0;
+}
+
+.data-section-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 var(--space-md) 0;
+}
+
+.confirm-panel--restart {
+  margin-top: var(--space-sm);
+}
+
+/* ── Toggle switch ───────────────────────────────────────────────────────── */
+
+.modal-content .toggle-label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0;
+  font-size: inherit;
+  font-weight: inherit;
+  min-width: 44px;
+  min-height: 44px;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+}
+
+.modal-content .toggle-label input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  padding: 0 !important;
+  margin: 0;
+  border: none !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+  font-size: inherit !important;
+  box-shadow: none !important;
+}
+
+.toggle-track {
+  display: block;
+  width: 42px;
+  height: 24px;
+  flex-shrink: 0;
+  border-radius: 99px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  transition: background var(--dur-normal) var(--ease-out),
+              border-color var(--dur-normal) var(--ease-out);
+  position: relative;
+}
+
+.toggle-track::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--card);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  transition: transform var(--dur-normal) var(--ease-spring),
+              background var(--dur-normal) var(--ease-out);
+}
+
+.modal-content .toggle-label input:checked ~ .toggle-track {
+  background: color-mix(in srgb, var(--accent) 80%, #000);
+  border-color: color-mix(in srgb, var(--accent) 80%, #000);
+}
+
+.modal-content .toggle-label input:checked ~ .toggle-track::after {
+  transform: translateX(18px);
+}
+
+.modal-content .toggle-label input:focus-visible ~ .toggle-track {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}

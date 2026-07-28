@@ -1,0 +1,17 @@
+{
+  "name": "Progressive Pomodoro",
+  "short_name": "ProgPomo",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#F9F7F3",
+  "theme_color": "#E2B4BD",
+  "description": "Adaptive focus timer based on the Progressive Pomodoro technique.",
+  "icons": [
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTYgMjU2Ij48cmVjdCB3aWR0aD0iMjU2IiBoZWlnaHQ9IjI1NiIgZmlsbD0ibm9uZSIvPjxwb2x5bGluZSBwb2ludHM9Ijg4IDY0IDg4IDI0IDE2OCAyNCAxNjggNjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBzdHJva2Utd2lkdGg9IjE2Ii8+PGNpcmNsZSBjeD0iMTI4IiBjeT0iMTQ0IiByPSI4OCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDAwIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS13aWR0aD0iMTYiLz48bGluZSB4MT0iMTI4IiB5MT0iMTQ0IiB4Mj0iMTYxLjk0IiB5Mj0iMTEwLjA2IiBmaWxsPSJub25lIiBzdHJva2U9IiMwMDAiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLXdpZHRoPSIxNiIvPjwvc3ZnPg==",
+      "sizes": "256x256",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" id="themeColorMeta" content="#F2A2A2">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="ProgPomo">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍅</text></svg>">
+  <meta name="description" content="Adaptive focus timer based on the Progressive Pomodoro technique.">
+  <title>Progressive Pomodoro</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <link rel="preload" href="fonts/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="icons/Phosphor.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="icons/Phosphor-Fill.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="fonts/nunito.css">
+  <link rel="stylesheet" href="icons/regular.css">
+  <link rel="stylesheet" href="icons/fill.css">
+</head>
+<body data-theme="pastel">
+
+  <!-- Onboarding overlay (first visit only) -->
+  <div id="onboardingOverlay" class="onboarding-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="onboardingTitle">
+    <div class="onboarding-card">
+      <div class="onboarding-icon-wrap"><i class="ph-fill ph-timer"></i></div>
+      <h2 id="onboardingTitle" class="onboarding-title">Welcome to ProgPomo</h2>
+      <p class="onboarding-desc">Start with a 2-minute warmup. After each session, rate your focus — your timer adapts, gradually building toward deeper work.</p>
+      <div class="onboarding-steps">
+        <div class="onboarding-step"><span class="onboarding-step-num">1</span> Start a short session</div>
+        <div class="onboarding-step"><span class="onboarding-step-num">2</span> Rate how it went</div>
+        <div class="onboarding-step"><span class="onboarding-step-num">3</span> Watch your focus grow</div>
+      </div>
+      <button id="onboardingDismiss" class="primary-btn onboarding-btn">Got it</button>
+    </div>
+  </div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo">
+        <i class="ph-fill ph-timer"></i>
+        <h1>ProgPomo</h1>
+      </div>
+      <div class="header-actions">
+        <div class="beats-split-wrap">
+          <button id="beatsToggle" class="beats-split-toggle" title="Toggle binaural beats" aria-label="Toggle binaural beats" aria-pressed="false"><i class="ph ph-headphones"></i></button>
+          <button id="beatsChevron" class="beats-split-chevron" title="Beats settings" aria-label="Beats settings" aria-haspopup="true" aria-expanded="false"><i class="ph ph-caret-down"></i></button>
+          <div id="beatsPopover" class="beats-popover hidden">
+            <div class="beats-popover-header">
+              <span class="beats-popover-title">Binaural Beats</span>
+              <label class="beats-toggle-switch" title="Toggle binaural beats">
+                <input type="checkbox" id="beatsPopoverToggle" role="switch" aria-checked="false">
+                <span class="beats-toggle-track"></span>
+              </label>
+            </div>
+            <div class="beats-popover-divider"></div>
+            <div class="beats-popover-presets" role="radiogroup" aria-label="Beat presets">
+              <button class="beats-popover-item" data-preset="beta" role="radio" aria-checked="false"><i class="ph-fill ph-target"></i><span class="beats-popover-item-text"><span class="beats-popover-item-name">Active Focus</span><span class="beats-popover-item-hz">14 Hz</span></span></button>
+              <button class="beats-popover-item" data-preset="alpha" role="radio" aria-checked="false"><i class="ph-fill ph-leaf"></i><span class="beats-popover-item-text"><span class="beats-popover-item-name">Calm Focus</span><span class="beats-popover-item-hz">10 Hz</span></span></button>
+              <button class="beats-popover-item" data-preset="theta" role="radio" aria-checked="false"><i class="ph-fill ph-moon"></i><span class="beats-popover-item-text"><span class="beats-popover-item-name">Meditation</span><span class="beats-popover-item-hz">6 Hz</span></span></button>
+              <button class="beats-popover-item" data-preset="gamma" role="radio" aria-checked="false"><i class="ph-fill ph-lightning"></i><span class="beats-popover-item-text"><span class="beats-popover-item-name">Peak Focus</span><span class="beats-popover-item-hz">40 Hz</span></span></button>
+              <button class="beats-popover-item" data-preset="delta" role="radio" aria-checked="false"><i class="ph-fill ph-moon-stars"></i><span class="beats-popover-item-text"><span class="beats-popover-item-name">Deep Sleep</span><span class="beats-popover-item-hz">2 Hz</span></span></button>
+            </div>
+            <div class="beats-popover-divider"></div>
+            <div class="beats-popover-custom">
+              <div class="beats-popover-freq-row">
+                <label class="beats-popover-freq-label">Left ear</label>
+                <input type="number" id="beatsPopLeftFreq" class="beats-popover-freq" min="20" max="2000" step="1" aria-label="Left ear frequency">
+                <span class="beats-popover-freq-unit">Hz</span>
+              </div>
+              <div class="beats-popover-freq-row">
+                <label class="beats-popover-freq-label">Right ear</label>
+                <input type="number" id="beatsPopRightFreq" class="beats-popover-freq" min="20" max="2000" step="1" aria-label="Right ear frequency">
+                <span class="beats-popover-freq-unit">Hz</span>
+              </div>
+              <div class="beats-popover-beat-display" aria-live="polite">
+                <span id="beatsPopBeatFreq">= 14 Hz</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <a href="https://github.com/Effectforward/Progressive-Pomodoro" class="icon-btn" id="githubStarBtn" target="_blank" rel="noopener" aria-label="Star on GitHub"><i class="ph ph-github-logo"></i> <span>GitHub</span></a>
+        <button id="settingsBtn" class="icon-btn"><i class="ph ph-gear"></i> <span>Settings</span></button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="timer-card">
+      <div class="mode-tabs">
+        <button class="mode-tab active" data-mode="focus">Focus</button>
+        <button class="mode-tab" data-mode="break">Break</button>
+      </div>
+
+      <div id="timerDisplay" class="timer-display">
+        <div class="ring-wrap">
+          <svg class="progress-ring" width="240" height="240" viewBox="0 0 120 120" aria-hidden="true">
+            <circle class="ring-bg" cx="60" cy="60" r="52" fill="none" stroke-width="6"></circle>
+            <circle class="ring" cx="60" cy="60" r="52" fill="none" stroke-width="6" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="0"></circle>
+          </svg>
+          <div class="time" id="time" role="timer" aria-live="off" aria-atomic="true">02:00</div>
+      <div id="srStatus" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+        </div>
+        <div class="controls">
+          <button id="toggleBtn" class="primary-btn"><i class="ph-fill ph-play"></i> Start</button>
+          <button id="resetBtn" class="secondary-btn icon-only" title="Reset current session (R)" aria-label="Reset timer"><i class="ph ph-arrow-counter-clockwise"></i></button>
+        </div>
+      </div>
+
+      <p class="progression-hint" id="progressionHint">Focus time grows as you rate your sessions</p>
+
+      <div class="rating hidden" id="rating" role="group" aria-label="Rate your focus session">
+        <p class="rating-label">However it went, that's a block done.</p>
+        <p class="rating-sub">How was your focus? <button type="button" class="rating-help" aria-label="What is this?" aria-expanded="false" aria-controls="ratingHelpTip"><i class="ph ph-question"></i></button></p>
+        <div class="rating-buttons">
+          <button data-rating="flow" class="rate-flow"><i class="ph-fill ph-fire"></i> Flow</button>
+          <button data-rating="focused" class="rate-focused"><i class="ph-fill ph-target"></i> Focused</button>
+          <button data-rating="good" class="rate-good"><i class="ph-fill ph-thumbs-up"></i> Fine</button>
+          <button data-rating="distracted" class="rate-distracted"><i class="ph-fill ph-cloud-fog"></i> Distracted</button>
+        </div>
+        <p id="ratingHelpTip" class="rating-help-tip" hidden>Your rating adapts your next session length. Flow stretches it, distraction shortens it.</p>
+
+      </div>
+
+      <div class="duration-picker hidden" id="durationPicker">
+        <p class="picker-label">Next session length</p>
+        <div class="picker-presets" id="pickerPresets">
+          <button type="button" class="preset-chip" data-min="25">25</button>
+          <button type="button" class="preset-chip" data-min="45">45</button>
+          <button type="button" class="preset-chip" data-min="50">50</button>
+          <button type="button" class="preset-chip" data-min="90">90</button>
+        </div>
+        <div class="picker-controls">
+          <button id="pickerMinus" class="picker-adjust" aria-label="Decrease"><i class="ph ph-minus"></i></button>
+          <div class="picker-value">
+            <input type="number" id="pickerMinutes" class="picker-input" min="1" max="180" step="1" aria-label="Focus minutes">
+          </div>
+          <button id="pickerPlus" class="picker-adjust" aria-label="Increase"><i class="ph ph-plus"></i></button>
+        </div>
+        <div class="picker-actions">
+          <button id="pickerStartBtn" class="primary-btn"><i class="ph-fill ph-play"></i> Start Focus</button>
+          <button id="pickerBreakBtn" class="secondary-btn"><i class="ph-fill ph-coffee"></i> Take Break First</button>
+        </div>
+      </div>
+
+      <div id="restartBanner" class="restart-banner hidden">
+        <p class="restart-banner-label">Last session: <span id="lastSessionDurationDisplay">0</span> min</p>
+        <div class="restart-banner-actions">
+          <button id="restartBannerRestart" class="secondary-btn">Restart progression</button>
+          <button id="restartBannerContinue" class="primary-btn">Continue</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="bottom-grid">
+      <section class="tasks-card glass-card" id="tasksCard">
+        <div class="card-header">
+          <h2><i class="ph ph-check-square-offset"></i> Tasks</h2>
+          <span class="card-hint" id="taskCount"></span>
+        </div>
+        <div class="task-controls">
+          <input id="taskInput" placeholder="Add a task, press enter" aria-label="New task" maxlength="500" />
+          <button id="addTaskBtn" class="icon-only primary-btn" aria-label="Add task"><i class="ph ph-plus"></i></button>
+        </div>
+        <ul id="taskList" class="task-list"></ul>
+      </section>
+
+      <section class="history-card glass-card" id="historyCard">
+        <div class="card-header">
+          <h2><i class="ph ph-clock-counter-clockwise"></i> History</h2>
+        </div>
+        <ul id="sessionList" class="session-list"></ul>
+      </section>
+    </div>
+  </main>
+  
+  <div id="settingsModal" class="modal hidden" aria-hidden="true">
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+      <div class="modal-header">
+        <h3 id="settingsTitle"><i class="ph ph-gear"></i> Settings</h3>
+        <div class="modal-header-actions">
+          <button type="button" id="settingsCloseBtn" class="icon-only" aria-label="Close settings"><i class="ph ph-x"></i></button>
+        </div>
+      </div>
+      <form id="settingsForm">
+        <div class="settings-body">
+          <!-- Sidebar tab bar (visible in sidebar mode) -->
+          <nav class="settings-tabs settings-tabs-sidebar" aria-label="Settings sections">
+            <button type="button" class="settings-tab-btn active" data-settings-tab="timer"><i class="ph ph-timer"></i> Timer</button>
+            <button type="button" class="settings-tab-btn" data-settings-tab="theme"><i class="ph ph-palette"></i> Theme</button>
+            <button type="button" class="settings-tab-btn" data-settings-tab="cards"><i class="ph ph-cards"></i> Cards</button>
+            <button type="button" class="settings-tab-btn" data-settings-tab="audio"><i class="ph ph-headphones"></i> Audio</button>
+            <button type="button" class="settings-tab-btn" data-settings-tab="data"><i class="ph ph-database"></i> Manage</button>
+          </nav>
+
+          <!-- Top tab bar (visible in top-tabs mode) -->
+          <nav class="settings-tabs settings-tabs-top" aria-label="Settings sections">
+            <button type="button" class="settings-tab-btn active" data-settings-tab="timer">Timer</button>
+            <button type="button" class="settings-tab-btn" data-settings-tab="theme">Theme</button>
+            <button type="button" class="settings-tab-btn" data-settings-tab="cards">Cards</button>
+            <button type="button" class="settings-tab-btn" data-settings-tab="audio">Audio</button>
+            <button type="button" class="settings-tab-btn" data-settings-tab="data">Manage</button>
+          </nav>
+
+          <div class="settings-panels">
+            <!-- Timer tab -->
+            <div class="settings-panel active" data-settings-panel="timer">
+              <label class="field-label">
+                Warm-up duration
+                <span class="field-row">
+                    <input type="number" id="warmupInput" min="1" max="60" step="1">
+                    <span class="field-hint">min</span>
+                </span>
+              </label>
+              <label class="field-label">
+                Break duration
+                <span class="field-row">
+                    <input type="number" id="breakInput" min="1" max="30" step="1">
+                    <span class="field-hint">min</span>
+                </span>
+              </label>
+              <label class="field-label">
+                Auto restart after
+                <span class="field-row">
+                  <span class="select-wrap">
+                    <select id="autoRestartSelect">
+                      <option value="0">Off</option>
+                      <option value="15">15 min</option>
+                      <option value="30">30 min</option>
+                      <option value="45">45 min</option>
+                      <option value="60">60 min</option>
+                      <option value="90">90 min</option>
+                      <option value="120">120 min</option>
+                      <option value="custom">Custom</option>
+                    </select>
+                  </span>
+                  <input type="number" id="autoRestartCustom" class="field-hint-input" min="1" max="999" step="1" hidden>
+                  <span class="field-hint" id="autoRestartHint">of inactivity</span>
+                </span>
+              </label>
+              <fieldset class="settings-fieldset">
+                <legend>Timer size</legend>
+                <div class="timer-size-grid" id="timerSizeGrid" role="radiogroup" aria-label="Timer size">
+                  <button type="button" class="timer-size-btn" data-size="compact" role="radio" aria-checked="false">Compact</button>
+                  <button type="button" class="timer-size-btn active" data-size="regular" role="radio" aria-checked="true">Regular</button>
+                  <button type="button" class="timer-size-btn" data-size="large" role="radio" aria-checked="false">Large</button>
+                  <button type="button" class="timer-size-btn" data-size="xl" role="radio" aria-checked="false">XL</button>
+                </div>
+              </fieldset>
+            </div>
+
+            <!-- Theme tab -->
+            <div class="settings-panel" data-settings-panel="theme">
+              <fieldset class="settings-fieldset">
+                <legend>Theme</legend>
+                <div class="theme-picker-grid" id="themePickerGrid">
+                  <!-- populated by themes.js -->
+                </div>
+              </fieldset>
+              <fieldset class="settings-fieldset">
+                <legend>Settings layout</legend>
+                <div class="layout-picker">
+                  <button type="button" class="layout-option active" data-layout="sidebar">
+                    <i class="ph ph-columns"></i> Sidebar
+                  </button>
+                  <button type="button" class="layout-option" data-layout="top">
+                    <i class="ph ph-rows"></i> Top tabs
+                  </button>
+                </div>
+              </fieldset>
+            </div>
+
+            <!-- Cards tab -->
+            <div class="settings-panel" data-settings-panel="cards">
+              <fieldset class="settings-fieldset">
+                <legend>Visible cards</legend>
+                <div class="card-setting-row">
+                  <label class="toggle-label" title="Show Tasks card">
+                    <input type="checkbox" id="tasksCardVisible" checked>
+                    <span class="toggle-track"></span>
+                  </label>
+                  <span class="card-setting-label"><i class="ph ph-check-square-offset"></i> Tasks</span>
+                </div>
+                <div class="card-setting-row">
+                  <label class="toggle-label" title="Show History card">
+                    <input type="checkbox" id="historyCardVisible" checked>
+                    <span class="toggle-track"></span>
+                  </label>
+                  <span class="card-setting-label"><i class="ph ph-clock-counter-clockwise"></i> History</span>
+                </div>
+                <div class="card-setting-row">
+                  <label class="toggle-label" title="Show auto-start beats controls in Settings → Audio">
+                    <input type="checkbox" id="showBeatsAutoStart" checked>
+                    <span class="toggle-track"></span>
+                  </label>
+                  <span class="card-setting-label"><i class="ph ph-headphones"></i> Beats auto-start control</span>
+                </div>
+                <div class="card-setting-row">
+                  <label class="toggle-label" title="Show GitHub link in header">
+                    <input type="checkbox" id="githubVisible" checked>
+                    <span class="toggle-track"></span>
+                  </label>
+                  <span class="card-setting-label"><i class="ph ph-github-logo"></i> GitHub link</span>
+                </div>
+              </fieldset>
+            </div>
+
+            <!-- Audio tab -->
+            <div class="settings-panel" data-settings-panel="audio">
+              <fieldset class="settings-fieldset">
+                <legend>Binaural Beats</legend>
+                <div class="card-setting-row">
+                  <label class="toggle-label" title="Auto-start binaural beats with focus session">
+                    <input type="checkbox" id="beatsAutoStart">
+                    <span class="toggle-track"></span>
+                  </label>
+                  <span class="card-setting-label">Auto-start with focus session</span>
+                </div>
+                <label class="field-label">
+                  Preset
+                  <span class="field-row">
+                    <span class="select-wrap">
+                      <select id="beatsPresetSelect">
+                        <option value="delta">Deep Sleep (Delta, 1-4 Hz)</option>
+                        <option value="theta">Meditation (Theta, 4-8 Hz)</option>
+                        <option value="alpha">Calm Focus (Alpha, 8-13 Hz)</option>
+                        <option value="beta" selected>Active Focus (Beta, 13-30 Hz)</option>
+                        <option value="gamma">Peak Focus (Gamma, 30-50 Hz)</option>
+                      </select>
+                    </span>
+                  </span>
+                </label>
+                <a href="https://www.healthline.com/health/binaural-beats" target="_blank" rel="noopener" class="field-hint-link">What are binaural beats?</a>
+                <label class="field-label">
+                  Default left ear (carrier)
+                  <span class="field-row">
+                    <input type="number" id="beatsDefaultLeftFreq" class="field-input" min="20" max="2000" step="1" value="270">
+                    <span class="field-hint">Hz</span>
+                    <span class="field-hint">200–340 optimal</span>
+                  </span>
+                </label>
+                <label class="field-label">
+                  Default right ear
+                  <span class="field-row">
+                    <input type="number" id="beatsDefaultRightFreq" class="field-input" min="20" max="2000" step="1" value="284">
+                    <span class="field-hint">Hz</span>
+                    <span class="field-hint">beat = right − left</span>
+                  </span>
+                </label>
+                <label class="field-label">
+                  Volume
+                  <span class="field-row">
+                    <input type="range" id="beatsDefaultVolume" class="settings-slider" min="0" max="100" value="50">
+                    <span class="field-hint" id="beatsDefaultVolumeLabel">50%</span>
+                  </span>
+                </label>
+              </fieldset>
+            </div>
+
+            <!-- Data tab -->
+            <div class="settings-panel" data-settings-panel="data">
+              <fieldset class="settings-fieldset">
+                <legend>Progression</legend>
+                <button type="button" id="restartProgressionBtn" class="text-btn" title="Reset progression to 2 min without clearing history"><i class="ph ph-arrow-clockwise"></i> Restart Progression</button>
+                <div class="confirm-panel confirm-panel--restart hidden" id="restartConfirm">
+                  <p>Reset to warmup? Your history stays.</p>
+                  <div class="confirm-panel-actions">
+                    <button type="button" id="restartConfirmYes" class="secondary-btn btn-sm">Reset</button>
+                    <button type="button" id="restartConfirmNo" class="icon-btn btn-sm">Cancel</button>
+                  </div>
+                </div>
+              </fieldset>
+              <fieldset class="settings-fieldset">
+                <legend>History</legend>
+                <button type="button" id="clearHistoryBtn" class="text-btn" title="Delete session history log"><i class="ph ph-trash"></i> Clear History</button>
+                <div class="confirm-panel confirm-panel--clear hidden" id="clearConfirm">
+                  <p>Clear your session history? Progression stays intact.</p>
+                  <div class="confirm-panel-actions">
+                    <button type="button" id="clearConfirmYes" class="secondary-btn btn-sm">Clear</button>
+                    <button type="button" id="clearConfirmNo" class="icon-btn btn-sm">Cancel</button>
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="submit" id="settingsSaveBtn" class="primary-btn"><i class="ph ph-check"></i> Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

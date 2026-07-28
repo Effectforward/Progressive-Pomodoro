@@ -1,0 +1,132 @@
+/* ─── Layout: Header, Main, Buttons ────────────────────────────────────── */
+
+.site-header {
+  padding: var(--space-lg) var(--space-xl);
+}
+
+.header-inner {
+  max-width: var(--content-max);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.logo i {
+  font-size: 28px;
+}
+
+.logo h1 {
+  margin: 0;
+  font-size: inherit;
+}
+
+.header-actions {
+  display: flex;
+  gap: var(--space-md);
+  align-items: center;
+}
+
+/* Buttons */
+button {
+  font-family: inherit;
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 99px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  text-decoration: none;
+}
+
+.icon-btn i {
+  font-size: 18px;
+}
+
+.primary-btn,
+.secondary-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-xl);
+  border-radius: 99px;
+  font-weight: 700;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+.primary-btn {
+  background: color-mix(in srgb, var(--accent) 58%, #000000);
+  color: var(--btn-text);
+  box-shadow: 0 4px 14px var(--shadow);
+}
+
+.secondary-btn {
+  background: var(--ring-bg);
+  color: var(--text);
+}
+
+.secondary-btn[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.icon-only {
+  padding: var(--space-md);
+  border-radius: 50%;
+}
+
+/* Small button variant */
+.btn-sm {
+  padding: var(--space-xs) var(--space-md);
+  font-size: 13px;
+}
+.btn-icon-sm {
+  padding: var(--space-sm);
+}
+
+.icon-only i {
+  font-size: 20px;
+}
+
+.text-btn {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+/* Main layout */
+main {
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: var(--space-md) var(--space-xl);
+  overflow-x: clip;
+}
