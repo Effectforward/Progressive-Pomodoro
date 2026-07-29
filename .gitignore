@@ -8,3 +8,4 @@ npm-debug.log*
 audit-docs/
 .DS_Store
 .git_old/
+.playwright-mcp/
