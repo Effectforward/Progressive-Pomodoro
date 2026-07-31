@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import fs from 'node:fs';
 
 test.beforeEach(async ({ page }) => {
   // Block SW registration so stale caches never interfere
@@ -126,6 +127,89 @@ test('settings backdrop click closes modal', async ({ page }) => {
   await page.waitForSelector('#settingsModal:not(.hidden)', { state: 'visible' });
   await page.click('#settingsModal', { position: { x: 5, y: 5 } });
   await expect(page.locator('#settingsModal')).toHaveClass(/hidden/);
+});
+
+test.describe('settings export/import', () => {
+  test.use({ acceptDownloads: true });
+
+  async function openManageTab(page) {
+    await page.click('#settingsBtn');
+    await page.waitForSelector('#settingsModal:not(.hidden)', { state: 'visible' });
+    await page.click('.settings-tab-btn[data-settings-tab="data"]');
+  }
+
+  test('export downloads dated JSON of settings + theme, strips legacy keys', async ({ page }) => {
+    await page.evaluate(() => {
+      localStorage.setItem('pp_theme_v1', 'dark');
+      localStorage.setItem('pp_settings_v1', JSON.stringify({ beatsEnabled: false, beatsFrequency: 20, warmupDuration: 1800 }));
+    });
+    await page.reload();
+    await page.waitForLoadState('networkidle');
+    await openManageTab(page);
+
+    const downloadPromise = page.waitForEvent('download');
+    await page.click('#exportSettingsBtn');
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toMatch(/^progressive-pomodoro-settings-\d{4}-\d{2}-\d{2}\.json$/);
+
+    const data = JSON.parse(fs.readFileSync(await download.path(), 'utf8'));
+    expect(data.settings.warmupDuration).toBe(1800);
+    expect(data.theme).toBe('dark');
+    expect(data.settings).not.toHaveProperty('beatsEnabled');
+    expect(data.settings).not.toHaveProperty('beatsFrequency');
+  });
+
+  test('import replaces settings after confirm', async ({ page }) => {
+    await openManageTab(page);
+    await page.setInputFiles('#importSettingsFile', {
+      name: 'settings.json',
+      mimeType: 'application/json',
+      buffer: Buffer.from(JSON.stringify({
+        settings: { warmupDuration: 1800, shortBreak: 600 },
+        theme: 'dark',
+      })),
+    });
+    await expect(page.locator('#importConfirm')).toBeVisible();
+    await page.click('#importConfirmYes');
+    await expect(page.locator('#importConfirm')).toBeHidden();
+    await expect(page.locator('#toast')).toHaveText('Settings imported');
+    await expect(page.locator('#warmupInput')).toHaveValue('30');
+    const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('pp_settings_v1')));
+    expect(stored.warmupDuration).toBe(1800);
+    expect(stored.shortBreak).toBe(600);
+    expect(await page.evaluate(() => localStorage.getItem('pp_theme_v1'))).toBe('dark');
+  });
+
+  test('import cancel leaves settings untouched', async ({ page }) => {
+    await openManageTab(page);
+    await page.setInputFiles('#importSettingsFile', {
+      name: 'settings.json',
+      mimeType: 'application/json',
+      buffer: Buffer.from(JSON.stringify({ settings: { warmupDuration: 1800 }, theme: 'dark' })),
+    });
+    await expect(page.locator('#importConfirm')).toBeVisible();
+    await page.click('#importConfirmNo');
+    await expect(page.locator('#importConfirm')).toBeHidden();
+    const stored = await page.evaluate(() => localStorage.getItem('pp_settings_v1'));
+    expect(stored).toBeNull();
+    const mem = await page.evaluate(async () => {
+      const { state } = await import('./state.js');
+      return state.settings.warmupDuration;
+    });
+    expect(mem).toBe(120);
+    expect(await page.evaluate(() => localStorage.getItem('pp_theme_v1'))).toBe('pastel');
+  });
+
+  test('import invalid file shows error toast without confirm', async ({ page }) => {
+    await openManageTab(page);
+    await page.setInputFiles('#importSettingsFile', {
+      name: 'garbage.json',
+      mimeType: 'application/json',
+      buffer: Buffer.from('not json at all'),
+    });
+    await expect(page.locator('#importConfirm')).toBeHidden();
+    await expect(page.locator('#toast')).toHaveText("That doesn't look like a settings file.");
+  });
 });
 
 test('add a task via input', async ({ page }) => {

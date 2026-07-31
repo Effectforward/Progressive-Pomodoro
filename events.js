@@ -1,6 +1,6 @@
 // ─── Event Listeners ──────────────────────────────────────────────────────────
 import { state } from './state.js';
-import { saveSettings, saveTasks, saveTimerState } from './storage.js';
+import { saveSettings, saveTasks, saveTimerState, exportSettings, parseSettings, applySettings } from './storage.js';
 import { setTheme, THEME_META } from './themes.js';
 import {
   el, render, updateToggleBtn,
@@ -126,6 +126,15 @@ export function setupEventListeners() {
   document.getElementById('clearConfirmYes')?.addEventListener('click', doClearHistory);
   document.getElementById('clearConfirmNo')?.addEventListener('click', () => {
     document.getElementById('clearConfirm')?.classList.add('hidden');
+  });
+
+  // Settings export / import
+  el.exportSettingsBtn?.addEventListener('click', doExportSettings);
+  el.importSettingsBtn?.addEventListener('click', () => el.importSettingsFile?.click());
+  el.importSettingsFile?.addEventListener('change', onImportSettingsFile);
+  el.importConfirmYes?.addEventListener('click', doImportSettings);
+  el.importConfirmNo?.addEventListener('click', () => {
+    el.importConfirm?.classList.add('hidden');
   });
 
   // Settings
@@ -382,6 +391,7 @@ export function setupEventListeners() {
       }
       document.getElementById('restartConfirm')?.classList.add('hidden');
       document.getElementById('clearConfirm')?.classList.add('hidden');
+      el.importConfirm?.classList.add('hidden');
     }
     if (el.settingsModal && !el.settingsModal.classList.contains('hidden')) return;
     if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
@@ -497,6 +507,63 @@ export function saveSettingsForm() {
 
   closeSettings();
   showToast('Settings saved');
+}
+
+// ─── Settings export / import ────────────────────────────────────────────────
+
+function doExportSettings() {
+  const blob = new Blob([exportSettings()], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `progressive-pomodoro-settings-${new Date().toISOString().slice(0, 10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Settings exported');
+}
+
+let _pendingImport = null;
+
+function onImportSettingsFile() {
+  const file = el.importSettingsFile?.files?.[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    const data = parseSettings(String(reader.result ?? ''));
+    if (!data) {
+      showToast("That doesn't look like a settings file.");
+      return;
+    }
+    _pendingImport = data;
+    el.importConfirm?.classList.remove('hidden');
+  };
+  reader.onerror = () => showToast("Couldn't read that file.");
+  reader.readAsText(file);
+}
+
+function doImportSettings() {
+  el.importConfirm?.classList.add('hidden');
+  const data = _pendingImport;
+  _pendingImport = null;
+  if (!data) return;
+  applySettings(data);
+  populateSettingsForm();
+  populateAudioSettings();
+  updateBeatsAutoStartVisibility();
+  applyCardSettings();
+  applyTimerSize(state.settings.timerSize || 'regular');
+  if (data.theme) setTheme(data.theme);
+  if (!state.rafId) {
+    const dur = state.settings.warmupDuration;
+    state.nextFocusDuration = dur;
+    state.duration = dur;
+    state.remaining = dur;
+    state.remainingMs = dur * 1000;
+    saveTimerState();
+    render();
+  }
+  if (el.importSettingsFile) el.importSettingsFile.value = '';
+  showToast('Settings imported');
 }
 
 // ─── Tasks ──────────────────────────────────────────────────────────────────

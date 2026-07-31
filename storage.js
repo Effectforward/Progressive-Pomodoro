@@ -110,6 +110,38 @@ export function saveThemeName(themeKey) {
   catch (e) { console.warn('progPomo: theme not saved — localStorage full?', e); }
 }
 
+// ─── Settings export / import (pure helpers, DOM-free) ───────────────────────
+// parseSettings validates without mutating state so callers can gate on it
+// (e.g. show a confirm panel) before applySettings commits.
+
+export function exportSettings() {
+  const clean = {};
+  for (const key of Object.keys(DEFAULT_SETTINGS)) {
+    if (key in state.settings) clean[key] = state.settings[key];
+  }
+  return JSON.stringify({ settings: clean, theme: state.theme }, null, 2);
+}
+
+export function parseSettings(raw) {
+  try {
+    const parsed = JSON.parse(raw);
+    if (typeof parsed !== 'object' || parsed === null) return null;
+    return {
+      settings: typeof parsed.settings === 'object' && parsed.settings !== null ? parsed.settings : {},
+      theme: typeof parsed.theme === 'string' ? parsed.theme : null,
+    };
+  } catch (e) { return null; }
+}
+
+export function applySettings(data) {
+  state.settings = Object.assign({}, DEFAULT_SETTINGS, data.settings);
+  saveSettings();
+  if (data.theme) {
+    state.theme = data.theme;
+    saveThemeName(data.theme);
+  }
+}
+
 export function isOnboardingDismissed() {
   return !!localStorage.getItem('pp_onboarding_dismissed');
 }

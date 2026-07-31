@@ -22,11 +22,11 @@ export const DEFAULT_SETTINGS = {
   tasksCardVisible: true,
   historyCardVisible: true,
   // Binaural beats
-  beatsLeftFreq: 270,
-  beatsRightFreq: 284,
+  beatsLeftFreq: 340,
+  beatsRightFreq: 380,
   beatsVolume: 0.5,
   beatsAutoStart: false,
-  beatsPreset: null, // 'alpha'|'beta'|'gamma'|'delta'|'epsilon'|null (null = custom)
+  beatsPreset: 'gamma', // 'alpha'|'beta'|'gamma'|'delta'|'theta'|null (null = custom)
   // Visibility controls
   showBeatsAutoStart: true,
 };

@@ -8,6 +8,12 @@ export const el = {
   rating: document.getElementById('rating'),
   sessionList: document.getElementById('sessionList'),
   clearHistoryBtn: document.getElementById('clearHistoryBtn'),
+  exportSettingsBtn: document.getElementById('exportSettingsBtn'),
+  importSettingsBtn: document.getElementById('importSettingsBtn'),
+  importSettingsFile: document.getElementById('importSettingsFile'),
+  importConfirm: document.getElementById('importConfirm'),
+  importConfirmYes: document.getElementById('importConfirmYes'),
+  importConfirmNo: document.getElementById('importConfirmNo'),
   settingsBtn: document.getElementById('settingsBtn'),
   settingsModal: document.getElementById('settingsModal'),
   settingsForm: document.getElementById('settingsForm'),
@@ -487,7 +493,7 @@ export function hideBeatsPopover() {
 export function populateAudioSettings() {
   if (el.beatsAutoStart) el.beatsAutoStart.checked = !!state.settings.beatsAutoStart;
   if (el.beatsPresetSelect) {
-    const matched = state.settings.beatsPreset || 'beta';
+    const matched = state.settings.beatsPreset || 'gamma';
     el.beatsPresetSelect.value = matched;
   }
   if (el.beatsDefaultLeftFreq) el.beatsDefaultLeftFreq.value = state.settings.beatsLeftFreq || 270;

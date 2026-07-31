@@ -345,8 +345,8 @@
                         <option value="delta">Deep Sleep (Delta, 1-4 Hz)</option>
                         <option value="theta">Meditation (Theta, 4-8 Hz)</option>
                         <option value="alpha">Calm Focus (Alpha, 8-13 Hz)</option>
-                        <option value="beta" selected>Active Focus (Beta, 13-30 Hz)</option>
-                        <option value="gamma">Peak Focus (Gamma, 30-50 Hz)</option>
+                        <option value="beta">Active Focus (Beta, 13-30 Hz)</option>
+                        <option value="gamma" selected>Peak Focus (Gamma, 30-50 Hz)</option>
                       </select>
                     </span>
                   </span>
@@ -399,6 +399,19 @@
                   <div class="confirm-panel-actions">
                     <button type="button" id="clearConfirmYes" class="secondary-btn btn-sm">Clear</button>
                     <button type="button" id="clearConfirmNo" class="icon-btn btn-sm">Cancel</button>
+                  </div>
+                </div>
+              </fieldset>
+              <fieldset class="settings-fieldset">
+                <legend>Backup</legend>
+                <button type="button" id="exportSettingsBtn" class="text-btn" title="Download settings as a JSON file"><i class="ph ph-download-simple"></i> Export Settings</button>
+                <button type="button" id="importSettingsBtn" class="text-btn" title="Restore settings from a JSON file"><i class="ph ph-upload-simple"></i> Import Settings</button>
+                <input type="file" id="importSettingsFile" accept=".json,application/json" hidden>
+                <div class="confirm-panel confirm-panel--import hidden" id="importConfirm">
+                  <p>Replace your current settings with this file?</p>
+                  <div class="confirm-panel-actions">
+                    <button type="button" id="importConfirmYes" class="secondary-btn btn-sm">Replace</button>
+                    <button type="button" id="importConfirmNo" class="icon-btn btn-sm">Cancel</button>
                   </div>
                 </div>
               </fieldset>

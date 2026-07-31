@@ -48,6 +48,13 @@ Vanilla JS (ES modules), CSS custom properties for theming, Web Audio API for be
 └── README.md
 ```
 
+## Roadmap
+
+- **Stats** — Focus time summary (total, best, sessions, this week) with a last-7-day bar chart and a monthly heatmap. In development on `feature/stats-card`.
+- **Settings Export/Import** — Backup all settings to a dated JSON file and restore from it, with a confirmation step. In development on `feature/settings-export`.
+- **Export Sessions & Tasks** — Full history export alongside settings.
+
+
 ## License
 
 GPLv3. See [LICENSE](LICENSE).
