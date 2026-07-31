@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+
+Sitemap: https://effectforward.github.io/Progressive-Pomodoro/sitemap.xml
