@@ -143,6 +143,9 @@
 .confirm-panel--clear {
   margin-bottom: var(--space-md);
 }
+.confirm-panel--import {
+  margin-top: var(--space-md);
+}
 .confirm-panel p {
   margin: 0 0 var(--space-sm) 0;
   font-size: 14px;
