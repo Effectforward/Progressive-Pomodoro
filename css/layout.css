@@ -130,3 +130,18 @@ main {
   padding: var(--space-md) var(--space-xl);
   overflow-x: clip;
 }
+
+/* Footer */
+.site-footer {
+  max-width: var(--content-max);
+  margin: var(--space-lg) auto 0;
+  padding: var(--space-lg) var(--space-xl) var(--space-3xl);
+  text-align: center;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.site-footer a {
+  color: var(--accent);
+  font-weight: 700;
+}
