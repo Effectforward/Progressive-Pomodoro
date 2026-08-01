@@ -210,6 +210,198 @@ test.describe('settings export/import', () => {
     await expect(page.locator('#importConfirm')).toBeHidden();
     await expect(page.locator('#toast')).toHaveText("That doesn't look like a settings file.");
   });
+
+  test('import valid file picks a new file after import clears the input', async ({ page }) => {
+    await openManageTab(page);
+    await page.setInputFiles('#importSettingsFile', {
+      name: 'a.json',
+      mimeType: 'application/json',
+      buffer: Buffer.from(JSON.stringify({ settings: { warmupDuration: 1800 }, theme: 'dark' })),
+    });
+    await page.click('#importConfirmYes');
+    await expect(page.locator('#importSettingsFile')).toHaveValue('');
+  });
+
+  test('import with only theme (no settings) keeps all settings defaults', async ({ page }) => {
+    await openManageTab(page);
+    await page.setInputFiles('#importSettingsFile', {
+      name: 'theme-only.json',
+      mimeType: 'application/json',
+      buffer: Buffer.from(JSON.stringify({ theme: 'dark' })),
+    });
+    await page.click('#importConfirmYes');
+    await expect(page.locator('#toast')).toHaveText('Settings imported');
+    const mem = await page.evaluate(async () => {
+      const { state } = await import('./state.js');
+      return { warmup: state.settings.warmupDuration, preset: state.settings.beatsPreset, beats: state.settings.beatsLeftFreq };
+    });
+    expect(mem.warmup).toBe(120);
+    expect(mem.preset).toBe('gamma');
+    expect(mem.beats).toBe(340);
+    expect(await page.evaluate(() => document.body.getAttribute('data-theme'))).toBe('dark');
+  });
+});
+
+test.describe('settings export/import — aggressive edge cases', () => {
+  test.use({ acceptDownloads: true });
+
+  async function openManageTab(page) {
+    const modal = page.locator('#settingsModal');
+    const cls = await modal.getAttribute('class');
+    if (cls.includes('hidden')) {
+      await page.click('#settingsBtn');
+      await page.waitForSelector('#settingsModal:not(.hidden)', { state: 'visible' });
+    }
+    await page.click('.settings-tab-btn[data-settings-tab="data"]');
+  }
+
+  async function importBuffer(page, content) {
+    await openManageTab(page);
+    await page.setInputFiles('#importSettingsFile', {
+      name: 'import.json',
+      mimeType: 'application/json',
+      buffer: Buffer.from(content),
+    });
+    await expect(page.locator('#importConfirm')).toBeVisible();
+    await page.click('#importConfirmYes');
+    await expect(page.locator('#importConfirm')).toBeHidden();
+  }
+
+  async function exportData(page) {
+    await openManageTab(page);
+    const downloadPromise = page.waitForEvent('download');
+    await page.click('#exportSettingsBtn');
+    const download = await downloadPromise;
+    return JSON.parse(fs.readFileSync(await download.path(), 'utf8'));
+  }
+
+  test('round-trip export → import → export is lossless', async ({ page }) => {
+    await page.evaluate(() => {
+      localStorage.setItem('pp_theme_v1', 'zen');
+      localStorage.setItem('pp_settings_v1', JSON.stringify({
+        warmupDuration: 1500, beatsPreset: 'alpha', beatsLeftFreq: 200, beatsRightFreq: 214,
+      }));
+    });
+    await page.reload();
+    await page.waitForLoadState('networkidle');
+    const first = await exportData(page);
+    await importBuffer(page, JSON.stringify(first));
+    const second = await exportData(page);
+    expect(second).toEqual(first);
+  });
+
+  test('import while idle resets the timer display to imported warmup', async ({ page }) => {
+    await importBuffer(page, JSON.stringify({ settings: { warmupDuration: 1800 } }));
+    await expect(page.locator('#time')).toHaveText('30:00');
+  });
+
+  test('import while a session is running does not clobber the running timer', async ({ page }) => {
+    await page.click('#toggleBtn');
+    await page.waitForTimeout(400);
+    const runningBefore = await page.evaluate(async () => (await import('./state.js')).state.rafId);
+    expect(runningBefore).toBeTruthy();
+
+    await importBuffer(page, JSON.stringify({ settings: { warmupDuration: 1800 } }));
+
+    const after = await page.evaluate(async () => {
+      const { state } = await import('./state.js');
+      return { rafId: state.rafId, duration: state.duration, warmup: state.settings.warmupDuration };
+    });
+    expect(after.rafId).toBeTruthy();
+    expect(after.duration).toBe(120);
+    expect(after.warmup).toBe(1800);
+    expect(await page.locator('#time').textContent()).not.toBe('30:00');
+  });
+
+  test('partial import merges with defaults (only provided keys change)', async ({ page }) => {
+    await importBuffer(page, JSON.stringify({ settings: { shortBreak: 900 } }));
+    const mem = await page.evaluate(async () => {
+      const { state } = await import('./state.js');
+      return state.settings;
+    });
+    expect(mem.shortBreak).toBe(900);
+    expect(mem.warmupDuration).toBe(120);
+    expect(mem.beatsPreset).toBe('gamma');
+    expect(mem.beatsVolume).toBe(0.5);
+  });
+
+  test('import applies beats settings to the form', async ({ page }) => {
+    await importBuffer(page, JSON.stringify({ settings: { beatsPreset: 'theta', beatsLeftFreq: 220, beatsRightFreq: 224 } }));
+    await expect(page.locator('#beatsPresetSelect')).toHaveValue('theta');
+    await expect(page.locator('#beatsDefaultLeftFreq')).toHaveValue('220');
+    await expect(page.locator('#beatsDefaultRightFreq')).toHaveValue('224');
+  });
+
+  test('import of null settings and empty object both apply defaults without crashing', async ({ page }) => {
+    await importBuffer(page, JSON.stringify({ settings: null, theme: 'dark' }));
+    let mem = await page.evaluate(async () => {
+      const { state } = await import('./state.js');
+      return { warmup: state.settings.warmupDuration, theme: state.theme };
+    });
+    expect(mem.warmup).toBe(120);
+    expect(mem.theme).toBe('dark');
+
+    await openManageTab(page);
+    await page.setInputFiles('#importSettingsFile', {
+      name: 'empty.json',
+      mimeType: 'application/json',
+      buffer: Buffer.from('{}'),
+    });
+    await page.click('#importConfirmYes');
+    mem = await page.evaluate(async () => (await import('./state.js')).state.settings.warmupDuration);
+    expect(mem).toBe(120);
+  });
+
+  test('escape key dismisses import confirm without applying', async ({ page }) => {
+    await openManageTab(page);
+    await page.setInputFiles('#importSettingsFile', {
+      name: 'escape.json',
+      mimeType: 'application/json',
+      buffer: Buffer.from(JSON.stringify({ settings: { warmupDuration: 1800 }, theme: 'dark' })),
+    });
+    await expect(page.locator('#importConfirm')).toBeVisible();
+    await page.press('body', 'Escape');
+    await expect(page.locator('#importConfirm')).toBeHidden();
+    const mem = await page.evaluate(async () => {
+      const { state } = await import('./state.js');
+      return { warmup: state.settings.warmupDuration, theme: state.theme };
+    });
+    expect(mem.warmup).toBe(120);
+    expect(mem.theme).toBe('pastel');
+  });
+
+  test('re-export after importing junk keys strips them from the file', async ({ page }) => {
+    await importBuffer(page, JSON.stringify({ settings: { warmupDuration: 1500, hackerKey: 'x', beatsEnabled: true } }));
+    const data = await exportData(page);
+    expect(data.settings.warmupDuration).toBe(1500);
+    expect(data.settings).not.toHaveProperty('hackerKey');
+    expect(data.settings).not.toHaveProperty('beatsEnabled');
+  });
+
+  test('imported junk keys do NOT leak into stored settings (trust boundary)', async ({ page }) => {
+    await importBuffer(page, JSON.stringify({ settings: { warmupDuration: 1500, hackerKey: 'x', beatsEnabled: true } }));
+    const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('pp_settings_v1')));
+    expect(stored.warmupDuration).toBe(1500);
+    expect(stored).not.toHaveProperty('hackerKey');
+    expect(stored).not.toHaveProperty('beatsEnabled');
+  });
+
+  test('import cannot pollute Object.prototype via __proto__ key', async ({ page }) => {
+    await importBuffer(page, '{"settings":{"__proto__":{"polluted":"yes"},"warmupDuration":1500}}');
+    const mem = await page.evaluate(async () => {
+      const { state } = await import('./state.js');
+      return {
+        globalPolluted: ({}).polluted,
+        settingsPolluted: state.settings.polluted,
+        protoIsObject: Object.getPrototypeOf(state.settings) === Object.prototype,
+        warmup: state.settings.warmupDuration,
+      };
+    });
+    expect(mem.globalPolluted).toBeUndefined();
+    expect(mem.settingsPolluted).toBeUndefined();
+    expect(mem.protoIsObject).toBe(true);
+    expect(mem.warmup).toBe(1500);
+  });
 });
 
 test('add a task via input', async ({ page }) => {

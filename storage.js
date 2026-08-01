@@ -134,7 +134,11 @@ export function parseSettings(raw) {
 }
 
 export function applySettings(data) {
-  state.settings = Object.assign({}, DEFAULT_SETTINGS, data.settings);
+  const clean = {};
+  for (const key of Object.keys(DEFAULT_SETTINGS)) {
+    if (key in data.settings) clean[key] = data.settings[key];
+  }
+  state.settings = Object.assign({}, DEFAULT_SETTINGS, clean);
   saveSettings();
   if (data.theme) {
     state.theme = data.theme;
