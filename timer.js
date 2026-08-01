@@ -27,8 +27,8 @@ export function start() {
   
   // Start binaural beats if enabled and in focus mode
   if (state.mode === 'focus' && state.settings.beatsAutoStart && !state.beatsActive) {
-    const left = state.settings.beatsLeftFreq || 270;
-    const right = state.settings.beatsRightFreq || 284;
+    const left = state.settings.beatsLeftFreq || 340;
+    const right = state.settings.beatsRightFreq || 380;
     const vol = state.settings.beatsVolume || 0.5;
     beats.start(left, right, vol);
     state.beatsActive = true;

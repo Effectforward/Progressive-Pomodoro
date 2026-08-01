@@ -216,14 +216,14 @@ export function setupEventListeners() {
   // Beats frequency inputs (live preview)
   el.beatsDefaultLeftFreq?.addEventListener('change', () => {
     state.settings.beatsPreset = null;
-    const left = parseInt(el.beatsDefaultLeftFreq.value, 10) ?? 270;
-    const right = parseInt(el.beatsDefaultRightFreq.value, 10) ?? 284;
+    const left = parseInt(el.beatsDefaultLeftFreq.value, 10) || 340;
+    const right = parseInt(el.beatsDefaultRightFreq.value, 10) || 380;
     if (state.beatsActive) beats.setFrequencies(left, right);
   });
   el.beatsDefaultRightFreq?.addEventListener('change', () => {
     state.settings.beatsPreset = null;
-    const left = parseInt(el.beatsDefaultLeftFreq.value, 10) ?? 270;
-    const right = parseInt(el.beatsDefaultRightFreq.value, 10) ?? 284;
+    const left = parseInt(el.beatsDefaultLeftFreq.value, 10) || 340;
+    const right = parseInt(el.beatsDefaultRightFreq.value, 10) || 380;
     if (state.beatsActive) beats.setFrequencies(left, right);
   });
 
@@ -252,8 +252,8 @@ export function setupEventListeners() {
       state.beatsActive = false;
       showToast('Binaural beats off');
     } else {
-      const left = state.settings.beatsLeftFreq || 270;
-      const right = state.settings.beatsRightFreq || 284;
+      const left = state.settings.beatsLeftFreq || 340;
+      const right = state.settings.beatsRightFreq || 380;
       const vol = state.settings.beatsVolume || 0.5;
       beats.start(left, right, vol);
       state.beatsActive = true;
@@ -275,8 +275,8 @@ export function setupEventListeners() {
       updateBeatsToggle();
       updateBeatsPopoverActive();
       showBeatsPopover();
-      if (el.beatsPopLeftFreq) el.beatsPopLeftFreq.value = state.settings.beatsLeftFreq || 270;
-      if (el.beatsPopRightFreq) el.beatsPopRightFreq.value = state.settings.beatsRightFreq || 284;
+      if (el.beatsPopLeftFreq) el.beatsPopLeftFreq.value = state.settings.beatsLeftFreq || 340;
+      if (el.beatsPopRightFreq) el.beatsPopRightFreq.value = state.settings.beatsRightFreq || 380;
       updateBeatsBeatDisplay();
     }
   });
@@ -284,8 +284,8 @@ export function setupEventListeners() {
   // Popover toggle switch
   el.beatsPopoverToggle?.addEventListener('change', () => {
     if (el.beatsPopoverToggle.checked) {
-      const left = state.settings.beatsLeftFreq || 270;
-      const right = state.settings.beatsRightFreq || 284;
+      const left = state.settings.beatsLeftFreq || 340;
+      const right = state.settings.beatsRightFreq || 380;
       const vol = state.settings.beatsVolume || 0.5;
       beats.start(left, right, vol);
       state.beatsActive = true;
@@ -332,8 +332,8 @@ export function setupEventListeners() {
     updateBeatsBeatDisplay();
     updateBeatsPopoverActive();
     if (state.beatsActive) {
-      const left = parseInt(el.beatsPopLeftFreq.value, 10) ?? 270;
-      const right = parseInt(el.beatsPopRightFreq?.value, 10) ?? 284;
+      const left = parseInt(el.beatsPopLeftFreq.value, 10) || 340;
+      const right = parseInt(el.beatsPopRightFreq?.value, 10) || 380;
       beats.setFrequencies(left, right);
     }
   });
@@ -342,8 +342,8 @@ export function setupEventListeners() {
     updateBeatsBeatDisplay();
     updateBeatsPopoverActive();
     if (state.beatsActive) {
-      const left = parseInt(el.beatsPopLeftFreq?.value, 10) ?? 270;
-      const right = parseInt(el.beatsPopRightFreq.value, 10) ?? 284;
+      const left = parseInt(el.beatsPopLeftFreq?.value, 10) || 340;
+      const right = parseInt(el.beatsPopRightFreq.value, 10) || 380;
       beats.setFrequencies(left, right);
     }
   });
@@ -351,8 +351,8 @@ export function setupEventListeners() {
   // Save custom freqs on blur
   const saveCustomFreqs = () => {
     state.settings.beatsPreset = null;
-      const left = parseInt(el.beatsPopLeftFreq?.value, 10) ?? 270;
-      const right = parseInt(el.beatsPopRightFreq?.value, 10) ?? 284;
+      const left = parseInt(el.beatsPopLeftFreq?.value, 10) || 340;
+      const right = parseInt(el.beatsPopRightFreq?.value, 10) || 380;
     state.settings.beatsLeftFreq = left;
     state.settings.beatsRightFreq = right;
     saveSettings();

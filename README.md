@@ -50,9 +50,10 @@ Vanilla JS (ES modules), CSS custom properties for theming, Web Audio API for be
 
 ## Roadmap
 
-- **Stats** — Focus time summary (total, best, sessions, this week) with a last-7-day bar chart and a monthly heatmap. In development on `feature/stats-card`.
-- **Settings Export/Import** — Backup all settings to a dated JSON file and restore from it, with a confirmation step. In development on `feature/settings-export`.
-- **Export Sessions & Tasks** — Full history export alongside settings.
+- [x] **Settings Export/Import** — Backup all settings to a dated JSON file and restore from it, with a confirmation step. Done in `2c0abce` (merged into `main`).
+- [ ] **Stats** — Focus time summary (total, best, sessions, this week) with a last-7-day bar chart and a monthly heatmap. In development on `feature/stats-card`.
+- [ ] **Export Sessions & Tasks** — Full history export alongside settings.
+- [ ] **Browser Extension Port** — Port the app to a browser extension. Independent copy at `Progressive-Pomodoro-Extension`.
 
 
 ## License

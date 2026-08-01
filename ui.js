@@ -457,8 +457,8 @@ export function updateBeatsToggle() {
 export function updateBeatsPopoverActive() {
   if (!el.beatsPopover) return;
   // Prefer live input values over saved state (blur saves to state)
-   const leftFreq = parseInt(el.beatsPopLeftFreq?.value, 10) ?? state.settings.beatsLeftFreq ?? 270;
-   const rightFreq = parseInt(el.beatsPopRightFreq?.value, 10) ?? state.settings.beatsRightFreq ?? 284;
+   const leftFreq = parseInt(el.beatsPopLeftFreq?.value, 10) || state.settings.beatsLeftFreq || 340;
+   const rightFreq = parseInt(el.beatsPopRightFreq?.value, 10) || state.settings.beatsRightFreq || 380;
   const beatFreq = rightFreq - leftFreq;
   const matched = state.settings.beatsPreset || null;
   const isOff = !state.beatsActive;
@@ -475,8 +475,8 @@ export function updateBeatsPopoverActive() {
 
 export function updateBeatsBeatDisplay() {
   if (!el.beatsPopBeatFreq) return;
-   const left = parseInt(el.beatsPopLeftFreq?.value, 10) ?? 270;
-   const right = parseInt(el.beatsPopRightFreq?.value, 10) ?? 284;
+   const left = parseInt(el.beatsPopLeftFreq?.value, 10) || 340;
+   const right = parseInt(el.beatsPopRightFreq?.value, 10) || 380;
   el.beatsPopBeatFreq.textContent = `= ${Math.abs(right - left)} Hz`;
 }
 
@@ -496,8 +496,8 @@ export function populateAudioSettings() {
     const matched = state.settings.beatsPreset || 'gamma';
     el.beatsPresetSelect.value = matched;
   }
-  if (el.beatsDefaultLeftFreq) el.beatsDefaultLeftFreq.value = state.settings.beatsLeftFreq || 270;
-  if (el.beatsDefaultRightFreq) el.beatsDefaultRightFreq.value = state.settings.beatsRightFreq || 284;
+  if (el.beatsDefaultLeftFreq) el.beatsDefaultLeftFreq.value = state.settings.beatsLeftFreq || 340;
+  if (el.beatsDefaultRightFreq) el.beatsDefaultRightFreq.value = state.settings.beatsRightFreq || 380;
   if (el.beatsDefaultVolume) {
     const vol = Math.round((state.settings.beatsVolume || 0.5) * 100);
     el.beatsDefaultVolume.value = vol;
