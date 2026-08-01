@@ -193,7 +193,7 @@ test.describe('Progression — rating adjusts next session duration', () => {
       state.duration = durationSecs;
       state.remaining = 0;
       state.sessions = [];
-      state.pendingRating = false;
+      state.pendingRating = true;
       const { saveSessions } = await import('./storage.js');
       const s = { rating: null, auto: false, length: durationSecs, timestamp: new Date().toISOString() };
       state.sessions.unshift(s);
