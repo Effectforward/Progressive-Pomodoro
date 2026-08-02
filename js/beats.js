@@ -68,7 +68,7 @@ export const PRESETS = {
   },
 };
 
-export function getAudioContext() {
+function getAudioContext() {
   if (!_audioCtx) _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   if (_audioCtx.state === 'suspended') _audioCtx.resume();
   return _audioCtx;
@@ -150,7 +150,7 @@ export function stop() {
 /**
  * Set left ear frequency (carrier).
  */
-export function setLeftFrequency(freq) {
+function setLeftFrequency(freq) {
   if (!_isPlaying || !_leftOsc) return;
   const t = _audioCtx.currentTime;
   _leftOsc.frequency.linearRampToValueAtTime(freq, t + 0.05);
@@ -159,7 +159,7 @@ export function setLeftFrequency(freq) {
 /**
  * Set right ear frequency.
  */
-export function setRightFrequency(freq) {
+function setRightFrequency(freq) {
   if (!_isPlaying || !_rightOsc) return;
   const t = _audioCtx.currentTime;
   _rightOsc.frequency.linearRampToValueAtTime(freq, t + 0.05);

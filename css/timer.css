@@ -65,6 +65,16 @@ body:not(.decision-active) .timer-display {
   transition: opacity var(--dur-normal) var(--ease-out);
 }
 
+/* When a decision panel is open, dim the play/pause + reset controls too */
+body.decision-active .controls {
+  opacity: 0.4;
+  transition: opacity var(--dur-normal) var(--ease-out);
+}
+body:not(.decision-active) .controls {
+  opacity: 1;
+  transition: opacity var(--dur-normal) var(--ease-out);
+}
+
 .ring-bg {
   stroke: var(--ring-bg);
   transition: stroke var(--dur-normal) var(--ease-out);

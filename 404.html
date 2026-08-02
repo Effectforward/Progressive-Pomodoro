@@ -6,21 +6,23 @@
   <title>Page not found | Progressive Pomodoro</title>
   <meta name="robots" content="noindex">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍅</text></svg>">
-  <style>
-    body { margin: 0; font-family: system-ui, sans-serif; background: #FDF9F1; color: #5C5449; text-align: center; padding: 80px 24px; }
-    h1 { font-size: 36px; }
-    p { color: #756B5C; }
-    a { display: inline-block; margin: 12px; padding: 14px 28px; border-radius: 999px; background: #F2A2A2; color: #fff; font-weight: 700; text-decoration: none; }
-    a:hover { background: #E89090; }
-    .plain { background: none; color: #756B5C; padding: 0; margin: 0 8px; font-weight: 600; }
-  </style>
+  <link rel="preload" href="fonts/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/pages.css">
+  <link rel="stylesheet" href="fonts/nunito.css">
 </head>
 <body>
-  <h1>Page not found</h1>
-  <p>That page does not exist. The timer is still here.</p>
-  <p>
-    <a href="index.html">Open the timer</a>
-    <a class="plain" href="landing.html">About the technique</a>
-  </p>
+  <main class="wrap">
+    <div class="hero">
+      <h1>Page not found</h1>
+      <p>That page does not exist. The timer is still here.</p>
+      <p>
+        <a class="cta" href="https://effectforward.github.io/Progressive-Pomodoro/index.html">Open the timer</a>
+      </p>
+      <nav class="site-nav">
+        <a href="https://effectforward.github.io/Progressive-Pomodoro/landing.html">About the technique</a>
+        <a href="https://effectforward.github.io/Progressive-Pomodoro/about.html">About the developer</a>
+      </nav>
+    </div>
+  </main>
 </body>
 </html>

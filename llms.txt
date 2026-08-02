@@ -1,0 +1,29 @@
+# Progressive Pomodoro
+
+> Free adaptive focus timer PWA based on the Progressive Pomodoro technique. Start with a 2-minute warm-up, rate each session, and build longer deep-work sessions over time. No ads, no accounts, works offline.
+
+## Progressive Pomodoro
+
+- [App](https://effectforward.github.io/Progressive-Pomodoro/): Free adaptive focus timer PWA. Open in any browser, no install.
+- [Overview](https://effectforward.github.io/Progressive-Pomodoro/landing.html): What the Progressive Pomodoro technique is and how the timer works.
+- [What is the technique](https://effectforward.github.io/Progressive-Pomodoro/progressive-pomodoro-technique.html): The full guide to the method and where it comes from.
+- [Rating system](https://effectforward.github.io/Progressive-Pomodoro/progressive-pomodoro-rating-system.html): How Flow, Focused, Fine, and Distracted ratings change your next session.
+- [Classic vs progressive](https://effectforward.github.io/Progressive-Pomodoro/progressive-pomodoro-vs-classic.html): How the two Pomodoro methods compare.
+- [About](https://effectforward.github.io/Progressive-Pomodoro/about.html): About Muhammad Ibraheem, the developer, and the project.
+- [Source code](https://github.com/Effectforward/Progressive-Pomodoro): Open source under GPLv3.
+
+## Key facts
+
+- The Progressive Pomodoro technique is a variation of the classic Pomodoro method where session lengths grow as your focus improves.
+- Start with a 2-minute warm-up, then rate each session: Flow, Focused, Fine, or Distracted.
+- Flow adds the most time and skips the break. Focused and Fine grow the session a little. Distracted shortens it, down to a 2-minute minimum.
+- The technique was created by Mike Rapadas.
+- ProgPomo is free, open source (GPLv3), and stores all data in the browser's local storage.
+
+## FAQ
+
+- What is the Progressive Pomodoro technique? A variation of the classic Pomodoro method where session lengths grow as your focus improves. You start short, rate each session, and the timer gradually builds toward longer deep-work sessions.
+- How does the timer adapt? After each session you rate your focus. Flow and Focused increase the next session length, Fine grows it a little, and Distracted shortens it.
+- Is it free? Yes. ProgPomo is free, open source under GPLv3, and has no accounts, ads, or sign-up.
+- Does it work offline? Yes. Once loaded, it works offline and can be installed to your home screen.
+- What are binaural beats? They play a slightly different frequency in each ear, and your brain perceives the difference as a beat. Headphones are required.

@@ -15,8 +15,14 @@
   <meta property="og:description" content="Adaptive focus timer PWA. Start with 2 min, rate your focus, build deeper work sessions over time.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://effectforward.github.io/Progressive-Pomodoro/">
-  <meta name="twitter:card" content="summary">
-  <title>Progressive Pomodoro</title>
+  <meta property="og:image" content="https://effectforward.github.io/Progressive-Pomodoro/images/og.png">
+  <meta property="og:image:width" content="1424">
+  <meta property="og:image:height" content="752">
+  <meta property="og:image:alt" content="Progressive Pomodoro, a free adaptive focus timer">
+  <meta property="og:site_name" content="Progressive Pomodoro">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  <title>Progressive Pomodoro: Free Adaptive Focus Timer</title>
   <link rel="stylesheet" href="style.css">
   <link rel="manifest" href="manifest.json">
   <link rel="canonical" href="https://effectforward.github.io/Progressive-Pomodoro/">
@@ -52,7 +58,26 @@
       "Works offline"
     ],
     "sameAs": "https://github.com/Effectforward/Progressive-Pomodoro",
-    "license": "https://www.gnu.org/licenses/gpl-3.0.html"
+    "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+    "author": {
+      "@type": "Person",
+      "name": "Muhammad Ibraheem",
+      "url": "https://effectforward.github.io/Progressive-Pomodoro/about.html"
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Muhammad Ibraheem",
+    "description": "IT student and developer. Builds free tools like the Progressive Pomodoro timer.",
+    "url": "https://effectforward.github.io/Progressive-Pomodoro/about.html",
+    "jobTitle": "IT student",
+    "sameAs": [
+      "https://github.com/Effectforward",
+      "https://www.linkedin.com/in/muhammad-ibraheem-a7bbb9305/"
+    ]
   }
   </script>
 </head>
@@ -63,7 +88,7 @@
     <div class="onboarding-card">
       <div class="onboarding-icon-wrap"><i class="ph-fill ph-timer"></i></div>
       <h2 id="onboardingTitle" class="onboarding-title">Welcome to ProgPomo</h2>
-      <p class="onboarding-desc">Start with a 2-minute warmup. After each session, rate your focus. Your timer adapts, gradually building toward deeper work.</p>
+      <p class="onboarding-desc">Start with a 2-minute warm-up. After each session, rate your focus. Your timer adapts, gradually building toward deeper work.</p>
       <div class="onboarding-steps">
         <div class="onboarding-step"><span class="onboarding-step-num">1</span> Start a short session</div>
         <div class="onboarding-step"><span class="onboarding-step-num">2</span> Rate how it went</div>
@@ -148,7 +173,7 @@
       <p class="progression-hint" id="progressionHint">Focus time grows as you rate your sessions</p>
 
       <div class="rating hidden" id="rating" role="group" aria-label="Rate your focus session">
-        <p class="rating-label">However it went, that's a block done.</p>
+        <p class="rating-label">However it went, that's a session done.</p>
         <p class="rating-sub">How was your focus? <button type="button" class="rating-help" aria-label="What is this?" aria-expanded="false" aria-controls="ratingHelpTip"><i class="ph ph-question"></i></button></p>
         <div class="rating-buttons">
           <button data-rating="flow" class="rate-flow"><i class="ph-fill ph-fire"></i> Flow</button>
@@ -213,7 +238,7 @@
   </main>
 
   <footer class="site-footer">
-    <p>Progressive Pomodoro is an adaptive focus timer. <a href="landing.html">About the technique</a>.</p>
+    <p>Progressive Pomodoro is an adaptive focus timer. <a href="landing.html">About the technique</a> · <a href="about.html">About the developer</a>.</p>
   </footer>
 
   <div id="settingsModal" class="modal hidden" aria-hidden="true">
@@ -367,7 +392,7 @@
                         <option value="theta">Meditation (Theta, 4-8 Hz)</option>
                         <option value="alpha">Calm Focus (Alpha, 8-13 Hz)</option>
                         <option value="beta">Active Focus (Beta, 13-30 Hz)</option>
-                        <option value="gamma" selected>Peak Focus (Gamma, 30-50 Hz)</option>
+                        <option value="gamma" selected>Peak Focus (Gamma, 30-100 Hz)</option>
                       </select>
                     </span>
                   </span>
@@ -405,7 +430,7 @@
                 <legend>Progression</legend>
                 <button type="button" id="restartProgressionBtn" class="text-btn" title="Reset progression to 2 min without clearing history"><i class="ph ph-arrow-clockwise"></i> Restart Progression</button>
                 <div class="confirm-panel confirm-panel--restart hidden" id="restartConfirm">
-                  <p>Reset to warmup? Your history stays.</p>
+                  <p>Reset to warm-up? Your history stays.</p>
                   <div class="confirm-panel-actions">
                     <button type="button" id="restartConfirmYes" class="secondary-btn btn-sm">Reset</button>
                     <button type="button" id="restartConfirmNo" class="icon-btn btn-sm">Cancel</button>
@@ -446,6 +471,6 @@
     </div>
   </div>
   <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
-  <script type="module" src="app.js"></script>
+  <script type="module" src="js/app.js"></script>
 </body>
 </html>

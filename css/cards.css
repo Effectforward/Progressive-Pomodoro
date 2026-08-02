@@ -29,32 +29,6 @@ body.no-sessions #historyCard {
   box-shadow: var(--shadow);
 }
 
-.tasks-card.empty .card-header,
-.tasks-card.empty .task-controls {
-  display: none;
-}
-
-.add-task-btn {
-  background: none;
-  border: 1px dashed var(--border);
-  border-radius: 99px;
-  padding: var(--space-sm) var(--space-lg);
-  width: 100%;
-  color: var(--muted);
-  font-weight: 700;
-  font-size: 14px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: var(--space-xs);
-  justify-content: center;
-  transition: border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
-}
-.add-task-btn:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
 .card-header {
   display: flex;
   justify-content: space-between;

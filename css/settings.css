@@ -144,12 +144,6 @@
   font-size: 15px;
 }
 
-.modal-divider {
-  border: none;
-  border-top: 1px solid var(--border);
-  margin: var(--space-lg) 0;
-}
-
 #settingsForm .text-btn {
   background: none;
   border: none;
@@ -555,18 +549,8 @@
 }
 
 /* Data section */
-.data-danger-section {
-  padding: var(--space-md) 0;
-}
 
-.data-section-title {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin: 0 0 var(--space-md) 0;
-}
+/* Settings section titles */
 
 .confirm-panel--restart {
   margin-top: var(--space-sm);

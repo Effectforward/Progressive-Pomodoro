@@ -1,6 +1,5 @@
 node_modules/
 test-results/
-trash/
 playwright.config.js
 package.json
 package-lock.json

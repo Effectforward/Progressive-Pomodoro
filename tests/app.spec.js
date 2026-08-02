@@ -44,8 +44,8 @@ test('reset timer', async ({ page }) => {
 
 test('submit rating updates session', async ({ page }) => {
   await page.evaluate(async () => {
-    const state = (await import('./state.js')).state;
-    const ui = await import('./ui.js');
+    const state = (await import('./js/state.js')).state;
+    const ui = await import('./js/ui.js');
     state.pendingRating = true;
     ui.showRating();
   });
@@ -57,8 +57,8 @@ test('submit rating updates session', async ({ page }) => {
 
 test('pendingRating blocks timer start', async ({ page }) => {
   const result = await page.evaluate(async () => {
-    const state = (await import('./state.js')).state;
-    const timer = await import('./timer.js');
+    const state = (await import('./js/state.js')).state;
+    const timer = await import('./js/timer.js');
     state.pendingRating = true;
     timer.toggleTimer();
     return state.rafId;
@@ -68,8 +68,8 @@ test('pendingRating blocks timer start', async ({ page }) => {
 
 test('pendingRating blocks reset', async ({ page }) => {
   const result = await page.evaluate(async () => {
-    const state = (await import('./state.js')).state;
-    const timer = await import('./timer.js');
+    const state = (await import('./js/state.js')).state;
+    const timer = await import('./js/timer.js');
     state.pendingRating = true;
     state.remaining = 999;
     timer.reset();
@@ -80,8 +80,8 @@ test('pendingRating blocks reset', async ({ page }) => {
 
 test('rating blocked while timer running', async ({ page }) => {
   const result = await page.evaluate(async () => {
-    const timer = await import('./timer.js');
-    const state = (await import('./state.js')).state;
+    const timer = await import('./js/timer.js');
+    const state = (await import('./js/state.js')).state;
     state.rafId = 123;
     timer.submitRating('good');
     return state.sessions.length;
@@ -193,7 +193,7 @@ test.describe('settings export/import', () => {
     const stored = await page.evaluate(() => localStorage.getItem('pp_settings_v1'));
     expect(stored).toBeNull();
     const mem = await page.evaluate(async () => {
-      const { state } = await import('./state.js');
+      const { state } = await import('./js/state.js');
       return state.settings.warmupDuration;
     });
     expect(mem).toBe(120);
@@ -232,7 +232,7 @@ test.describe('settings export/import', () => {
     await page.click('#importConfirmYes');
     await expect(page.locator('#toast')).toHaveText('Settings imported');
     const mem = await page.evaluate(async () => {
-      const { state } = await import('./state.js');
+      const { state } = await import('./js/state.js');
       return { warmup: state.settings.warmupDuration, preset: state.settings.beatsPreset, beats: state.settings.beatsLeftFreq };
     });
     expect(mem.warmup).toBe(120);
@@ -298,13 +298,13 @@ test.describe('settings export/import — aggressive edge cases', () => {
   test('import while a session is running does not clobber the running timer', async ({ page }) => {
     await page.click('#toggleBtn');
     await page.waitForTimeout(400);
-    const runningBefore = await page.evaluate(async () => (await import('./state.js')).state.rafId);
+    const runningBefore = await page.evaluate(async () => (await import('./js/state.js')).state.rafId);
     expect(runningBefore).toBeTruthy();
 
     await importBuffer(page, JSON.stringify({ settings: { warmupDuration: 1800 } }));
 
     const after = await page.evaluate(async () => {
-      const { state } = await import('./state.js');
+      const { state } = await import('./js/state.js');
       return { rafId: state.rafId, duration: state.duration, warmup: state.settings.warmupDuration };
     });
     expect(after.rafId).toBeTruthy();
@@ -316,7 +316,7 @@ test.describe('settings export/import — aggressive edge cases', () => {
   test('partial import merges with defaults (only provided keys change)', async ({ page }) => {
     await importBuffer(page, JSON.stringify({ settings: { shortBreak: 900 } }));
     const mem = await page.evaluate(async () => {
-      const { state } = await import('./state.js');
+      const { state } = await import('./js/state.js');
       return state.settings;
     });
     expect(mem.shortBreak).toBe(900);
@@ -335,7 +335,7 @@ test.describe('settings export/import — aggressive edge cases', () => {
   test('import of null settings and empty object both apply defaults without crashing', async ({ page }) => {
     await importBuffer(page, JSON.stringify({ settings: null, theme: 'dark' }));
     let mem = await page.evaluate(async () => {
-      const { state } = await import('./state.js');
+      const { state } = await import('./js/state.js');
       return { warmup: state.settings.warmupDuration, theme: state.theme };
     });
     expect(mem.warmup).toBe(120);
@@ -348,7 +348,7 @@ test.describe('settings export/import — aggressive edge cases', () => {
       buffer: Buffer.from('{}'),
     });
     await page.click('#importConfirmYes');
-    mem = await page.evaluate(async () => (await import('./state.js')).state.settings.warmupDuration);
+    mem = await page.evaluate(async () => (await import('./js/state.js')).state.settings.warmupDuration);
     expect(mem).toBe(120);
   });
 
@@ -363,7 +363,7 @@ test.describe('settings export/import — aggressive edge cases', () => {
     await page.press('body', 'Escape');
     await expect(page.locator('#importConfirm')).toBeHidden();
     const mem = await page.evaluate(async () => {
-      const { state } = await import('./state.js');
+      const { state } = await import('./js/state.js');
       return { warmup: state.settings.warmupDuration, theme: state.theme };
     });
     expect(mem.warmup).toBe(120);
@@ -389,7 +389,7 @@ test.describe('settings export/import — aggressive edge cases', () => {
   test('import cannot pollute Object.prototype via __proto__ key', async ({ page }) => {
     await importBuffer(page, '{"settings":{"__proto__":{"polluted":"yes"},"warmupDuration":1500}}');
     const mem = await page.evaluate(async () => {
-      const { state } = await import('./state.js');
+      const { state } = await import('./js/state.js');
       return {
         globalPolluted: ({}).polluted,
         settingsPolluted: state.settings.polluted,
@@ -480,7 +480,7 @@ test('break duration saves from settings', async ({ page }) => {
   await page.fill('#breakInput', '10');
   await page.click('#settingsSaveBtn');
   const breakVal = await page.evaluate(async () => {
-    const { state } = await import('./state.js');
+    const { state } = await import('./js/state.js');
     return state.settings.shortBreak;
   });
   expect(breakVal).toBe(600);
@@ -534,8 +534,8 @@ test('progression hint hidden after sessions', async ({ page }) => {
   const hintVisible = await page.locator('#progressionHint').isVisible();
   expect(hintVisible).toBe(true);
   await page.evaluate(async () => {
-    const { state } = await import('./state.js');
-    const { saveSessions } = await import('./storage.js');
+    const { state } = await import('./js/state.js');
+    const { saveSessions } = await import('./js/storage.js');
     state.sessions = [{ rating: 'good', length: 120, timestamp: new Date().toISOString() }];
     saveSessions();
   });
@@ -636,8 +636,8 @@ test('settings panels max-height allows scrolling', async ({ page }) => {
 
 test('rating help tooltip toggles with aria-expanded', async ({ page }) => {
   await page.evaluate(async () => {
-    const { state } = await import('./state.js');
-    const ui = await import('./ui.js');
+    const { state } = await import('./js/state.js');
+    const ui = await import('./js/ui.js');
     state.pendingRating = true;
     ui.showRating();
   });
@@ -738,7 +738,7 @@ test('changing beats preset updates frequencies', async ({ page }) => {
   await page.selectOption('#beatsPresetSelect', 'alpha');
   await page.click('#settingsSaveBtn');
   const freqs = await page.evaluate(async () => {
-    const { state } = await import('./state.js');
+    const { state } = await import('./js/state.js');
     return { left: state.settings.beatsLeftFreq, right: state.settings.beatsRightFreq };
   });
   expect(freqs.right - freqs.left).toBe(10); // Alpha = 10 Hz beat

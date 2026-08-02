@@ -51,19 +51,6 @@
   padding: var(--space-sm) var(--space-sm);
 }
 
-.rating-skip {
-  margin-top: var(--space-sm);
-  border: none;
-  background: transparent;
-  color: var(--muted);
-  font-weight: 700;
-  font-size: 13px;
-  cursor: pointer;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-.rating-skip:hover { color: var(--text); }
-
 .rating-buttons {
   display: flex;
   gap: var(--space-sm);

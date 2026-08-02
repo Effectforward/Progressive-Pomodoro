@@ -1,7 +1,7 @@
 import { state } from './state.js';
-import { saveTimerState, saveSessions, saveSettings } from './storage.js';
+import { saveTimerState, saveSessions } from './storage.js';
 import { 
-  el, render, updateToggleBtn,
+  render, updateToggleBtn,
   showRating, hideRating, showDurationPicker, hideDurationPicker,
   renderSessions, showToast, updateBeatsToggle,
 } from './ui.js';
@@ -24,6 +24,9 @@ export function start() {
   }
   state.endAt = Date.now() + state.remainingMs;
   state.rafId = requestAnimationFrame(rafTick);
+
+  // A session is starting — the idle restart reminder no longer applies.
+  state.restartPrompt = false;
   
   // Start binaural beats if enabled and in focus mode
   if (state.mode === 'focus' && state.settings.beatsAutoStart && !state.beatsActive) {
@@ -33,7 +36,7 @@ export function start() {
     beats.start(left, right, vol);
     state.beatsActive = true;
     const match = Object.values(beats.PRESETS).find(p => p.leftFreq === left && (p.leftFreq + p.beatFreq) === right);
-    showToast(match ? `Binaural beats on — ${match.label}` : 'Binaural beats on');
+    showToast(match ? `Binaural beats on · ${match.label}` : 'Binaural beats on');
   }
   
   saveTimerState();
@@ -288,15 +291,8 @@ export function doClearHistory() {
 
 // ─── Alarm + notification ──────────────────────────────────────────────────
 
-// AudioContext must be created/resumed inside a user gesture, so unlock it
-// on Start (a real tap) and reuse it. Otherwise mobile blocks the alarm.
+// Shared AudioContext for the alarm (created inside a user gesture on first play).
 let _audioCtx = null;
-export function unlockAudio() {
-  try {
-    if (!_audioCtx) _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    if (_audioCtx.state === 'suspended') _audioCtx.resume();
-  } catch (e) { showToast('Sound unavailable on this device.'); }
-}
 
 function playAlarm() {
   try {

@@ -4,192 +4,92 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Progressive Pomodoro Timer: Adaptive Focus Timer</title>
-  <meta name="description" content="Free adaptive focus timer based on the Progressive Pomodoro technique. Start with a 2-minute warm-up, rate your focus, and build longer deep-work sessions. Works offline as a PWA.">
+  <meta name="description" content="Free adaptive focus timer using the Progressive Pomodoro technique. Warm up for 2 minutes, rate your focus, build longer sessions. Works offline as a PWA.">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍅</text></svg>">
   <link rel="canonical" href="https://effectforward.github.io/Progressive-Pomodoro/landing.html">
+  <link rel="preload" href="fonts/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/pages.css">
+  <link rel="stylesheet" href="fonts/nunito.css">
   <meta property="og:title" content="Progressive Pomodoro Timer">
   <meta property="og:description" content="Free adaptive focus timer. Start short, rate your focus, build deeper work sessions over time.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://effectforward.github.io/Progressive-Pomodoro/landing.html">
-  <meta name="twitter:card" content="summary">
-  <style>
-    :root {
-      --bg: #FDF9F1;
-      --card: #FFFFFF;
-      --text: #5C5449;
-      --muted: #756B5C;
-      --accent: #F2A2A2;
-      --accent-hover: #E89090;
-      --border: #F5EDE4;
-      --btn-text: #FFFFFF;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-    }
-    a { color: var(--accent); }
-    .wrap { max-width: 720px; margin: 0 auto; padding: 0 24px; }
-    header {
-      padding: 28px 0;
-      text-align: center;
-      font-size: 22px;
-      font-weight: 800;
-    }
-    header .logo { color: var(--text); text-decoration: none; }
-    .hero { text-align: center; padding: 40px 0 8px; }
-    .hero h1 { font-size: 40px; margin: 0 0 16px; line-height: 1.2; }
-    .hero p { font-size: 18px; color: var(--muted); margin: 0 0 32px; }
-    .cta {
-      display: inline-block;
-      background: var(--accent);
-      color: var(--btn-text);
-      padding: 16px 40px;
-      border-radius: 999px;
-      font-size: 18px;
-      font-weight: 700;
-      text-decoration: none;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-    }
-    .cta:hover { background: var(--accent-hover); }
-    .features {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 16px;
-      margin: 48px 0;
-    }
-    .feature {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 24px;
-    }
-    .feature h3 { margin: 0 0 8px; font-size: 17px; }
-    .feature p { margin: 0; font-size: 15px; color: var(--muted); }
-    .faq { padding-bottom: 48px; }
-    .faq h2 { font-size: 24px; }
-    .faq details {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 16px 20px;
-      margin-bottom: 12px;
-    }
-    .faq summary { cursor: pointer; font-weight: 700; }
-    .faq p { margin: 12px 0 0; font-size: 15px; color: var(--muted); }
-    footer { text-align: center; color: var(--muted); font-size: 14px; padding: 32px 0 48px; }
-    footer p { margin: 12px 0 0; }
-  </style>
+  <meta property="og:image" content="https://effectforward.github.io/Progressive-Pomodoro/images/og.png">
+  <meta property="og:image:width" content="1424">
+  <meta property="og:image:height" content="752">
+  <meta property="og:image:alt" content="Progressive Pomodoro, a free adaptive focus timer">
+  <meta property="og:site_name" content="Progressive Pomodoro">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "Progressive Pomodoro",
-    "url": "https://effectforward.github.io/Progressive-Pomodoro/"
+    "alternateName": "ProgPomo",
+    "url": "https://effectforward.github.io/Progressive-Pomodoro/",
+    "author": {
+      "@type": "Person",
+      "name": "Muhammad Ibraheem",
+      "url": "https://effectforward.github.io/Progressive-Pomodoro/about.html"
+    }
   }
   </script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "What is the Progressive Pomodoro technique?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "The Progressive Pomodoro technique is a variation of the classic Pomodoro method where session lengths grow as your focus improves. You start short, rate how well each session went, and your timer gradually builds toward longer, deeper work sessions."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "How does the timer adapt to my focus?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "After each session you rate your focus. Strong ratings, like Flow or Focused, increase your next session length. Lower ratings, like Distracted, keep the next session short. Over time the timer drifts toward the session length that matches your real focus."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Is Progressive Pomodoro free?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes. ProgPomo is completely free, open source under GPLv3, and has no accounts, ads, or sign-up. All your data stays in your browser's local storage."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Does it work offline?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes. ProgPomo is a progressive web app. Once loaded, it works offline and can be installed to your home screen on desktop and mobile."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "What are binaural beats and do I need headphones?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Binaural beats play a slightly different frequency in each ear, and your brain perceives the difference as a beat. Headphones are required, because each ear must hear its own tone for the effect to work."
-        }
-      }
+    "@type": "Person",
+    "name": "Muhammad Ibraheem",
+    "description": "IT student and developer. Builds free tools like the Progressive Pomodoro timer.",
+    "url": "https://effectforward.github.io/Progressive-Pomodoro/about.html",
+    "jobTitle": "IT student",
+    "sameAs": [
+      "https://github.com/Effectforward",
+      "https://www.linkedin.com/in/muhammad-ibraheem-a7bbb9305/"
     ]
   }
   </script>
 </head>
 <body>
   <header>
-    <div class="wrap"><a class="logo" href="index.html">🍅 Progressive Pomodoro</a></div>
+    <div class="wrap">
+      <a class="logo" href="index.html">🍅 Progressive Pomodoro</a>
+      <nav class="site-nav">
+        <a href="about.html">About the developer</a>
+        <a href="progressive-pomodoro-technique.html">About the technique</a>
+      </nav>
+    </div>
   </header>
 
   <main class="wrap">
     <section class="hero">
       <h1>Progressive Pomodoro Timer</h1>
-      <p>An adaptive focus timer based on the Progressive Pomodoro technique. Start with a 2-minute warm-up, rate how focused each session was, and the timer gradually builds toward longer deep-work sessions.</p>
+      <p>An adaptive focus timer. Start with a 2-minute warm-up, rate each session, and build longer deep-work sessions over time. Free, no account, works offline.</p>
       <a class="cta" href="index.html">Open the Timer</a>
     </section>
 
     <section class="features">
       <div class="feature">
-        <h3>Start short</h3>
-        <p>Begin with a gentle 2-minute warm-up. No pressure, no giant time blocks.</p>
+        <h3>What is the technique?</h3>
+        <p>The Progressive Pomodoro method explained, and where it comes from.</p>
+        <a href="progressive-pomodoro-technique.html">Read the guide →</a>
       </div>
       <div class="feature">
-        <h3>Rate your focus</h3>
-        <p>After each session, tell the timer how it went. One tap, that's it.</p>
+        <h3>How the rating system works</h3>
+        <p>How Flow, Focused, Fine, and Distracted change your next session.</p>
+        <a href="progressive-pomodoro-rating-system.html">See the ratings →</a>
       </div>
       <div class="feature">
-        <h3>Build depth</h3>
-        <p>Strong sessions stretch the next one. Your timer adapts as your focus grows.</p>
+        <h3>Classic vs progressive</h3>
+        <p>Fixed 25-minute blocks against sessions that grow with your focus.</p>
+        <a href="progressive-pomodoro-vs-classic.html">Compare them →</a>
       </div>
     </section>
 
-    <section class="faq">
-      <h2>Frequently asked questions</h2>
-      <details>
-        <summary>What is the Progressive Pomodoro technique?</summary>
-        <p>The Progressive Pomodoro technique is a variation of the classic Pomodoro method where session lengths grow as your focus improves. You start short, rate how well each session went, and your timer gradually builds toward longer, deeper work sessions.</p>
-      </details>
-      <details>
-        <summary>How does the timer adapt to my focus?</summary>
-        <p>After each session you rate your focus. Strong ratings, like Flow or Focused, increase your next session length. Lower ratings, like Distracted, keep the next session short. Over time the timer drifts toward the session length that matches your real focus.</p>
-      </details>
-      <details>
-        <summary>Is Progressive Pomodoro free?</summary>
-        <p>Yes. ProgPomo is completely free, open source under GPLv3, and has no accounts, ads, or sign-up. All your data stays in your browser's local storage.</p>
-      </details>
-      <details>
-        <summary>Does it work offline?</summary>
-        <p>Yes. ProgPomo is a progressive web app. Once loaded, it works offline and can be installed to your home screen on desktop and mobile.</p>
-      </details>
-      <details>
-        <summary>What are binaural beats and do I need headphones?</summary>
-        <p>Binaural beats play a slightly different frequency in each ear, and your brain perceives the difference as a beat. Headphones are required, because each ear must hear its own tone for the effect to work.</p>
-      </details>
+    <section class="author-box">
+      <p><strong>Built by Muhammad Ibraheem.</strong></p>
+      <p>Muhammad Ibraheem. I am an IT student and somewhat of a developer. I love programming and Linux.</p>
+      <p><a href="about.html">About the developer</a> · <a href="https://github.com/Effectforward" rel="noopener" target="_blank">GitHub</a> · <a href="https://www.linkedin.com/in/muhammad-ibraheem-a7bbb9305/" rel="noopener" target="_blank">LinkedIn</a></p>
     </section>
   </main>
 

@@ -3,8 +3,8 @@
   "short_name": "ProgPomo",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#F9F7F3",
-  "theme_color": "#E2B4BD",
+  "background_color": "#FDF9F1",
+  "theme_color": "#F2A2A2",
   "description": "Adaptive focus timer based on the Progressive Pomodoro technique.",
   "icons": [
     {

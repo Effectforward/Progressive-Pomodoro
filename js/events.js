@@ -4,8 +4,8 @@ import { saveSettings, saveTasks, saveTimerState, exportSettings, parseSettings,
 import { setTheme, THEME_META } from './themes.js';
 import {
   el, render, updateToggleBtn,
-  showRating, hideRating, showDurationPicker, hideDurationPicker,
-  renderSessions, renderTasks,
+  hideDurationPicker,
+  renderTasks,
   openSettings, closeSettings, populateSettingsForm,
   applyCardSettings, applyTimerSize, applySettingsLayout,
   activateSettingsTab, showToast,

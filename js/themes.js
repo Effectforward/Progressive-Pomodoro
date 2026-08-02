@@ -77,7 +77,7 @@ export function setTheme(themeKey) {
   state.theme = themeKey;
   document.body.setAttribute('data-theme', themeKey);
 
-  const { colors, themeColor, name, icon } = THEME_META[themeKey];
+  const { colors, themeColor } = THEME_META[themeKey];
   const root = document.documentElement;
   root.style.setProperty('--bg', colors.bg);
   root.style.setProperty('--card', colors.card);
@@ -95,9 +95,6 @@ export function setTheme(themeKey) {
 
   const themeColorMeta = document.getElementById('themeColorMeta');
   if (themeColorMeta) themeColorMeta.setAttribute('content', themeColor);
-
-  document.querySelectorAll('[data-theme-name]').forEach(node => { node.textContent = name; });
-  document.querySelectorAll('[data-theme-icon]').forEach(node => { node.className = icon; });
 
   buildThemeMenu();
   saveThemeName(themeKey);

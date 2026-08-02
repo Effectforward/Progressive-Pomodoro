@@ -1,5 +1,5 @@
 import { state } from './state.js';
-import { saveTasks, saveSettings } from './storage.js';
+import { saveTasks } from './storage.js';
 
 export const el = {
   time: document.getElementById('time'),
@@ -98,10 +98,14 @@ export function render() {
     ringWrap.classList.toggle('running', !!state.rafId);
   }
 
-  // Show/hide restart banner
+  // Show/hide restart banner — never over an open rating or duration picker
   if (el.restartBanner) {
-    const show = state.restartPrompt && !state.rafId;
+    const show = state.restartPrompt && !state.rafId &&
+      el.rating?.classList.contains('hidden') &&
+      el.durationPicker?.classList.contains('hidden');
     el.restartBanner.classList.toggle('hidden', !show);
+    // The banner is a decision point — lock the timer controls until resolved.
+    if (show) document.body.classList.add('decision-active');
   }
   if (el.lastSessionDurationDisplay && state.lastSessionDuration) {
     el.lastSessionDurationDisplay.textContent = state.lastSessionDuration;
@@ -224,20 +228,6 @@ export function renderTasks() {
     const active = state.tasks.filter(t => !t.completed).length;
     count.textContent = state.tasks.length ? active + ' left' : '';
   }
-  if (!state.tasks.length) {
-    // If input is already visible (empty class removed), don't re-show dashed button
-    if (!el.tasksCard?.classList.contains('empty')) return;
-    const li = document.createElement('li');
-    li.className = 'empty-state';
-    li.innerHTML = '<button class="add-task-btn"><i class="ph ph-plus-circle"></i> Add a task</button>';
-    li.querySelector('button')?.addEventListener('click', () => {
-      el.tasksCard?.classList.remove('empty');
-      el.taskInput?.focus();
-    });
-    el.taskList.appendChild(li);
-    return;
-  }
-  el.tasksCard?.classList.remove('empty');
   state.tasks.forEach((t, i) => {
     const li = document.createElement('li');
     li.className = 'task-item';

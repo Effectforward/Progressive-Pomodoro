@@ -188,13 +188,13 @@ test.describe('BUG-4 — Mobile tab bar', () => {
 test.describe('Progression — rating adjusts next session duration', () => {
   async function rateSession(page, rating, durationSecs = 120) {
     await page.evaluate(async ({ rating, durationSecs }) => {
-      const { state } = await import('./state.js');
-      const { submitRating } = await import('./timer.js');
+      const { state } = await import('./js/state.js');
+      const { submitRating } = await import('./js/timer.js');
       state.duration = durationSecs;
       state.remaining = 0;
       state.sessions = [];
       state.pendingRating = true;
-      const { saveSessions } = await import('./storage.js');
+      const { saveSessions } = await import('./js/storage.js');
       const s = { rating: null, auto: false, length: durationSecs, timestamp: new Date().toISOString() };
       state.sessions.unshift(s);
       saveSessions();
@@ -208,7 +208,7 @@ test.describe('Progression — rating adjusts next session duration', () => {
   test('"flow" rating adds 12 min to next session', async ({ page }) => {
     await rateSession(page, 'flow', 600); // 10 min session
     const next = await page.evaluate(async () => {
-      const { state } = await import('./state.js');
+      const { state } = await import('./js/state.js');
       return state.nextFocusDuration;
     });
     expect(next).toBe(22 * 60); // 10 + 12 = 22 min
@@ -216,25 +216,25 @@ test.describe('Progression — rating adjusts next session duration', () => {
 
   test('"focused" rating adds 7 min', async ({ page }) => {
     await rateSession(page, 'focused', 600);
-    const next = await page.evaluate(async () => (await import('./state.js')).state.nextFocusDuration);
+    const next = await page.evaluate(async () => (await import('./js/state.js')).state.nextFocusDuration);
     expect(next).toBe(17 * 60);
   });
 
   test('"fine" rating adds 5 min', async ({ page }) => {
     await rateSession(page, 'good', 600);
-    const next = await page.evaluate(async () => (await import('./state.js')).state.nextFocusDuration);
+    const next = await page.evaluate(async () => (await import('./js/state.js')).state.nextFocusDuration);
     expect(next).toBe(15 * 60);
   });
 
   test('"distracted" rating subtracts 3 min', async ({ page }) => {
     await rateSession(page, 'distracted', 600);
-    const next = await page.evaluate(async () => (await import('./state.js')).state.nextFocusDuration);
+    const next = await page.evaluate(async () => (await import('./js/state.js')).state.nextFocusDuration);
     expect(next).toBe(7 * 60);
   });
 
   test('"distracted" rating never goes below 2 min', async ({ page }) => {
     await rateSession(page, 'distracted', 120); // 2 min session — already at floor
-    const next = await page.evaluate(async () => (await import('./state.js')).state.nextFocusDuration);
+    const next = await page.evaluate(async () => (await import('./js/state.js')).state.nextFocusDuration);
     expect(next).toBeGreaterThanOrEqual(2 * 60);
   });
 
@@ -281,8 +281,8 @@ test.describe('Persistence — localStorage survives reload', () => {
 
   test('session history survives page reload', async ({ page }) => {
     await page.evaluate(async () => {
-      const { state } = await import('./state.js');
-      const { saveSessions } = await import('./storage.js');
+      const { state } = await import('./js/state.js');
+      const { saveSessions } = await import('./js/storage.js');
       state.sessions = [{ rating: 'good', length: 120, timestamp: new Date().toISOString() }];
       saveSessions();
     });
@@ -393,15 +393,15 @@ test.describe('Timer state machine', () => {
   test('decision-active class blocks timer shortcuts', async ({ page }) => {
     // Directly show rating to trigger decision-active
     await page.evaluate(async () => {
-      const { state } = await import('./state.js');
-      const ui = await import('./ui.js');
+      const { state } = await import('./js/state.js');
+      const ui = await import('./js/ui.js');
       state.pendingRating = true;
       ui.showRating();
     });
     await expect(page.locator('body')).toHaveClass(/decision-active/);
     // Space should NOT start the timer
     await page.keyboard.press('Space');
-    const rafId = await page.evaluate(async () => (await import('./state.js')).state.rafId);
+    const rafId = await page.evaluate(async () => (await import('./js/state.js')).state.rafId);
     expect(rafId).toBeFalsy();
   });
 
@@ -421,7 +421,7 @@ test.describe('Timer state machine', () => {
   test('restart progression resets timer to warmup duration', async ({ page }) => {
     // Simulate having progressed
     await page.evaluate(async () => {
-      const { state } = await import('./state.js');
+      const { state } = await import('./js/state.js');
       state.duration = 1800; state.remaining = 1800;
       state.nextFocusDuration = 1800;
     });
@@ -434,8 +434,8 @@ test.describe('Timer state machine', () => {
 
   test('clear history empties session list', async ({ page }) => {
     await page.evaluate(async () => {
-      const { state } = await import('./state.js');
-      const { saveSessions } = await import('./storage.js');
+      const { state } = await import('./js/state.js');
+      const { saveSessions } = await import('./js/storage.js');
       state.sessions = [
         { rating: 'good', length: 120, timestamp: new Date().toISOString() },
         { rating: 'flow', length: 240, timestamp: new Date().toISOString() },
@@ -595,8 +595,8 @@ test.describe('Cross-tab storage sync', () => {
 
     // Add a session via storage event from tab 2
     await page2.evaluate(async () => {
-      const { state } = await import('./state.js');
-      const { saveSessions } = await import('./storage.js');
+      const { state } = await import('./js/state.js');
+      const { saveSessions } = await import('./js/storage.js');
       state.sessions = [{ rating: 'flow', length: 300, timestamp: new Date().toISOString() }];
       saveSessions();
       // Trigger storage event in the other tab by re-setting the same key
@@ -615,5 +615,54 @@ test.describe('Cross-tab storage sync', () => {
 
     await expect(page.locator('#sessionList li:not(.empty-state)')).toHaveCount(1);
     await page2.close();
+  });
+});
+
+// ─── Restart banner decision lock ────────────────────────────────────────────
+
+test.describe('Restart banner decision lock', () => {
+  async function seedState(page, { pendingRating, rating }) {
+    await page.route('**/sw.js', r => r.fulfill({ status: 404, body: '' }));
+    await page.goto('/');
+    await page.evaluate(({ pendingRating, rating }) => {
+      localStorage.clear();
+      localStorage.setItem('pp_settings_v1', JSON.stringify({ autoRestartMinutes: 30 }));
+      localStorage.setItem('pp_sessions_v1', JSON.stringify([{ rating, auto: false, length: 1500, timestamp: '2026-07-30T12:00:00.000Z' }]));
+      localStorage.setItem('pp_state_v1', JSON.stringify({ duration: 1500, remaining: 1500, nextFocusDuration: 1500, endAt: null, isRunning: false, mode: 'focus', pendingRating }));
+      localStorage.setItem('pp_tasks_v1', '[]');
+      localStorage.setItem('pp_onboarding_dismissed', '1');
+    }, { pendingRating, rating });
+    await page.reload();
+    await page.waitForLoadState('networkidle');
+  }
+
+  test('banner armed: toggle locked, Continue unlocks and starts, pause keeps banner gone', async ({ page }) => {
+    await seedState(page, { pendingRating: false, rating: 'focused' });
+
+    // Armed: banner visible, controls dimmed and locked
+    await expect(page.locator('#restartBanner')).toBeVisible();
+    await expect(page.locator('body')).toHaveClass(/decision-active/);
+    await expect(page.locator('.controls')).toHaveCSS('opacity', '0.4');
+    await page.click('#toggleBtn');
+    await expect(page.locator('#toggleBtn')).toHaveText(/Start/);
+
+    // Continue: unlocks, dismisses banner, starts the timer
+    await page.click('#restartBannerContinue');
+    await expect(page.locator('#restartBanner')).toBeHidden();
+    await expect(page.locator('body')).not.toHaveClass(/decision-active/);
+    await expect(page.locator('#toggleBtn')).toHaveText(/Pause/);
+
+    // Pause mid-session: reminder stays dismissed
+    await page.click('#toggleBtn');
+    await expect(page.locator('#toggleBtn')).toHaveText(/Start/);
+    await expect(page.locator('#restartBanner')).toBeHidden();
+  });
+
+  test('unrated reload: rating prompt is the only decision, no stacked banner', async ({ page }) => {
+    await seedState(page, { pendingRating: true, rating: null });
+
+    await expect(page.locator('#rating')).toBeVisible();
+    await expect(page.locator('#restartBanner')).toBeHidden();
+    await expect(page.locator('body')).toHaveClass(/decision-active/);
   });
 });

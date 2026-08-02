@@ -103,10 +103,6 @@ button {
   padding: var(--space-xs) var(--space-md);
   font-size: 13px;
 }
-.btn-icon-sm {
-  padding: var(--space-sm);
-}
-
 .icon-only i {
   font-size: 20px;
 }

@@ -4,7 +4,7 @@ import {
   loadSettings, saveSettings,
   loadSessions,
   loadTasks,
-  loadTimerState, saveTimerState,
+  loadTimerState,
   isOnboardingDismissed, dismissOnboarding
 } from './storage.js';
 import { initTheme, setTheme } from './themes.js';
@@ -12,9 +12,9 @@ import {
   el, render, updateToggleBtn,
   showRating, renderSessions, renderTasks,
   applyCardSettings, applyTimerSize,
-  populateSettingsForm, showToast,
+  populateSettingsForm,
 } from './ui.js';
-import { start, reset, onTimerComplete } from './timer.js';
+import { start, onTimerComplete } from './timer.js';
 import { setupEventListeners } from './events.js';
 
 // ─── Initialization ──────────────────────────────────────────────────────────
