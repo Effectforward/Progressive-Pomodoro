@@ -10,6 +10,14 @@
   <meta name="apple-mobile-web-app-title" content="ProgPomo">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍅</text></svg>">
   <meta name="google-site-verification" content="44fijCSth2Cx5qbQKrUE63WA5I7UQBFHEsbyLA3JrrY" />
+  <script>
+    try {
+      if (!localStorage.getItem('pp_landing_seen') &&
+          !window.matchMedia('(display-mode: standalone)').matches) {
+        location.replace('landing.html');
+      }
+    } catch (e) {}
+  </script>
   <meta name="description" content="Free adaptive focus timer PWA using the Progressive Pomodoro technique. Start with a 2-minute warm-up, rate your focus, and build longer deep-work sessions.">
   <meta property="og:title" content="Progressive Pomodoro">
   <meta property="og:description" content="Adaptive focus timer PWA. Start with 2 min, rate your focus, build deeper work sessions over time.">

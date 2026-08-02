@@ -4,6 +4,7 @@ import fs from 'node:fs';
 test.beforeEach(async ({ page }) => {
   // Block SW registration so stale caches never interfere
   await page.route('**/sw.js', route => route.fulfill({ status: 404, body: '' }));
+  await page.addInitScript(() => localStorage.setItem('pp_landing_seen', '1'));
   await page.goto('/');
   await page.evaluate(async () => {
     localStorage.clear();

@@ -8,6 +8,7 @@ import { test, expect } from '@playwright/test';
 
 async function freshPage(page) {
   await page.route('**/sw.js', r => r.fulfill({ status: 404, body: '' }));
+  await page.addInitScript(() => localStorage.setItem('pp_landing_seen', '1'));
   await page.goto('/');
   await page.evaluate(() => localStorage.clear());
   await page.goto('/');
@@ -623,6 +624,7 @@ test.describe('Cross-tab storage sync', () => {
 test.describe('Restart banner decision lock', () => {
   async function seedState(page, { pendingRating, rating }) {
     await page.route('**/sw.js', r => r.fulfill({ status: 404, body: '' }));
+    await page.addInitScript(() => localStorage.setItem('pp_landing_seen', '1'));
     await page.goto('/');
     await page.evaluate(({ pendingRating, rating }) => {
       localStorage.clear();
