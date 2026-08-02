@@ -447,6 +447,14 @@ test('keyboard r resets timer', async ({ page }) => {
   await expect(page.locator('#time')).toHaveText('02:00');
 });
 
+test('ctrl+r does not reset timer (browser refresh passes through)', async ({ page }) => {
+  await page.click('#toggleBtn');
+  await page.waitForTimeout(1000);
+  await page.keyboard.press('Control+r');
+  await expect(page.locator('#toggleBtn')).toContainText('Pause');
+  await expect(page.locator('#time')).not.toHaveText('02:00');
+});
+
 test('settings save persists timer duration', async ({ page }) => {
   await page.click('#settingsBtn');
   await page.waitForSelector('#settingsModal:not(.hidden)', { state: 'visible' });

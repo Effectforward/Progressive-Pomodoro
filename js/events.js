@@ -397,6 +397,7 @@ export function setupEventListeners() {
     if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
 
     if (document.body.classList.contains('decision-active')) return;
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
 
     if (e.key === ' ' || e.key === 'Enter') {
       e.preventDefault();
