@@ -1,6 +1,6 @@
 // Cache version — bump this whenever you change any app files.
 // The activate handler automatically cleans up old caches.
-const CACHE_NAME = 'progpomo-v30';
+const CACHE_NAME = 'progpomo-v31';
 
 // Static assets that never change between deploys (fonts, icons).
 // These are served cache-first for instant loading.
@@ -29,6 +29,7 @@ const SHELL_ASSETS = [
   './js/timer.js',
   './js/events.js',
   './js/beats.js',
+  './js/sounds.js',
   './manifest.json',
 ];
 

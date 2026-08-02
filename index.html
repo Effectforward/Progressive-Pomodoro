@@ -383,6 +383,21 @@
             <!-- Audio tab -->
             <div class="settings-panel" data-settings-panel="audio">
               <fieldset class="settings-fieldset">
+                <legend>Alarm</legend>
+                <div class="field-row">
+                  <span class="select-wrap">
+                    <select id="alarmSoundSelect">
+                      <option value="chord">Soft chord</option>
+                      <option value="bell">Gentle bell</option>
+                      <option value="knock">Wooden knock</option>
+                      <option value="chimes">Wind chimes</option>
+                      <option value="marimba">Marimba duet</option>
+                    </select>
+                  </span>
+                  <button type="button" id="alarmPreviewBtn" class="secondary-btn btn-sm" title="Preview alarm sound"><i class="ph ph-play"></i> Play</button>
+                </div>
+              </fieldset>
+              <fieldset class="settings-fieldset">
                 <legend>Binaural Beats</legend>
                 <div class="card-setting-row">
                   <label class="toggle-label" title="Auto-start binaural beats with focus session">

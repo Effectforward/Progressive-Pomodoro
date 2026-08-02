@@ -17,9 +17,9 @@ import {
 import {
   toggleTimer, reset, start, stopTimer,
   submitRating, startNextFocus, takeBreakThenPick,
-  restartProgression, doRestartProgression, clearHistory, doClearHistory
-} from './timer.js';
+  restartProgression, doRestartProgression, clearHistory, doClearHistory} from './timer.js';
 import * as beats from './beats.js';
+import { playAlarm } from './sounds.js';
 
 export function setupEventListeners() {
   // Timer controls
@@ -163,6 +163,12 @@ export function setupEventListeners() {
   el.settingsForm?.addEventListener('submit', (e) => {
     e.preventDefault();
     saveSettingsForm();
+  });
+
+  el.alarmPreviewBtn?.addEventListener('click', () => {
+    try {
+      playAlarm(el.alarmSoundSelect?.value || 'chord');
+    } catch (e) { showToast('Sound unavailable on this device.'); }
   });
 
   // Settings tabs (sidebar + top — unified selector)
@@ -442,6 +448,7 @@ export function saveSettingsForm() {
 
   state.settings.warmupDuration = warmupMin * 60;
   state.settings.shortBreak = breakMin * 60;
+  if (el.alarmSoundSelect) state.settings.alarmSound = el.alarmSoundSelect.value;
 
   if (el.autoRestartSelect) {
     if (el.autoRestartSelect.value === 'custom') {

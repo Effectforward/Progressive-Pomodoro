@@ -19,6 +19,8 @@ export const el = {
   settingsForm: document.getElementById('settingsForm'),
   warmupInput: document.getElementById('warmupInput'),
   breakInput: document.getElementById('breakInput'),
+  alarmSoundSelect: document.getElementById('alarmSoundSelect'),
+  alarmPreviewBtn: document.getElementById('alarmPreviewBtn'),
   settingsCloseBtn: document.getElementById('settingsCloseBtn'),
   taskInput: document.getElementById('taskInput'),
   addTaskBtn: document.getElementById('addTaskBtn'),
@@ -309,6 +311,7 @@ export function populateSettingsForm() {
   if (!el.warmupInput || !el.breakInput) return;
   el.warmupInput.value = Math.round(state.settings.warmupDuration / 60);
   el.breakInput.value = Math.round(state.settings.shortBreak / 60);
+  if (el.alarmSoundSelect) el.alarmSoundSelect.value = state.settings.alarmSound || 'chord';
 
   if (el.autoRestartSelect) {
     const val = state.settings.autoRestartMinutes;

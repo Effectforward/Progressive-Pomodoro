@@ -6,6 +6,7 @@ import {
   renderSessions, showToast, updateBeatsToggle,
 } from './ui.js';
 import * as beats from './beats.js';
+import { playAlarm } from './sounds.js';
 
 export function toggleTimer() {
   if (document.body.classList.contains('decision-active')) return;
@@ -128,7 +129,9 @@ document.addEventListener('visibilitychange', () => {
 
 export function onTimerComplete() {
   updateToggleBtn();
-  playAlarm();
+  try {
+    playAlarm(state.settings.alarmSound || 'chord');
+  } catch (e) { showToast('Sound unavailable on this device.'); }
   notifyComplete();
   
   // Stop binaural beats on session complete
@@ -290,39 +293,6 @@ export function doClearHistory() {
 }
 
 // ─── Alarm + notification ──────────────────────────────────────────────────
-
-// Shared AudioContext for the alarm (created inside a user gesture on first play).
-let _audioCtx = null;
-
-function playAlarm() {
-  try {
-    if (!_audioCtx) _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    if (_audioCtx.state === 'suspended') _audioCtx.resume();
-    const ctx = _audioCtx;
-    // Soft, grounding chord in a low register (F major open voicing).
-    // Low frequencies + slow attack avoid a jarring startle response.
-    const freqs = [87.31, 130.81, 174.61, 220.00]; // F2, C3, F3, A3
-
-    freqs.forEach((freq, i) => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.value = freq;
-
-      const t = ctx.currentTime;
-      gain.gain.setValueAtTime(0, t);
-      const maxVolume = 0.4 * (1 / (i + 1)); // lower freqs louder, higher quieter
-      gain.gain.linearRampToValueAtTime(maxVolume, t + 1.5); // 1.5s swell
-      gain.gain.exponentialRampToValueAtTime(0.001, t + 6.0);
-
-      osc.connect(gain).connect(ctx.destination);
-      osc.start(t);
-      osc.stop(t + 6.5);
-    });
-
-    // Don't close the shared context; let it idle for the next alarm.
-  } catch (e) { showToast('Sound unavailable on this device.'); }
-}
 
 function notifyComplete() {
   try {

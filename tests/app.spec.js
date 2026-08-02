@@ -463,6 +463,21 @@ test('settings save persists timer duration', async ({ page }) => {
   await expect(page.locator('#time')).toHaveText('05:00');
 });
 
+test('alarm sound persists from settings', async ({ page }) => {
+  await page.click('#settingsBtn');
+  await page.waitForSelector('#settingsModal:not(.hidden)', { state: 'visible' });
+  await page.click('.settings-tab-btn[data-settings-tab="audio"]');
+  await expect(page.locator('#alarmSoundSelect option')).toHaveCount(5);
+  await page.selectOption('#alarmSoundSelect', 'marimba');
+  await page.click('#settingsSaveBtn');
+  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('pp_settings_v1')).alarmSound);
+  expect(saved).toBe('marimba');
+  await page.click('#settingsBtn');
+  await page.waitForSelector('#settingsModal:not(.hidden)', { state: 'visible' });
+  await page.click('.settings-tab-btn[data-settings-tab="audio"]');
+  await expect(page.locator('#alarmSoundSelect')).toHaveValue('marimba');
+});
+
 test('theme picker buttons are clickable', async ({ page }) => {
   await page.click('#settingsBtn');
   await page.waitForSelector('#settingsModal:not(.hidden)', { state: 'visible' });

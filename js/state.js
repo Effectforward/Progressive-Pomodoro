@@ -14,6 +14,7 @@ export const DEFAULT_SETTINGS = {
   warmupDuration: 2 * 60,
   shortBreak: 5 * 60,
   autoRestartMinutes: 0,
+  alarmSound: 'chord', // 'chord'|'bell'|'knock'|'chimes'|'marimba'
   // Appearance
   timerSize: 'regular',
   githubVisible: true,
