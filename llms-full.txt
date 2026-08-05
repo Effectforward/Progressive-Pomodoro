@@ -71,4 +71,4 @@ Binaural beats play a slightly different frequency in each ear, and your brain p
 ProgPomo is built by Muhammad Ibraheem, an IT student and developer who loves programming and Linux. It is open source under the GPLv3 license. ProgPomo is based on the Progressive Pomodoro technique by Mike Rapadas.
 
 - GitHub: https://github.com/Effectforward
-- LinkedIn: https://www.linkedin.com/in/muhammad-ibraheem-a7bbb9305/
+- LinkedIn: https://www.linkedin.com/in/effectforward/
