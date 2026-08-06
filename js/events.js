@@ -22,6 +22,19 @@ import * as beats from './beats.js';
 import { playAlarm } from './sounds.js';
 
 export function setupEventListeners() {
+  // Ask for notification permission on the first interaction — the earliest
+  // Chrome permits (notification prompts require a user gesture), so it beats
+  // the "start timer" moment for a fresh open.
+  const askPermissionOnce = () => {
+    if ('Notification' in window && Notification.permission === 'default') {
+      try { Notification.requestPermission(); } catch (e) { /* unavailable */ }
+    }
+    document.removeEventListener('pointerdown', askPermissionOnce);
+    document.removeEventListener('keydown', askPermissionOnce);
+  };
+  document.addEventListener('pointerdown', askPermissionOnce);
+  document.addEventListener('keydown', askPermissionOnce);
+
   // Timer controls
   el.toggleBtn?.addEventListener('click', toggleTimer);
   el.resetBtn?.addEventListener('click', reset);

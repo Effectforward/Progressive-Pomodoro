@@ -123,6 +123,60 @@ test.describe('background notify fallback', () => {
     });
     expect(result).toBe(true);
   });
+
+  test('notifyComplete routes through the service worker', async ({ page }) => {
+    const result = await page.evaluate(async () => {
+      const calls = [];
+      Object.defineProperty(window, 'Notification', {
+        value: { permission: 'granted' },
+        configurable: true,
+      });
+      Object.defineProperty(navigator, 'serviceWorker', {
+        value: {
+          ready: Promise.resolve({
+            showNotification: (title, options) => { calls.push({ title, options }); return Promise.resolve(); },
+          }),
+        },
+        configurable: true,
+      });
+      const timer = await import('./js/timer.js');
+      timer.notifyComplete();
+      await new Promise(r => setTimeout(r, 50));
+      return calls;
+    });
+    expect(result).toHaveLength(1);
+    expect(result[0].title).toBe('Session complete');
+    expect(result[0].options.body).toContain('Rate your focus');
+  });
+
+  test('requests permission once on first interaction', async ({ page, context }) => {
+    const p = await context.newPage();
+    await p.route('**/sw.js', r => r.fulfill({ status: 404, body: '' }));
+    await p.addInitScript(() => {
+      localStorage.setItem('pp_landing_seen', '1');
+      window.__permCalls = 0;
+      Object.defineProperty(window, 'Notification', {
+        value: {
+          permission: 'default',
+          requestPermission: () => { window.__permCalls++; return Promise.resolve('granted'); },
+        },
+        configurable: true,
+      });
+    });
+    await p.goto('/');
+    const dispatch = () => p.evaluate(() => {
+      document.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
+    });
+    await dispatch();
+    await p.waitForTimeout(50);
+    const afterFirst = await p.evaluate(() => window.__permCalls);
+    await dispatch();
+    await p.waitForTimeout(50);
+    const afterSecond = await p.evaluate(() => window.__permCalls);
+    await p.close();
+    expect(afterFirst).toBe(1);
+    expect(afterSecond).toBe(1);
+  });
 });
 
 test('rating blocked while timer running', async ({ page }) => {

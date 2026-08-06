@@ -335,13 +335,14 @@ export function doClearHistory() {
 
 // ─── Alarm + notification ──────────────────────────────────────────────────
 
-function notifyComplete() {
+export function notifyComplete() {
   try {
-    if ('Notification' in window && Notification.permission === 'default') {
-      Notification.requestPermission();
-    }
-    if (Notification && Notification.permission === 'granted') {
-      new Notification('Session complete', { body: 'Rate your focus, then tap to continue', silent: true });
+    if (!('Notification' in window) || Notification.permission !== 'granted') return;
+    const options = { body: 'Rate your focus, then tap to continue', silent: true };
+    if (navigator.serviceWorker?.ready) {
+      navigator.serviceWorker.ready.then(reg => reg.showNotification('Session complete', options));
+    } else {
+      new Notification('Session complete', options);
     }
   } catch (e) { /* notifications unavailable */ }
 }
