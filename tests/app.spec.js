@@ -794,6 +794,44 @@ test('headphone toggle toggles beats on/off', async ({ page }) => {
   await expect(toggle).toHaveAttribute('aria-pressed', 'false');
 });
 
+test('beats rebuild audio graph after the context is suspended in background', async ({ page }) => {
+  const result = await page.evaluate(async () => {
+    let instances = [];
+    let oscCount = 0;
+    class FakeCtx {
+      constructor() {
+        this.state = 'suspended';
+        this.currentTime = 0;
+        this.destination = {};
+        instances.push(this);
+      }
+      resume() { this.state = 'running'; return Promise.resolve(); }
+      createOscillator() {
+        oscCount++;
+        return { type: 'sine', frequency: { value: 0, linearRampToValueAtTime() {} }, connect() { return this; }, start() {}, stop() {}, disconnect() {} };
+      }
+      createStereoPanner() { return { pan: { value: 0 }, connect() { return this; } }; }
+      createGain() { return { gain: { value: 0, setValueAtTime() {}, linearRampToValueAtTime() {} }, connect() { return this; }, disconnect() {} }; }
+    }
+    window.AudioContext = FakeCtx;
+    const beats = await import('./js/beats.js');
+    beats.start(200, 214, 0.5);
+    const afterStart = oscCount;
+    instances[instances.length - 1].state = 'suspended';
+    Object.defineProperty(document, 'visibilityState', { value: 'visible', configurable: true });
+    document.dispatchEvent(new Event('visibilitychange'));
+    await new Promise(r => setTimeout(r, 20));
+    const afterVisible = oscCount;
+    document.dispatchEvent(new Event('visibilitychange'));
+    await new Promise(r => setTimeout(r, 20));
+    const afterSecondEvent = oscCount;
+    return { afterStart, rebuilt: afterVisible === afterStart + 2, noRebuildWhenRunning: afterSecondEvent === afterVisible };
+  });
+  expect(result.afterStart).toBe(2);
+  expect(result.rebuilt).toBe(true);
+  expect(result.noRebuildWhenRunning).toBe(true);
+});
+
 test('chevron opens/closes popover', async ({ page }) => {
   const chevron = page.locator('#beatsChevron');
   const popover = page.locator('#beatsPopover');

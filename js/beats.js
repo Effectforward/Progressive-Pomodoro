@@ -180,3 +180,20 @@ export function setVolume(vol) {
   const t = _audioCtx.currentTime;
   _gainNode.gain.linearRampToValueAtTime(vol, t + 0.05);
 }
+
+// Chrome suspends the AudioContext when the tab is hidden, and a bare resume()
+// leaves silence because the scheduled start/stop times are already in the
+// past. When we come back while beats should still be playing, rebuild the
+// graph so the sound actually returns.
+export function resumeIfNeeded() {
+  if (document.visibilityState !== 'visible') return false;
+  if (!_isPlaying) return false;
+  if (_audioCtx && _audioCtx.state === 'running') return false;
+  const left = _leftOsc?.frequency.value ?? 200;
+  const right = _rightOsc?.frequency.value ?? 214;
+  const vol = _gainNode?.gain.value ?? 0.5;
+  start(left, right, vol);
+  return true;
+}
+
+document.addEventListener('visibilitychange', resumeIfNeeded);
