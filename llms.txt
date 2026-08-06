@@ -4,12 +4,12 @@
 
 ## Progressive Pomodoro
 
-- [App](https://effectforward.github.io/Progressive-Pomodoro/): Free adaptive focus timer PWA. Open in any browser, no install.
-- [Overview](https://effectforward.github.io/Progressive-Pomodoro/landing.html): What the Progressive Pomodoro technique is and how the timer works.
-- [What is the technique](https://effectforward.github.io/Progressive-Pomodoro/progressive-pomodoro-technique.html): The full guide to the method and where it comes from.
-- [Rating system](https://effectforward.github.io/Progressive-Pomodoro/progressive-pomodoro-rating-system.html): How Flow, Focused, Fine, and Distracted ratings change your next session.
-- [Classic vs progressive](https://effectforward.github.io/Progressive-Pomodoro/progressive-pomodoro-vs-classic.html): How the two Pomodoro methods compare.
-- [About](https://effectforward.github.io/Progressive-Pomodoro/about.html): About Muhammad Ibraheem, the developer, and the project.
+- [App](https://progpomo.pages.dev/): Free adaptive focus timer PWA. Open in any browser, no install.
+- [Overview](https://progpomo.pages.dev/landing.html): What the Progressive Pomodoro technique is and how the timer works.
+- [What is the technique](https://progpomo.pages.dev/progressive-pomodoro-technique.html): The full guide to the method and where it comes from.
+- [Rating system](https://progpomo.pages.dev/progressive-pomodoro-rating-system.html): How Flow, Focused, Fine, and Distracted ratings change your next session.
+- [Classic vs progressive](https://progpomo.pages.dev/progressive-pomodoro-vs-classic.html): How the two Pomodoro methods compare.
+- [About](https://progpomo.pages.dev/about.html): About Muhammad Ibraheem, the developer, and the project.
 - [Source code](https://github.com/Effectforward/Progressive-Pomodoro): Open source under GPLv3.
 
 ## Key facts

@@ -2,7 +2,7 @@
 
 An adaptive focus timer PWA based on the Progressive Pomodoro technique. Start with a 2-minute warmup, rate your focus after each session, and watch your timer adapt to build deeper work sessions over time.
 
-Try it live: [https://effectforward.github.io/Progressive-Pomodoro/](https://effectforward.github.io/Progressive-Pomodoro/)
+Try it live: [https://progpomo.pages.dev/](https://progpomo.pages.dev/)
 
 ## Features
 

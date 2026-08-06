@@ -2,12 +2,12 @@
 
 Free adaptive focus timer PWA based on the Progressive Pomodoro technique. Start with a 2-minute warm-up, rate each session, and build longer deep-work sessions over time. No ads, no accounts, works offline.
 
-- App: https://effectforward.github.io/Progressive-Pomodoro/
-- Overview: https://effectforward.github.io/Progressive-Pomodoro/landing.html
-- What is the technique: https://effectforward.github.io/Progressive-Pomodoro/progressive-pomodoro-technique.html
-- Rating system: https://effectforward.github.io/Progressive-Pomodoro/progressive-pomodoro-rating-system.html
-- Classic vs progressive: https://effectforward.github.io/Progressive-Pomodoro/progressive-pomodoro-vs-classic.html
-- About: https://effectforward.github.io/Progressive-Pomodoro/about.html
+- App: https://progpomo.pages.dev/
+- Overview: https://progpomo.pages.dev/landing.html
+- What is the technique: https://progpomo.pages.dev/progressive-pomodoro-technique.html
+- Rating system: https://progpomo.pages.dev/progressive-pomodoro-rating-system.html
+- Classic vs progressive: https://progpomo.pages.dev/progressive-pomodoro-vs-classic.html
+- About: https://progpomo.pages.dev/about.html
 - Source code: https://github.com/Effectforward/Progressive-Pomodoro
 
 ## What is the Progressive Pomodoro technique?
