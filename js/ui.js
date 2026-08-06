@@ -223,41 +223,66 @@ export function renderTasks() {
   if (!el.taskList) return;
   el.taskList.innerHTML = '';
   const count = document.getElementById('taskCount');
+  
+  // Progress bar elements
+  const progressWrap = document.getElementById('taskProgressWrap');
+  const progressFill = document.getElementById('taskProgressFill');
+
   if (count) {
     const active = state.tasks.filter(t => !t.completed).length;
     count.textContent = state.tasks.length ? active + ' left' : '';
   }
+
+  // Update progress bar
+  if (progressWrap && progressFill) {
+    if (state.tasks.length > 0) {
+      progressWrap.classList.remove('hidden');
+      const completed = state.tasks.filter(t => t.completed).length;
+      const percentage = (completed / state.tasks.length) * 100;
+      progressFill.style.width = percentage + '%';
+    } else {
+      progressWrap.classList.add('hidden');
+    }
+  }
+
+
   state.tasks.forEach((t, i) => {
     const li = document.createElement('li');
     li.className = 'task-item';
     li.style.setProperty('--i', i);
-    // BUGFIX: previously "set active" wrote into #sessionInfo.textContent,
-    // which destroyed the session-count/level badges permanently. Now it
-    // just highlights the active row instead.
+    li.dataset.taskId = t.id;
+
     if (t.active) li.classList.add('active');
 
+    // ── Left section: checkbox + text ────────────────────────────────────────
     const left = document.createElement('div');
     left.className = 'task-item-left';
+    
     const cb = document.createElement('input');
     cb.type = 'checkbox';
     cb.checked = !!t.completed;
     cb.addEventListener('change', () => { t.completed = cb.checked; saveTasks(); renderTasks(); });
+    
     const span = document.createElement('div');
     span.className = 'task-text';
     span.textContent = t.text;
+
     left.appendChild(cb);
     left.appendChild(span);
 
+    // ── Actions: delete ──────────────────────────────────────────────────────
     const actions = document.createElement('div');
     actions.className = 'task-actions';
     const del = document.createElement('button');
-    del.textContent = '✕';
+    del.innerHTML = '<i class="ph ph-trash"></i>';
     del.setAttribute('aria-label', 'Delete task');
     del.addEventListener('click', () => {
-      state.tasks = state.tasks.filter(x => x.id !== t.id);
+      const taskId = t.id;
+      const deletedIdx = state.tasks.findIndex(x => x.id === taskId);
+      state.tasks = state.tasks.filter(x => x.id !== taskId);
       saveTasks();
       renderTasks();
-      showToast('Task deleted · Undo', { undo: true });
+      showToast('Task deleted', { undo: true });
       const toastEl = document.getElementById('toast');
       if (toastEl) {
         let undone = false;
@@ -266,7 +291,8 @@ export function renderTasks() {
         undoBtn.className = 'toast-undo';
         undoBtn.addEventListener('click', () => {
           undone = true;
-          state.tasks.splice(i, 0, t);
+          // Restore at the saved index (id-based, not stale closure i)
+          state.tasks.splice(deletedIdx, 0, t);
           saveTasks();
           renderTasks();
           toastEl.hidden = true;
@@ -277,6 +303,7 @@ export function renderTasks() {
       }
     });
     actions.appendChild(del);
+
     li.appendChild(left);
     li.appendChild(actions);
     el.taskList.appendChild(li);
