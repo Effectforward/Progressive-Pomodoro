@@ -121,7 +121,7 @@
             <div class="beats-popover-header">
               <span class="beats-popover-title">Binaural Beats</span>
               <label class="beats-toggle-switch" title="Toggle binaural beats">
-                <input type="checkbox" id="beatsPopoverToggle" role="switch" aria-checked="false">
+                <input type="checkbox" id="beatsPopoverToggle" role="switch" aria-checked="false" aria-label="Toggle binaural beats">
                 <span class="beats-toggle-track"></span>
               </label>
             </div>
@@ -136,12 +136,12 @@
             <div class="beats-popover-divider"></div>
             <div class="beats-popover-custom">
               <div class="beats-popover-freq-row">
-                <label class="beats-popover-freq-label">Left ear</label>
+                <label class="beats-popover-freq-label" for="beatsPopLeftFreq">Left ear</label>
                 <input type="number" id="beatsPopLeftFreq" class="beats-popover-freq" min="20" max="2000" step="1" aria-label="Left ear frequency">
                 <span class="beats-popover-freq-unit">Hz</span>
               </div>
               <div class="beats-popover-freq-row">
-                <label class="beats-popover-freq-label">Right ear</label>
+                <label class="beats-popover-freq-label" for="beatsPopRightFreq">Right ear</label>
                 <input type="number" id="beatsPopRightFreq" class="beats-popover-freq" min="20" max="2000" step="1" aria-label="Right ear frequency">
                 <span class="beats-popover-freq-unit">Hz</span>
               </div>
@@ -205,6 +205,7 @@
         <div class="picker-controls">
           <button id="pickerMinus" class="picker-adjust" aria-label="Decrease"><i class="ph ph-minus"></i></button>
           <div class="picker-value">
+            <label for="pickerMinutes" class="sr-only">Focus minutes</label>
             <input type="number" id="pickerMinutes" class="picker-input" min="1" max="180" step="1" aria-label="Focus minutes">
           </div>
           <button id="pickerPlus" class="picker-adjust" aria-label="Increase"><i class="ph ph-plus"></i></button>
@@ -231,6 +232,7 @@
           <span class="card-hint" id="taskCount"></span>
         </div>
         <div class="task-controls">
+          <label for="taskInput" class="sr-only">New task</label>
           <input id="taskInput" placeholder="Add a task, press enter" aria-label="New task" maxlength="500" />
           <button id="addTaskBtn" class="icon-only primary-btn" aria-label="Add task"><i class="ph ph-plus"></i></button>
         </div>
@@ -348,7 +350,7 @@
                 <legend>Card layout</legend>
                 <div class="card-setting-row">
                   <label class="toggle-label" title="Place the timer beside Tasks and History on wide screens">
-                    <input type="checkbox" id="sideBySideLayout" checked>
+                    <input type="checkbox" id="sideBySideLayout" checked aria-label="Side-by-side layout on desktop">
                     <span class="toggle-track"></span>
                   </label>
                   <span class="card-setting-label"><i class="ph ph-columns"></i> Side-by-side layout</span>
@@ -362,28 +364,28 @@
                 <legend>Visible cards</legend>
                 <div class="card-setting-row">
                   <label class="toggle-label" title="Show Tasks card">
-                    <input type="checkbox" id="tasksCardVisible" checked>
+                    <input type="checkbox" id="tasksCardVisible" checked aria-label="Show Tasks card">
                     <span class="toggle-track"></span>
                   </label>
                   <span class="card-setting-label"><i class="ph ph-check-square-offset"></i> Tasks</span>
                 </div>
                 <div class="card-setting-row">
                   <label class="toggle-label" title="Show History card">
-                    <input type="checkbox" id="historyCardVisible" checked>
+                    <input type="checkbox" id="historyCardVisible" checked aria-label="Show History card">
                     <span class="toggle-track"></span>
                   </label>
                   <span class="card-setting-label"><i class="ph ph-clock-counter-clockwise"></i> History</span>
                 </div>
                 <div class="card-setting-row">
                   <label class="toggle-label" title="Show auto-start beats controls in Settings → Audio">
-                    <input type="checkbox" id="showBeatsAutoStart" checked>
+                    <input type="checkbox" id="showBeatsAutoStart" checked aria-label="Show auto-start beats controls">
                     <span class="toggle-track"></span>
                   </label>
                   <span class="card-setting-label"><i class="ph ph-headphones"></i> Beats auto-start control</span>
                 </div>
                 <div class="card-setting-row">
                   <label class="toggle-label" title="Show GitHub link in header">
-                    <input type="checkbox" id="githubVisible" checked>
+                    <input type="checkbox" id="githubVisible" checked aria-label="Show GitHub link in header">
                     <span class="toggle-track"></span>
                   </label>
                   <span class="card-setting-label"><i class="ph ph-github-logo"></i> GitHub link</span>
@@ -396,7 +398,7 @@
               <fieldset class="settings-fieldset">
                 <legend>Alarm</legend>
                 <div class="field-row">
-                  <span class="select-wrap">
+                  <label class="select-wrap">
                     <select id="alarmSoundSelect" aria-label="Alarm sound">
                       <option value="chord">Soft chord</option>
                       <option value="bell">Gentle bell</option>
@@ -404,7 +406,7 @@
                       <option value="chimes">Wind chimes</option>
                       <option value="marimba">Marimba duet</option>
                     </select>
-                  </span>
+                  </label>
                   <button type="button" id="alarmPreviewBtn" class="secondary-btn btn-sm" title="Preview alarm sound"><i class="ph ph-play"></i> Play</button>
                 </div>
               </fieldset>
@@ -412,7 +414,7 @@
                 <legend>Binaural Beats</legend>
                 <div class="card-setting-row">
                   <label class="toggle-label" title="Auto-start binaural beats with focus session">
-                    <input type="checkbox" id="beatsAutoStart">
+                    <input type="checkbox" id="beatsAutoStart" aria-label="Auto-start binaural beats">
                     <span class="toggle-track"></span>
                   </label>
                   <span class="card-setting-label">Auto-start with focus session</span>
@@ -486,6 +488,7 @@
                 <legend>Backup</legend>
                 <button type="button" id="exportSettingsBtn" class="text-btn" title="Download settings as a JSON file"><i class="ph ph-download-simple"></i> Export Settings</button>
                 <button type="button" id="importSettingsBtn" class="text-btn" title="Restore settings from a JSON file"><i class="ph ph-upload-simple"></i> Import Settings</button>
+                <label for="importSettingsFile" class="sr-only">Import settings file</label>
                 <input type="file" id="importSettingsFile" accept=".json,application/json" hidden>
                 <div class="confirm-panel confirm-panel--import hidden" id="importConfirm">
                   <p>Replace your current settings with this file?</p>
