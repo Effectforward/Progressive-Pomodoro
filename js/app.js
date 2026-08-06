@@ -49,10 +49,6 @@ function init() {
     el.pickerMinutes.value = Math.round(state.settings.warmupDuration / 60);
   }
 
-  if (!state.sessions || state.sessions.length === 0) {
-    document.body.classList.add('no-sessions');
-  }
-
   const onboarding = document.getElementById('onboardingOverlay');
   if (onboarding && !isOnboardingDismissed()) {
     onboarding.classList.remove('hidden');

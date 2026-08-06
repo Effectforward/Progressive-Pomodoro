@@ -3,7 +3,7 @@
   <rect width="512" height="512" rx="108" fill="#FDF9F1"/>
 
   <!-- Main Stopwatch Assembly Container -->
-  <g transform="translate(256, 185)">
+  <g transform="translate(256, 273) scale(1.5)">
     
     <!-- LEFT MECHANICAL STOPWATCH BUTTON (Reset - Angled -45°) -->
     <g transform="rotate(-45)">
@@ -186,15 +186,5 @@
 
     <!-- CRYSTAL GLASS SPECULAR REFLECTION ARC -->
     <path d="M -52 -48 A 71 71 0 0 1 52 -48 A 74 74 0 0 0 -52 -48 Z" fill="#FFFFFF" opacity="0.5"/>
-  </g>
-
-  <!-- Typography -->
-  <g transform="translate(256, 360)" font-family="System-UI, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" text-anchor="middle">
-    <text x="0" y="0" font-size="38" font-weight="800" fill="#5C5449" letter-spacing="-0.8px">
-      Progressive
-    </text>
-    <text x="0" y="44" font-size="38" font-weight="800" fill="#F2A2A2" letter-spacing="-0.8px">
-      Pomodoro
-    </text>
   </g>
 </svg>

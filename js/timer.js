@@ -183,14 +183,12 @@ export function onTimerComplete() {
   
   if (state.mode === 'focus') {
     const s = { rating: null, auto: false, length: state.duration, timestamp: new Date().toISOString() };
-    const firstSession = !state.sessions || state.sessions.length === 0;
     state.sessions.unshift(s);
     if (state.sessions.length > 200) state.sessions.length = 200;
     state.pendingRating = true;
     saveSessions();
     saveTimerState();
     renderSessions();
-    if (firstSession) document.body.classList.remove('no-sessions');
     announce('Focus session complete. Rate your focus to continue.');
     showRating();
   } else {

@@ -517,8 +517,8 @@ test('timer size preset changes timer scale', async ({ page }) => {
   await page.waitForSelector('#settingsModal:not(.hidden)', { state: 'visible' });
   await page.click('.timer-size-btn[data-size="xl"]');
   await page.click('#settingsSaveBtn');
-  const zoom = await page.locator('.timer-card').evaluate(el => el.style.zoom);
-  expect(zoom).toBe('1.6');
+  const zoom = await page.locator('#main').evaluate(el => el.style.zoom);
+  expect(zoom).toBe('2');
 });
 
 test('layout picker switches to top tabs', async ({ page }) => {
@@ -615,8 +615,8 @@ test('bottom cards scale with timer size', async ({ page }) => {
   await page.waitForSelector('#settingsModal:not(.hidden)', { state: 'visible' });
   await page.click('.timer-size-btn[data-size="xl"]');
   await page.click('#settingsSaveBtn');
-  const timerZoom = await page.locator('.timer-card').evaluate(el => el.style.zoom);
-  expect(timerZoom).toBe('1.6');
+  const timerZoom = await page.locator('#main').evaluate(el => el.style.zoom);
+  expect(timerZoom).toBe('2');
 });
 
 test('bottom cards reset scale on regular', async ({ page }) => {
@@ -628,8 +628,8 @@ test('bottom cards reset scale on regular', async ({ page }) => {
   await page.waitForSelector('#settingsModal:not(.hidden)', { state: 'visible' });
   await page.click('.timer-size-btn[data-size="regular"]');
   await page.click('#settingsSaveBtn');
-  const timerZoom = await page.locator('.timer-card').evaluate(el => el.style.zoom);
-  expect(timerZoom).toBe('');
+  const timerZoom = await page.locator('#main').evaluate(el => el.style.zoom);
+  expect(timerZoom).toBe('1.25');
 });
 
 test('task delete shows undo toast', async ({ page }) => {
@@ -930,9 +930,9 @@ test('timer size uses CSS zoom property not transform', async ({ page }) => {
   await page.waitForSelector('#settingsModal:not(.hidden)', { state: 'visible' });
   await page.click('.timer-size-btn[data-size="xl"]');
   await page.click('#settingsSaveBtn');
-  const zoom = await page.locator('.timer-card').evaluate(el => el.style.zoom);
+  const zoom = await page.locator('#main').evaluate(el => el.style.zoom);
   const transform = await page.locator('.timer-card').evaluate(el => el.style.transform);
-  expect(zoom).toBe('1.6');
+  expect(zoom).toBe('2');
   expect(transform).toBe('');
 });
 

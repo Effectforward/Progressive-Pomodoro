@@ -263,7 +263,7 @@
           <!-- Sidebar tab bar (visible in sidebar mode) -->
           <nav class="settings-tabs settings-tabs-sidebar" aria-label="Settings sections">
             <button type="button" class="settings-tab-btn active" data-settings-tab="timer"><i class="ph ph-timer"></i> Timer</button>
-            <button type="button" class="settings-tab-btn" data-settings-tab="theme"><i class="ph ph-palette"></i> Theme</button>
+            <button type="button" class="settings-tab-btn" data-settings-tab="theme"><i class="ph ph-layout"></i> Layout</button>
             <button type="button" class="settings-tab-btn" data-settings-tab="cards"><i class="ph ph-cards"></i> Cards</button>
             <button type="button" class="settings-tab-btn" data-settings-tab="audio"><i class="ph ph-headphones"></i> Audio</button>
             <button type="button" class="settings-tab-btn" data-settings-tab="data"><i class="ph ph-database"></i> Manage</button>
@@ -272,7 +272,7 @@
           <!-- Top tab bar (visible in top-tabs mode) -->
           <nav class="settings-tabs settings-tabs-top" aria-label="Settings sections">
             <button type="button" class="settings-tab-btn active" data-settings-tab="timer">Timer</button>
-            <button type="button" class="settings-tab-btn" data-settings-tab="theme">Theme</button>
+            <button type="button" class="settings-tab-btn" data-settings-tab="theme">Layout</button>
             <button type="button" class="settings-tab-btn" data-settings-tab="cards">Cards</button>
             <button type="button" class="settings-tab-btn" data-settings-tab="audio">Audio</button>
             <button type="button" class="settings-tab-btn" data-settings-tab="data">Manage</button>
@@ -342,6 +342,16 @@
                   <button type="button" class="layout-option" data-layout="top">
                     <i class="ph ph-rows"></i> Top tabs
                   </button>
+                </div>
+              </fieldset>
+              <fieldset class="settings-fieldset">
+                <legend>Card layout</legend>
+                <div class="card-setting-row">
+                  <label class="toggle-label" title="Place the timer beside Tasks and History on wide screens">
+                    <input type="checkbox" id="sideBySideLayout" checked>
+                    <span class="toggle-track"></span>
+                  </label>
+                  <span class="card-setting-label"><i class="ph ph-columns"></i> Side-by-side layout</span>
                 </div>
               </fieldset>
             </div>

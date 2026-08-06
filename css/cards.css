@@ -12,14 +12,26 @@
   pointer-events: auto;
 }
 
-body.no-sessions #historyCard {
-  display: none;
-}
-
 @media(min-width: 768px) {
-  .bottom-grid {
+  body:not(.split-layout) .bottom-grid {
     grid-template-columns: 1fr 1fr;
   }
+}
+
+body.split-layout #main {
+  display: grid;
+  grid-template-columns: minmax(0, 440px) minmax(0, 1fr);
+  gap: var(--space-xl);
+  align-items: start;
+}
+
+body.split-layout .timer-card {
+  margin: 0;
+  max-width: none;
+}
+
+body.split-layout .bottom-grid {
+  grid-template-columns: 1fr;
 }
 
 .glass-card {

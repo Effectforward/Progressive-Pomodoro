@@ -491,6 +491,7 @@ export function saveSettingsForm() {
   // Card customization
   state.settings.tasksCardVisible   = el.tasksCardVisible?.checked !== false;
   state.settings.historyCardVisible = el.historyCardVisible?.checked !== false;
+  state.settings.sideBySideLayout   = el.sideBySideLayout?.checked !== false;
   state.settings.showBeatsAutoStart = el.showBeatsAutoStart?.checked !== false;
 
   // Audio settings

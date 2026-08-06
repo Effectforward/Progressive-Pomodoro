@@ -22,6 +22,7 @@ export const DEFAULT_SETTINGS = {
   // Card customization
   tasksCardVisible: true,
   historyCardVisible: true,
+  sideBySideLayout: true,
   // Binaural beats
   beatsLeftFreq: 340,
   beatsRightFreq: 380,

@@ -39,7 +39,7 @@ test.describe('BUG-1 — Timer size overlap', () => {
     await freshPage(page);
     const timerBox  = await page.locator('.timer-card').boundingBox();
     const gridBox   = await page.locator('.bottom-grid').boundingBox();
-    expect(gridBox.y).toBeGreaterThanOrEqual(timerBox.y + timerBox.height - 2);
+    expect(gridBox.x).toBeGreaterThanOrEqual(timerBox.x + timerBox.width - 2);
   });
 
   test('XL size: timer card does not overlap bottom-grid', async ({ page }) => {
@@ -51,8 +51,7 @@ test.describe('BUG-1 — Timer size overlap', () => {
 
     const timerBox = await page.locator('.timer-card').boundingBox();
     const gridBox  = await page.locator('.bottom-grid').boundingBox();
-    const gap = gridBox.y - (timerBox.y + timerBox.height);
-    expect(gap, `Expected no overlap at XL, got gap=${gap}px`).toBeGreaterThanOrEqual(0);
+    expect(gridBox.x, `Expected grid right of timer, got timer=${JSON.stringify(timerBox)} grid=${JSON.stringify(gridBox)}`).toBeGreaterThanOrEqual(timerBox.x + timerBox.width - 2);
   });
 
   test('compact size: timer card does not overlap bottom-grid', async ({ page }) => {
@@ -64,7 +63,7 @@ test.describe('BUG-1 — Timer size overlap', () => {
 
     const timerBox = await page.locator('.timer-card').boundingBox();
     const gridBox  = await page.locator('.bottom-grid').boundingBox();
-    expect(gridBox.y).toBeGreaterThanOrEqual(timerBox.y + timerBox.height - 2);
+    expect(gridBox.x).toBeGreaterThanOrEqual(timerBox.x + timerBox.width - 2);
   });
 
   test('bottom-grid is NOT scaled when timer size is XL', async ({ page }) => {

@@ -45,6 +45,7 @@ export const el = {
   historyCard: document.getElementById('historyCard'),
   tasksCardVisible: document.getElementById('tasksCardVisible'),
   historyCardVisible: document.getElementById('historyCardVisible'),
+  sideBySideLayout: document.getElementById('sideBySideLayout'),
   showBeatsAutoStart: document.getElementById('showBeatsAutoStart'),
   // Settings tabs
   settingsBody: document.querySelector('.settings-body'),
@@ -57,8 +58,8 @@ export const el = {
   layoutPickerBtns: document.querySelectorAll('.layout-option'),
 
   githubVisible: document.getElementById('githubVisible'),
-  // Timer card (for size transform)
-  timerCard: document.querySelector('.timer-card'),
+  // Main layout (for size transform)
+  main: document.getElementById('main'),
   // Binaural beats
   timerDisplay: document.getElementById('timerDisplay'),
   beatsToggle: document.getElementById('beatsToggle'),
@@ -190,10 +191,6 @@ const RATING_LABELS = { flow: 'Flow', focused: 'Focused', good: 'Fine', distract
 export function renderSessions() {
   if (!el.sessionList) return;
   el.sessionList.innerHTML = '';
-  // Single source of truth: any session lifts the first-run disclosure.
-  if (state.sessions && state.sessions.length > 0) {
-    document.body.classList.remove('no-sessions');
-  }
   if (!state.sessions || state.sessions.length === 0) {
     const li = document.createElement('li');
     li.className = 'empty-state';
@@ -338,6 +335,7 @@ export function populateSettingsForm() {
   // Card customization
   if (el.tasksCardVisible) el.tasksCardVisible.checked = state.settings.tasksCardVisible !== false;
   if (el.historyCardVisible) el.historyCardVisible.checked = state.settings.historyCardVisible !== false;
+  if (el.sideBySideLayout) el.sideBySideLayout.checked = state.settings.sideBySideLayout !== false;
   if (el.showBeatsAutoStart) el.showBeatsAutoStart.checked = state.settings.showBeatsAutoStart !== false;
 
   // Settings layout
@@ -354,12 +352,15 @@ export function populateSettingsForm() {
 export function applyCardSettings() {
   const s = state.settings;
 
+  // Desktop layout: split (timer beside cards) vs stacked
+  document.body.classList.toggle('split-layout', s.sideBySideLayout !== false);
+
   // Tasks card visibility
   if (el.tasksCard) {
     el.tasksCard.style.display = s.tasksCardVisible !== false ? '' : 'none';
   }
 
-  // History card visibility (respects existing no-sessions hiding too)
+  // History card visibility
   if (el.historyCard) {
     el.historyCard.dataset.settingVisible = s.historyCardVisible !== false ? 'true' : 'false';
     if (s.historyCardVisible === false) {
@@ -390,13 +391,13 @@ export function showToast(msg, { undo = false } = {}) {
    _toastTimer = setTimeout(() => { t.hidden = true; _toastHasUndo = false; }, 6000);
 }
 
-const TIMER_SIZE_MAP = { compact: 0.7, regular: 1.0, large: 1.3, xl: 1.6 };
+const TIMER_SIZE_MAP = { compact: 0.9, regular: 1.25, large: 1.6, xl: 2.0 };
 
 export function applyTimerSize(preset) {
   const isMobile = window.matchMedia('(max-width: 600px)').matches;
-  const scale = isMobile ? 1.0 : (TIMER_SIZE_MAP[preset] ?? 1.0);
-  if (el.timerCard) {
-    el.timerCard.style.zoom = scale === 1 ? '' : String(scale);
+  const scale = isMobile ? 1.0 : (TIMER_SIZE_MAP[preset] ?? 1.25);
+  if (el.main) {
+    el.main.style.zoom = scale === 1 ? '' : String(scale);
   }
 }
 

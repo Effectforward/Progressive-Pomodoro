@@ -1,6 +1,6 @@
 // Cache version — bump this whenever you change any app files.
 // The activate handler automatically cleans up old caches.
-const CACHE_NAME = 'progpomo-v33';
+const CACHE_NAME = 'progpomo-v34';
 
 // Static assets that never change between deploys (fonts, icons, images).
 // These are served cache-first for instant loading.
@@ -19,13 +19,23 @@ const IMMUTABLE_ASSETS = [
 ];
 
 // App shell files — JS modules, CSS, HTML.
-// These use stale-while-revalidate: serve the cached copy instantly
-// while fetching a fresh copy in the background for the next load.
-// No ?v=N cache-busting needed; bumping CACHE_NAME on deploy is enough.
+// Served network-first so a normal refresh always shows the latest
+// deployed files; the cache is only a fallback for offline use.
 const SHELL_ASSETS = [
   './index.html',
   './landing.html',
   './style.css',
+  './css/base.css',
+  './css/layout.css',
+  './css/timer.css',
+  './css/beats.css',
+  './css/rating.css',
+  './css/cards.css',
+  './css/settings.css',
+  './css/animations.css',
+  './css/overlays.css',
+  './css/pages.css',
+  './css/responsive.css',
   './js/app.js',
   './js/state.js',
   './js/storage.js',
@@ -89,17 +99,17 @@ self.addEventListener('fetch', (e) => {
       )
     );
   } else {
-    // Stale-while-revalidate: serve cached copy immediately,
-    // fetch fresh copy in the background and update cache.
+    // Network-first for the app shell: always serve the latest deployed
+    // files when online, fall back to cache (or the app shell) offline.
+    // This means normal refreshes are never stale — no cache-busting dance.
     e.respondWith(
-      caches.open(CACHE_NAME).then(cache =>
-        cache.match(e.request).then(cached => {
-          const fetchPromise = fetch(e.request).then(res => {
-            if (res.ok) cache.put(e.request, res.clone());
-            return res;
-          }).catch(() => cached); // network offline → fall back to cache
-          return cached || fetchPromise;
-        })
+      fetch(e.request).then(res => {
+        if (res.ok) caches.open(CACHE_NAME).then(c => c.put(e.request, res.clone()));
+        return res;
+      }).catch(() =>
+        caches.match(e.request).then(cached =>
+          cached || (e.request.mode === 'navigate' ? caches.match('./index.html') : undefined)
+        )
       )
     );
   }
