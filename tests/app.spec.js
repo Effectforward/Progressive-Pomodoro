@@ -79,6 +79,52 @@ test('pendingRating blocks reset', async ({ page }) => {
   expect(result).toBe(999);
 });
 
+test.describe('background notify fallback', () => {
+  test('start schedules a wall-clock timeout, pause clears it', async ({ page }) => {
+    const result = await page.evaluate(async () => {
+      const { state } = await import('./js/state.js');
+      const timer = await import('./js/timer.js');
+      state.remainingMs = 60000;
+      timer.start();
+      const scheduled = !!state.notifyTimer;
+      timer.pause();
+      const cleared = state.notifyTimer === null;
+      return { scheduled, cleared };
+    });
+    expect(result.scheduled).toBe(true);
+    expect(result.cleared).toBe(true);
+  });
+
+  test('reset and stopTimer clear the scheduled timeout', async ({ page }) => {
+    const result = await page.evaluate(async () => {
+      const { state } = await import('./js/state.js');
+      const timer = await import('./js/timer.js');
+      state.remainingMs = 60000;
+      timer.start();
+      timer.reset();
+      const afterReset = state.notifyTimer === null;
+      timer.start();
+      timer.stopTimer();
+      const afterStop = state.notifyTimer === null;
+      return { afterReset, afterStop };
+    });
+    expect(result.afterReset).toBe(true);
+    expect(result.afterStop).toBe(true);
+  });
+
+  test('completion clears the scheduled timeout', async ({ page }) => {
+    const result = await page.evaluate(async () => {
+      const { state } = await import('./js/state.js');
+      const timer = await import('./js/timer.js');
+      state.remainingMs = 60000;
+      timer.start();
+      timer.onTimerComplete();
+      return state.notifyTimer === null;
+    });
+    expect(result).toBe(true);
+  });
+});
+
 test('rating blocked while timer running', async ({ page }) => {
   const result = await page.evaluate(async () => {
     const timer = await import('./js/timer.js');

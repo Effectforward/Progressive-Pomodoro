@@ -39,6 +39,7 @@ export const state = {
   remainingMs: DEFAULT_SETTINGS.warmupDuration * 1000,
   endAt: null,          // absolute wall-clock ms when session ends
   rafId: null,          // requestAnimationFrame handle
+  notifyTimer: null,    // setTimeout handle for completion while tab is hidden
   nextFocusDuration: DEFAULT_SETTINGS.warmupDuration,
 
   // data

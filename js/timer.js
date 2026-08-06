@@ -26,6 +26,12 @@ export function start() {
   state.endAt = Date.now() + state.remainingMs;
   state.rafId = requestAnimationFrame(rafTick);
 
+  // Ask up front so the first completion isn't blocked by a late permission prompt.
+  requestNotificationPermission();
+  // Background fallback: rAF stops when the tab is hidden, so anchor a timeout
+  // to the wall-clock end to fire completion on time while the app is alive.
+  scheduleNotify();
+
   // A session is starting — the idle restart reminder no longer applies.
   state.restartPrompt = false;
   
@@ -44,8 +50,39 @@ export function start() {
   updateToggleBtn();
 }
 
+function clearNotifyTimer() {
+  if (state.notifyTimer) {
+    clearTimeout(state.notifyTimer);
+    state.notifyTimer = null;
+  }
+}
+
+function requestNotificationPermission() {
+  try {
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+  } catch (e) { /* notifications unavailable */ }
+}
+
+// Fire completion from a wall-clock timeout so the session ends on time even
+// when the tab is hidden (rAF is throttled/stopped in the background).
+function scheduleNotify() {
+  clearNotifyTimer();
+  if (!state.endAt) return;
+  const delay = Math.max(0, state.endAt - Date.now());
+  state.notifyTimer = setTimeout(() => {
+    state.notifyTimer = null;
+    // While visible, rAF owns completion — don't double-handle.
+    if (state.rafId && !document.hidden) return;
+    if (state.endAt && state.endAt > Date.now()) { scheduleNotify(); return; }
+    onTimerComplete();
+  }, delay);
+}
+
 export function pause() {
   if (!state.rafId) return;
+  clearNotifyTimer();
   state.remainingMs = Math.max(0, state.endAt - Date.now());
   state.remaining = Math.ceil(state.remainingMs / 1000);
   state.endAt = null;
@@ -72,6 +109,7 @@ function announce(msg) {
 export function reset() {
   if (document.body.classList.contains('decision-active')) return;
   if (state.pendingRating) return;
+  clearNotifyTimer();
   if (state.rafId) { cancelAnimationFrame(state.rafId); state.rafId = null; }
   state.endAt = null;
   state.remainingMs = state.duration * 1000;
@@ -92,6 +130,7 @@ export function reset() {
 }
 
 export function stopTimer() {
+  clearNotifyTimer();
   if (state.rafId) { cancelAnimationFrame(state.rafId); state.rafId = null; }
   state.endAt = null;
   saveTimerState();
@@ -128,6 +167,7 @@ document.addEventListener('visibilitychange', () => {
 });
 
 export function onTimerComplete() {
+  clearNotifyTimer();
   updateToggleBtn();
   try {
     playAlarm(state.settings.alarmSound || 'chord');
@@ -250,6 +290,7 @@ export function restartProgression() {
 export function doRestartProgression() {
   closeAllPanels();
   state.nextFocusDuration = state.settings.warmupDuration;
+  clearNotifyTimer();
 
   // Stop any running timer regardless of mode.
   if (state.rafId) { cancelAnimationFrame(state.rafId); state.rafId = null; }
