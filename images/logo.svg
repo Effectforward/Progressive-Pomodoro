@@ -1,0 +1,200 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <!-- Card Base -->
+  <rect width="512" height="512" rx="108" fill="#FDF9F1"/>
+
+  <!-- Main Stopwatch Assembly Container -->
+  <g transform="translate(256, 185)">
+    
+    <!-- LEFT MECHANICAL STOPWATCH BUTTON (Reset - Angled -45°) -->
+    <g transform="rotate(-45)">
+      <g transform="translate(0, -78)">
+        <!-- Lower Narrow Stem Collar with Knurled Ring -->
+        <rect x="-4" y="-4" width="8" height="6" fill="#B3A898"/>
+        <line x1="-4" y1="-2" x2="4" y2="-2" stroke="#5C5449" stroke-width="1"/>
+        <!-- Mid Stem Clearance Gap -->
+        <rect x="-3" y="-10" width="6" height="6" fill="#F5EDE4"/>
+        <!-- Flared Upper Button Head -->
+        <path d="M -11 -22 L 11 -22 L 8 -10 L -8 -10 Z" fill="#B3A898"/>
+        <!-- Top Plunger Cap -->
+        <rect x="-11" y="-24" width="22" height="2" rx="1" fill="#FFFFFF"/>
+      </g>
+    </g>
+
+    <!-- RIGHT MECHANICAL STOPWATCH BUTTON (Start/Stop - Angled +45°) -->
+    <g transform="rotate(45)">
+      <g transform="translate(0, -78)">
+        <!-- Lower Narrow Stem Collar with Knurled Ring -->
+        <rect x="-4" y="-4" width="8" height="6" fill="#B3A898"/>
+        <line x1="-4" y1="-2" x2="4" y2="-2" stroke="#5C5449" stroke-width="1"/>
+        <!-- Mid Stem Clearance Gap -->
+        <rect x="-3" y="-10" width="6" height="6" fill="#F5EDE4"/>
+        <!-- Flared Upper Button Head -->
+        <path d="M -11 -22 L 11 -22 L 8 -10 L -8 -10 Z" fill="#B3A898"/>
+        <!-- Top Plunger Cap -->
+        <rect x="-11" y="-24" width="22" height="2" rx="1" fill="#FFFFFF"/>
+      </g>
+    </g>
+
+    <!-- RAISED TOP CENTER CROWN / KNOB -->
+    <g transform="translate(0, -84)">
+      <!-- Extended Neck Pin / Stem -->
+      <rect x="-5.7" y="-2" width="11.4" height="14" fill="#F5EDE4"/>
+      <!-- Stem Base Collar Ring -->
+      <rect x="-7.6" y="6" width="15.2" height="4" rx="1" fill="#B3A898"/>
+      
+      <!-- Ridged Crown Main Body -->
+      <rect x="-20.9" y="-18" width="41.8" height="16" rx="4" fill="#B3A898"/>
+      
+      <!-- Vertical Knurling Ridges -->
+      <g fill="#F5EDE4">
+        <rect x="-15.2" y="-16" width="2.85" height="12" rx="1"/>
+        <rect x="-8.55" y="-16" width="2.85" height="12" rx="1"/>
+        <rect x="-1.9" y="-16" width="2.85" height="12" rx="1"/>
+        <rect x="4.75" y="-16" width="2.85" height="12" rx="1"/>
+        <rect x="11.4" y="-16" width="2.85" height="12" rx="1"/>
+      </g>
+      
+      <!-- Top Bevel Accent -->
+      <rect x="-19" y="-18" width="38" height="2" rx="1" fill="#FFFFFF" opacity="0.8"/>
+    </g>
+
+    <!-- MAIN DIAL OUTER CASE & BEZEL -->
+    <circle cx="0" cy="0" r="79" fill="#F5EDE4"/>
+    <circle cx="0" cy="0" r="76" fill="#FFFFFF" stroke="#F5EDE4" stroke-width="2"/>
+    
+    <!-- CONCENTRIC GUILLOCHÉ / DIAL TEXTURE RINGS -->
+    <circle cx="0" cy="0" r="62" fill="none" stroke="#F5EDE4" stroke-width="1"/>
+    <circle cx="0" cy="0" r="48" fill="none" stroke="#F5EDE4" stroke-width="1"/>
+    <circle cx="0" cy="0" r="32" fill="none" stroke="#F5EDE4" stroke-width="1"/>
+
+    <!-- Active Elapsed Sector (Soft Pastel Coral) -->
+    <path d="M 0 0 L 0 -70 A 70 70 0 0 1 49.5 -49.5 Z" fill="#F2A2A2" opacity="0.4"/>
+
+    <!-- FINE SUB-TICK MARKS (12-second / fine division precision) -->
+    <g stroke="#B3A898" stroke-width="1" stroke-linecap="round" opacity="0.7">
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(6)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(12)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(18)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(24)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(36)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(42)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(48)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(54)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(66)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(72)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(78)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(84)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(96)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(102)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(108)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(114)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(126)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(132)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(138)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(144)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(156)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(162)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(168)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(174)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(186)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(192)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(198)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(204)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(216)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(222)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(228)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(234)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(246)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(252)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(258)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(264)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(276)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(282)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(288)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(294)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(306)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(312)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(318)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(324)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(336)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(342)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(348)"/>
+      <line x1="0" y1="-68" x2="0" y2="-64" transform="rotate(354)"/>
+    </g>
+
+    <!-- MAIN DIAL TICKS (Major 15-min / 5-min intervals) -->
+    <g stroke="#5C5449" stroke-width="2.5" stroke-linecap="round">
+      <line x1="0" y1="-60" x2="0" y2="-68"/>
+      <line x1="60" y1="0" x2="68" y2="0"/>
+      <line x1="0" y1="60" x2="0" y2="68"/>
+      <line x1="-60" y1="0" x2="-68" y2="0"/>
+      <!-- Intermediate 30 deg ticks -->
+      <line x1="30" y1="-51.96" x2="34" y2="-58.88" stroke-width="1.8"/>
+      <line x1="51.96" y1="-30" x2="58.88" y2="-34" stroke-width="1.8"/>
+      <line x1="51.96" y1="30" x2="58.88" y2="34" stroke-width="1.8"/>
+      <line x1="30" y1="51.96" x2="34" y2="58.88" stroke-width="1.8"/>
+      <line x1="-30" y1="51.96" x2="-34" y2="58.88" stroke-width="1.8"/>
+      <line x1="-51.96" y1="30" x2="-58.88" y2="34" stroke-width="1.8"/>
+      <line x1="-51.96" y1="-30" x2="-58.88" y2="-34" stroke-width="1.8"/>
+      <line x1="-30" y1="-51.96" x2="-34" y2="-58.88" stroke-width="1.8"/>
+    </g>
+
+    <!-- MICRO TEXT & JEWEL INDICATOR -->
+    <text x="0" y="52" font-family="System-UI, sans-serif" font-size="5" font-weight="800" fill="#B3A898" text-anchor="middle" letter-spacing="1px">1/5 SEC · 30 MIN</text>
+    <circle cx="0" cy="-38" r="2" fill="#F2A2A2"/> <!-- Ruby Bearing Jewel -->
+    <circle cx="0" cy="-38" r="0.8" fill="#FFFFFF"/>
+
+    <!-- SECONDARY SUB-DIAL (6 o'clock total time register) -->
+    <g transform="translate(0, 26)">
+      <circle cx="0" cy="0" r="17" fill="#FDF9F1" stroke="#F5EDE4" stroke-width="1.5"/>
+      <!-- Sub-dial Ticks -->
+      <g stroke="#B3A898" stroke-width="1" stroke-linecap="round">
+        <line x1="0" y1="-13" x2="0" y2="-16"/>
+        <line x1="13" y1="0" x2="16" y2="0"/>
+        <line x1="0" y1="13" x2="0" y2="16"/>
+        <line x1="-13" y1="0" x2="-16" y2="0"/>
+      </g>
+      <!-- Sub-dial Pointer Hand -->
+      <g transform="rotate(120)">
+        <line x1="0" y1="3" x2="0" y2="-12" stroke="#5C5449" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="0" cy="0" r="2" fill="#5C5449"/>
+      </g>
+    </g>
+
+    <!-- DETAILED MECHANICAL STOPWATCH NEEDLE / HAND -->
+    <g transform="rotate(45)">
+      <!-- Counterweight Tail -->
+      <path d="M -3.5 0 L -2 18 C -2 21, 2 21, 2 18 L 3.5 0 Z" fill="#E89090"/>
+      <!-- Tear-Drop Counterweight Ring Finial -->
+      <circle cx="0" cy="14" r="3.5" fill="#FFFFFF"/>
+      <circle cx="0" cy="14" r="1.8" fill="#E89090"/>
+
+      <!-- Tapered Main Needle Blade -->
+      <path d="M -3 0 L -0.8 -65 L 0.8 -65 L 3 0 Z" fill="#F2A2A2"/>
+      
+      <!-- Fine Tip Lance Pointer -->
+      <polygon points="0,-71 -1.2,-64 1.2,-64" fill="#E89090"/>
+      
+      <!-- Center Ridge Line -->
+      <line x1="0" y1="-64" x2="0" y2="10" stroke="#FFFFFF" stroke-width="1" opacity="0.6"/>
+    </g>
+
+    <!-- STREAMLINED CENTER PIVOT -->
+    <circle cx="0" cy="0" r="7.5" fill="#5C5449"/>
+    <circle cx="0" cy="0" r="4.5" fill="#F2A2A2"/>
+    <circle cx="-1.2" cy="-1.2" r="1.5" fill="#FFFFFF" opacity="0.9"/>
+
+    <!-- CRYSTAL GLASS SPECULAR REFLECTION ARC -->
+    <path d="M -52 -48 A 71 71 0 0 1 52 -48 A 74 74 0 0 0 -52 -48 Z" fill="#FFFFFF" opacity="0.5"/>
+  </g>
+
+  <!-- Typography -->
+  <g transform="translate(256, 360)" font-family="System-UI, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" text-anchor="middle">
+    <text x="0" y="0" font-size="38" font-weight="800" fill="#5C5449" letter-spacing="-0.8px">
+      Progressive
+    </text>
+    <text x="0" y="44" font-size="38" font-weight="800" fill="#F2A2A2" letter-spacing="-0.8px">
+      Pomodoro
+    </text>
+  </g>
+</svg>

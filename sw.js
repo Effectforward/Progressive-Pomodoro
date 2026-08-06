@@ -12,7 +12,6 @@ const IMMUTABLE_ASSETS = [
   './icons/fill.css',
   './icons/Phosphor-Fill.woff2',
   './images/logo.svg',
-  './images/ratings-hero.svg',
   './images/favicon-32.png',
   './images/apple-touch-icon.png',
   './images/icon-192.png',
