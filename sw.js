@@ -1,6 +1,6 @@
 // Cache version — bump this whenever you change any app files.
 // The activate handler automatically cleans up old caches.
-const CACHE_NAME = 'progpomo-v34';
+const CACHE_NAME = 'progpomo-v35';
 
 // Static assets that never change between deploys (fonts, icons, images).
 // These are served cache-first for instant loading.
@@ -93,7 +93,8 @@ self.addEventListener('fetch', (e) => {
     e.respondWith(
       caches.match(e.request).then(cached =>
         cached || fetch(e.request).then(res => {
-          caches.open(CACHE_NAME).then(c => c.put(e.request, res.clone()));
+          const copy = res.clone();
+          caches.open(CACHE_NAME).then(c => c.put(e.request, copy)).catch(() => {});
           return res;
         })
       )
@@ -101,10 +102,15 @@ self.addEventListener('fetch', (e) => {
   } else {
     // Network-first for the app shell: always serve the latest deployed
     // files when online, fall back to cache (or the app shell) offline.
-    // This means normal refreshes are never stale — no cache-busting dance.
+    // cache:'no-store' bypasses the HTTP cache so a plain refresh never
+    // gets GitHub Pages' max-age=600 stale copies. Normal refreshes are
+    // never stale — no cache-busting dance.
     e.respondWith(
-      fetch(e.request).then(res => {
-        if (res.ok) caches.open(CACHE_NAME).then(c => c.put(e.request, res.clone()));
+      fetch(e.request, { cache: 'no-store' }).then(res => {
+        if (res.ok) {
+          const copy = res.clone();
+          caches.open(CACHE_NAME).then(c => c.put(e.request, copy)).catch(() => {});
+        }
         return res;
       }).catch(() =>
         caches.match(e.request).then(cached =>
