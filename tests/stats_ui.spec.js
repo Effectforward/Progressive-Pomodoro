@@ -60,3 +60,34 @@ test('stats card hides when statsDisplay is off', async ({ page }) => {
   await page.reload();
   await expect(page.locator('#statsCard')).toBeHidden();
 });
+
+test('expand button opens modal with year heatmap and insight', async ({ page }) => {
+  const many = [];
+  for (let i = 0; i < 6; i++) many.push(mk(i * 2, 1800));
+  await page.evaluate((list) => {
+    localStorage.setItem('pp_sessions_v1', JSON.stringify(list));
+  }, many);
+  await page.reload();
+  await page.click('#statsExpandBtn');
+  await expect(page.locator('#statsModal')).not.toHaveClass(/hidden/);
+  const yearCells = await page.locator('#statsYearHeatmap .stats-cell').count();
+  expect(yearCells).toBe(371);
+  const kpis = await page.locator('#statsModalKpis .stats-kpi-value').allTextContents();
+  expect(kpis).toHaveLength(4);
+  await expect(page.locator('#statsRatingInsight')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page.locator('#statsModal')).toHaveClass(/hidden/);
+});
+
+test('header stats button appears only in modal mode', async ({ page }) => {
+  await expect(page.locator('#statsModalBtn')).toBeHidden();
+  await page.evaluate(() => {
+    const s = JSON.parse(localStorage.getItem('pp_settings_v1') || '{}');
+    s.statsDisplay = 'modal';
+    localStorage.setItem('pp_settings_v1', JSON.stringify(s));
+  });
+  await page.reload();
+  await expect(page.locator('#statsModalBtn')).toBeVisible();
+  await page.click('#statsModalBtn');
+  await expect(page.locator('#statsModal')).not.toHaveClass(/hidden/);
+});

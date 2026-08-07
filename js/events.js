@@ -7,6 +7,7 @@ import {
   hideDurationPicker,
   renderTasks,
   openSettings, closeSettings, populateSettingsForm,
+  openStats, closeStats,
   applyCardSettings, applyTimerSize, applySettingsLayout,
   activateSettingsTab, showToast,
   updateBeatsToggle, populateAudioSettings,
@@ -149,7 +150,6 @@ export function setupEventListeners() {
   el.importConfirmNo?.addEventListener('click', () => {
     el.importConfirm?.classList.add('hidden');
   });
-
   // Settings
   el.settingsBtn?.addEventListener('click', openSettings);
   el.settingsCloseBtn?.addEventListener('click', closeSettings);
@@ -168,6 +168,30 @@ export function setupEventListeners() {
       e.preventDefault();
       last.focus();
     } else if (!e.shiftKey && (document.activeElement === last || !el.settingsModal.contains(document.activeElement))) {
+      e.preventDefault();
+      first.focus();
+    }
+  });
+
+  // Stats modal
+  el.statsModalBtn?.addEventListener('click', openStats);
+  el.statsExpandBtn?.addEventListener('click', openStats);
+  el.statsModalCloseBtn?.addEventListener('click', closeStats);
+  el.statsModal?.addEventListener('click', (e) => {
+    if (e.target === el.statsModal) closeStats();
+  });
+  el.statsModal?.addEventListener('keydown', (e) => {
+    if (e.key !== 'Tab') return;
+    const focusable = [...el.statsModal.querySelectorAll(
+      'button:not([hidden]):not([disabled]), [tabindex]:not([tabindex="-1"])'
+    )].filter(el => el.offsetParent !== null);
+    if (focusable.length < 1) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey && (document.activeElement === first || !el.statsModal.contains(document.activeElement))) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && (document.activeElement === last || !el.statsModal.contains(document.activeElement))) {
       e.preventDefault();
       first.focus();
     }
@@ -401,6 +425,10 @@ export function setupEventListeners() {
       }
       if (el.settingsModal && !el.settingsModal.classList.contains('hidden')) {
         closeSettings();
+        return;
+      }
+      if (el.statsModal && !el.statsModal.classList.contains('hidden')) {
+        closeStats();
         return;
       }
       const onboarding = document.getElementById('onboardingOverlay');

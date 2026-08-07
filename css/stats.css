@@ -4,6 +4,12 @@
   grid-column: 1 / -1;
 }
 
+.card-header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
 .stats-kpis {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -62,3 +68,43 @@
 .stats-cell-2 { background: color-mix(in srgb, var(--accent) 50%, transparent); }
 .stats-cell-3 { background: color-mix(in srgb, var(--accent) 75%, transparent); }
 .stats-cell-4 { background: var(--accent); }
+
+/* ─── Stats Modal ────────────────────────────────────────────────────────── */
+
+.stats-modal .modal-content {
+  max-width: 640px;
+}
+
+.stats-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.stats-heatmap-title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.stats-heatmap-scroll {
+  overflow-x: auto;
+  padding-bottom: var(--space-xs);
+}
+
+.stats-insight {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.stats-insight i {
+  color: var(--accent);
+  font-size: 20px;
+}

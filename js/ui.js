@@ -1,6 +1,6 @@
 import { state, SESSION_DISPLAY_LIMIT } from './state.js';
 import { saveTasks } from './storage.js';
-import { computeStats } from './stats.js';
+import { computeStats, computeYear, ratingInsight } from './stats.js';
 
 export const el = {
   time: document.getElementById('time'),
@@ -48,6 +48,13 @@ export const el = {
   statsKpis: document.getElementById('statsKpis'),
   statsHeatmap: document.getElementById('statsHeatmap'),
   statsPeriodHint: document.getElementById('statsPeriodHint'),
+  statsExpandBtn: document.getElementById('statsExpandBtn'),
+  statsModal: document.getElementById('statsModal'),
+  statsModalBtn: document.getElementById('statsModalBtn'),
+  statsModalCloseBtn: document.getElementById('statsModalCloseBtn'),
+  statsModalKpis: document.getElementById('statsModalKpis'),
+  statsRatingInsight: document.getElementById('statsRatingInsight'),
+  statsYearHeatmap: document.getElementById('statsYearHeatmap'),
   tasksCardVisible: document.getElementById('tasksCardVisible'),
   historyCardVisible: document.getElementById('historyCardVisible'),
   sideBySideLayout: document.getElementById('sideBySideLayout'),
@@ -248,28 +255,53 @@ export function renderStats() {
   if (!el.statsCard || !el.statsKpis) return;
   const s = computeStats(state.sessions, state.nextFocusDuration, new Date());
 
-  el.statsKpis.innerHTML = '';
-  for (const k of KPI_ITEMS) {
-    const item = document.createElement('div');
-    item.className = 'stats-kpi';
-    item.innerHTML = `<i class="ph ${k.icon}"></i><span class="stats-kpi-value">${formatFocus(s[k.key])}</span><span class="stats-kpi-label">${k.label}</span>`;
-    el.statsKpis.appendChild(item);
+  for (const target of [el.statsKpis, el.statsModalKpis]) {
+    if (!target) continue;
+    target.innerHTML = '';
+    for (const k of KPI_ITEMS) {
+      const item = document.createElement('div');
+      item.className = 'stats-kpi';
+      item.innerHTML = `<i class="ph ${k.icon}"></i><span class="stats-kpi-value">${formatFocus(s[k.key])}</span><span class="stats-kpi-label">${k.label}</span>`;
+      target.appendChild(item);
+    }
   }
 
   if (el.statsHeatmap) {
     el.statsHeatmap.innerHTML = '';
     for (const cell of s.month) {
-      const d = document.createElement('span');
-      const lvl = cell.minutes === 0 ? 0 : Math.min(4, Math.ceil(cell.minutes / 15));
-      d.className = `stats-cell stats-cell-${lvl}`;
-      const label = `${cell.date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} · ${cell.minutes}m focus`;
-      d.title = label;
-      d.setAttribute('aria-label', label);
-      el.statsHeatmap.appendChild(d);
+      el.statsHeatmap.appendChild(heatCell(cell, { month: 'short', day: 'numeric' }));
+    }
+  }
+
+  if (el.statsYearHeatmap) {
+    const year = computeYear(state.sessions, new Date());
+    el.statsYearHeatmap.innerHTML = '';
+    for (const cell of year.cells) {
+      el.statsYearHeatmap.appendChild(heatCell(cell, { month: 'short', day: 'numeric' }));
+    }
+  }
+
+  if (el.statsRatingInsight) {
+    const insight = ratingInsight(state.sessions);
+    if (insight) {
+      el.statsRatingInsight.hidden = false;
+      el.statsRatingInsight.innerHTML = `<i class="ph ph-gauge"></i> <strong>${insight.pct}%</strong> of your rated sessions were focused (flow or focused) — ${insight.good} of ${insight.rated}`;
+    } else {
+      el.statsRatingInsight.hidden = true;
     }
   }
 
   if (el.statsPeriodHint) el.statsPeriodHint.textContent = `Last 35 days · ${formatFocus(s.monthTotal)}`;
+}
+
+function heatCell(cell, dateOpts) {
+  const d = document.createElement('span');
+  const lvl = cell.minutes === 0 ? 0 : Math.min(4, Math.ceil(cell.minutes / 15));
+  d.className = `stats-cell stats-cell-${lvl}`;
+  const label = `${cell.date.toLocaleDateString(undefined, dateOpts)} · ${cell.minutes}m focus`;
+  d.title = label;
+  d.setAttribute('aria-label', label);
+  return d;
 }
 
 export function renderTasks() {
@@ -384,6 +416,24 @@ export function closeSettings() {
    applyTimerSize(state.settings.timerSize);
 }
 
+export function openStats() {
+   if (!el.statsModal) return;
+   renderStats();
+   _savedFocus = document.activeElement;
+   el.statsModal.classList.remove('hidden');
+   el.statsModal.setAttribute('aria-hidden', 'false');
+   el.statsModalCloseBtn?.focus();
+   document.body.style.overflow = 'hidden';
+}
+
+export function closeStats() {
+   if (!el.statsModal) return;
+   el.statsModal.classList.add('hidden');
+   el.statsModal.setAttribute('aria-hidden', 'true');
+   if (_savedFocus && _savedFocus.focus) _savedFocus.focus();
+   document.body.style.overflow = '';
+}
+
 export function populateSettingsForm() {
   if (!el.warmupInput || !el.breakInput) return;
   el.warmupInput.value = Math.round(state.settings.warmupDuration / 60);
@@ -454,6 +504,11 @@ export function applyCardSettings() {
   if (el.statsCard) {
     const show = s.statsDisplay === 'card';
     el.statsCard.style.display = show ? '' : 'none';
+  }
+
+  // Header Stats button (modal-only mode)
+  if (el.statsModalBtn) {
+    el.statsModalBtn.style.display = s.statsDisplay === 'modal' ? '' : 'none';
   }
 
   // GitHub link visibility (in header)

@@ -151,6 +151,7 @@
           </div>
         </div>
         <a href="https://github.com/Effectforward/Progressive-Pomodoro" class="icon-btn" id="githubStarBtn" target="_blank" rel="noopener" aria-label="Star on GitHub"><i class="ph ph-github-logo"></i> <span>GitHub</span></a>
+        <button id="statsModalBtn" class="icon-btn"><i class="ph ph-chart-bar"></i> <span>Stats</span></button>
         <button id="settingsBtn" class="icon-btn"><i class="ph ph-gear"></i> <span>Settings</span></button>
       </div>
     </div>
@@ -246,7 +247,10 @@
       <section class="stats-card glass-card" id="statsCard">
         <div class="card-header">
           <h2><i class="ph ph-chart-bar"></i> Stats</h2>
-          <span class="card-hint" id="statsPeriodHint"></span>
+          <div class="card-header-right">
+            <span class="card-hint" id="statsPeriodHint"></span>
+            <button type="button" id="statsExpandBtn" class="icon-only" aria-label="Open full stats"><i class="ph ph-arrows-out"></i></button>
+          </div>
         </div>
         <div id="statsKpis" class="stats-kpis"></div>
         <div id="statsHeatmap" class="stats-heatmap" role="img" aria-label="Focus minutes per day, last 35 days"></div>
@@ -264,6 +268,25 @@
   <footer class="site-footer">
     <p>Progressive Pomodoro is an adaptive focus timer. <a href="landing.html">About the technique</a> · <a href="about.html">About the developer</a>.</p>
   </footer>
+
+  <div id="statsModal" class="modal stats-modal hidden" aria-hidden="true">
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="statsModalTitle">
+      <div class="modal-header">
+        <h3 id="statsModalTitle"><i class="ph ph-chart-bar"></i> Stats</h3>
+        <div class="modal-header-actions">
+          <button type="button" id="statsModalCloseBtn" class="icon-only" aria-label="Close stats"><i class="ph ph-x"></i></button>
+        </div>
+      </div>
+      <div class="stats-modal-body">
+        <div id="statsModalKpis" class="stats-kpis"></div>
+        <div id="statsRatingInsight" class="stats-insight" hidden></div>
+        <h4 class="stats-heatmap-title">Last 12 months</h4>
+        <div class="stats-heatmap-scroll">
+          <div id="statsYearHeatmap" class="stats-heatmap" role="img" aria-label="Focus minutes per day, last 12 months"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <div id="settingsModal" class="modal hidden" aria-hidden="true">
     <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
