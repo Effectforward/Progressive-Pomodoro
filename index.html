@@ -244,21 +244,12 @@
         <ul id="taskList" class="task-list"></ul>
       </section>
 
-      <section class="stats-card glass-card" id="statsCard">
-        <div class="card-header">
-          <h2><i class="ph ph-chart-bar"></i> Stats</h2>
-          <div class="card-header-right">
-            <span class="card-hint" id="statsPeriodHint"></span>
-            <button type="button" id="statsExpandBtn" class="icon-only" aria-label="Open full stats"><i class="ph ph-arrows-out"></i></button>
-          </div>
-        </div>
-        <div id="statsKpis" class="stats-kpis"></div>
-        <div id="statsHeatmap" class="stats-heatmap" role="img" aria-label="Focus minutes per day, last 35 days"></div>
-      </section>
-
       <section class="history-card glass-card" id="historyCard">
         <div class="card-header">
           <h2><i class="ph ph-clock-counter-clockwise"></i> History</h2>
+          <div class="card-header-right">
+            <button type="button" id="historyViewAllBtn" class="icon-btn" hidden><i class="ph ph-arrows-out"></i> <span>View all</span></button>
+          </div>
         </div>
         <ul id="sessionList" class="session-list"></ul>
       </section>
@@ -280,10 +271,25 @@
       <div class="stats-modal-body">
         <div id="statsModalKpis" class="stats-kpis"></div>
         <div id="statsRatingInsight" class="stats-insight" hidden></div>
+        <div id="statsEncouragement" class="stats-encouragement" aria-live="polite"></div>
         <h4 class="stats-heatmap-title">Last 12 months</h4>
         <div class="stats-heatmap-scroll">
           <div id="statsYearHeatmap" class="stats-heatmap" role="img" aria-label="Focus minutes per day, last 12 months"></div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="historyModal" class="modal history-modal hidden" aria-hidden="true">
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="historyModalTitle">
+      <div class="modal-header">
+        <h3 id="historyModalTitle"><i class="ph ph-clock-counter-clockwise"></i> History</h3>
+        <div class="modal-header-actions">
+          <button type="button" id="historyModalCloseBtn" class="icon-only" aria-label="Close history"><i class="ph ph-x"></i></button>
+        </div>
+      </div>
+      <div class="history-modal-scroll">
+        <ul id="historyModalList" class="session-list"></ul>
       </div>
     </div>
   </div>
@@ -413,11 +419,11 @@
                   <span class="card-setting-label"><i class="ph ph-clock-counter-clockwise"></i> History</span>
                 </div>
                 <div class="card-setting-row">
-                  <label class="toggle-label" title="Show auto-start beats controls in Settings → Audio">
-                    <input type="checkbox" id="showBeatsAutoStart" checked aria-label="Show auto-start beats controls">
+                  <label class="toggle-label" title="Show binaural beats controls in the header">
+                    <input type="checkbox" id="showBeatsAutoStart" checked aria-label="Show beats controls">
                     <span class="toggle-track"></span>
                   </label>
-                  <span class="card-setting-label"><i class="ph ph-headphones"></i> Beats auto-start control</span>
+                  <span class="card-setting-label"><i class="ph ph-headphones"></i> Beats controls</span>
                 </div>
                 <div class="card-setting-row">
                   <label class="toggle-label" title="Show GitHub link in header">
@@ -425,6 +431,13 @@
                     <span class="toggle-track"></span>
                   </label>
                   <span class="card-setting-label"><i class="ph ph-github-logo"></i> GitHub link</span>
+                </div>
+                <div class="card-setting-row">
+                  <label class="toggle-label" title="Show Stats button in header">
+                    <input type="checkbox" id="statsVisible" checked aria-label="Show Stats button in header">
+                    <span class="toggle-track"></span>
+                  </label>
+                  <span class="card-setting-label"><i class="ph ph-chart-bar"></i> Stats button</span>
                 </div>
               </fieldset>
             </div>

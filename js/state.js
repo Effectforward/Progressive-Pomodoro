@@ -11,7 +11,7 @@ export const STORAGE_KEYS = {
 };
 
 export const SESSION_RETENTION_DAYS = 365;
-export const SESSION_DISPLAY_LIMIT = 100;
+export const SESSION_DISPLAY_LIMIT = 5;
 
 export const DEFAULT_SETTINGS = {
   warmupDuration: 2 * 60,
@@ -26,7 +26,7 @@ export const DEFAULT_SETTINGS = {
   tasksCardVisible: true,
   historyCardVisible: true,
   sideBySideLayout: true,
-  statsDisplay: 'card', // 'card'|'modal'|'off'
+  statsVisible: true,
   // Binaural beats
   beatsLeftFreq: 340,
   beatsRightFreq: 380,

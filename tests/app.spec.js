@@ -869,16 +869,28 @@ test('beats auto-start toggle exists in Cards tab', async ({ page }) => {
   await expect(page.locator('#showBeatsAutoStart').locator('..')).toBeVisible();
 });
 
-test('hiding beats auto-start hides it in Audio tab', async ({ page }) => {
+test('hiding beats auto-start hides header controls and Audio tab row', async ({ page }) => {
   await page.click('#settingsBtn');
   await page.waitForSelector('#settingsModal:not(.hidden)', { state: 'visible' });
   // Turn off visibility
   await page.click('.settings-tab-btn[data-settings-tab="cards"]');
   await page.locator('#showBeatsAutoStart').evaluate(el => { el.checked = false; el.dispatchEvent(new Event('change', { bubbles: true })); });
+  // Header headphone button hidden
+  await expect(page.locator('.beats-split-wrap')).toBeHidden();
   // Check Audio tab - auto-start row should be hidden
   await page.click('.settings-tab-btn[data-settings-tab="audio"]');
   const row = page.locator('#beatsAutoStart').locator('..');
   await expect(row).toBeHidden();
+});
+
+test('turning beats visibility back on restores header controls', async ({ page }) => {
+  await page.click('#settingsBtn');
+  await page.waitForSelector('#settingsModal:not(.hidden)', { state: 'visible' });
+  await page.click('.settings-tab-btn[data-settings-tab="cards"]');
+  await page.locator('#showBeatsAutoStart').evaluate(el => { el.checked = false; el.dispatchEvent(new Event('change', { bubbles: true })); });
+  await expect(page.locator('.beats-split-wrap')).toBeHidden();
+  await page.locator('#showBeatsAutoStart').evaluate(el => { el.checked = true; el.dispatchEvent(new Event('change', { bubbles: true })); });
+  await expect(page.locator('.beats-split-wrap')).toBeVisible();
 });
 
 // ─── Beats preset selector ──────────────────────────────────────────────────

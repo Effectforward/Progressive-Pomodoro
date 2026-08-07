@@ -94,3 +94,36 @@ test('ratingInsight returns null below the min-sample gate', async ({ page }) =>
   expect(r.ready.good).toBe(4);
   expect(r.ready.pct).toBe(67);
 });
+
+test('statsMessage reflects the given stats', async ({ page }) => {
+  const r = await page.evaluate(async () => {
+    const { statsMessage } = await import('./js/stats.js');
+    const seed = () => 0.5;
+    const stats = { thisWeek: 150, total: 1200, best: 90, count: 40, monthTotal: 500 };
+    return { a: statsMessage(stats, new Date(2026, 7, 7, 10), seed), b: statsMessage(stats, new Date(2026, 7, 7, 10), seed) };
+  });
+  expect(r.a).toBe(r.b);
+  expect(r.a).toMatch(/\d/);
+});
+
+test('heatLevel maps minutes to 4 density levels up to 4 hours', async ({ page }) => {
+  const r = await page.evaluate(async () => {
+    const { heatLevel } = await import('./js/stats.js');
+    const mins = [0, 1, 60, 61, 120, 121, 180, 181, 240, 241, 500];
+    return mins.map(m => heatLevel(m));
+  });
+  expect(r).toEqual([0, 1, 1, 2, 2, 3, 3, 4, 4, 4, 4]);
+});
+
+test('ratingInsightMessage states pct, good and rated deterministically', async ({ page }) => {
+  const r = await page.evaluate(async () => {
+    const { ratingInsightMessage } = await import('./js/stats.js');
+    const seed = () => 0.5;
+    const insight = { good: 305, rated: 591, pct: 52 };
+    return { a: ratingInsightMessage(insight, seed), b: ratingInsightMessage(insight, seed) };
+  });
+  expect(r.a).toBe(r.b);
+  expect(r.a).toContain('52');
+  expect(r.a).toContain('305');
+  expect(r.a).toContain('591');
+});

@@ -1,6 +1,6 @@
 import { state, SESSION_DISPLAY_LIMIT } from './state.js';
 import { saveTasks } from './storage.js';
-import { computeStats, computeYear, ratingInsight } from './stats.js';
+import { computeStats, computeYear, heatLevel, ratingInsight, ratingInsightMessage, statsMessage } from './stats.js';
 
 export const el = {
   time: document.getElementById('time'),
@@ -44,17 +44,18 @@ export const el = {
   // Card customization
   tasksCard: document.getElementById('tasksCard'),
   historyCard: document.getElementById('historyCard'),
-  statsCard: document.getElementById('statsCard'),
-  statsKpis: document.getElementById('statsKpis'),
-  statsHeatmap: document.getElementById('statsHeatmap'),
-  statsPeriodHint: document.getElementById('statsPeriodHint'),
-  statsExpandBtn: document.getElementById('statsExpandBtn'),
   statsModal: document.getElementById('statsModal'),
   statsModalBtn: document.getElementById('statsModalBtn'),
   statsModalCloseBtn: document.getElementById('statsModalCloseBtn'),
   statsModalKpis: document.getElementById('statsModalKpis'),
   statsRatingInsight: document.getElementById('statsRatingInsight'),
+  statsEncouragement: document.getElementById('statsEncouragement'),
   statsYearHeatmap: document.getElementById('statsYearHeatmap'),
+  statsVisible: document.getElementById('statsVisible'),
+  historyViewAllBtn: document.getElementById('historyViewAllBtn'),
+  historyModal: document.getElementById('historyModal'),
+  historyModalCloseBtn: document.getElementById('historyModalCloseBtn'),
+  historyModalList: document.getElementById('historyModalList'),
   tasksCardVisible: document.getElementById('tasksCardVisible'),
   historyCardVisible: document.getElementById('historyCardVisible'),
   sideBySideLayout: document.getElementById('sideBySideLayout'),
@@ -67,7 +68,7 @@ export const el = {
   // Theme settings
   themePickerGrid: document.getElementById('themePickerGrid'),
   timerSizeGrid: document.getElementById('timerSizeGrid'),
-  layoutPickerBtns: document.querySelectorAll('.layout-option'),
+  layoutPickerBtns: document.querySelectorAll('.layout-option[data-layout]'),
 
   githubVisible: document.getElementById('githubVisible'),
   // Main layout (for size transform)
@@ -75,6 +76,7 @@ export const el = {
   // Binaural beats
   timerDisplay: document.getElementById('timerDisplay'),
   beatsToggle: document.getElementById('beatsToggle'),
+  beatsSplitWrap: document.querySelector('.beats-split-wrap'),
   beatsChevron: document.getElementById('beatsChevron'),
   beatsPopover: document.getElementById('beatsPopover'),
   beatsPopoverToggle: document.getElementById('beatsPopoverToggle'),
@@ -200,6 +202,26 @@ const RATING_ICONS = {
 
 const RATING_LABELS = { flow: 'Flow', focused: 'Focused', good: 'Fine', distracted: 'Distracted' };
 
+const SESSION_DATE_OPTS = { hour: 'numeric', minute: '2-digit' };
+
+function sessionItem(s, i) {
+  const li = document.createElement('li');
+  li.style.setProperty('--i', i);
+  const left = document.createElement('div');
+  const right = document.createElement('div');
+
+  const icon = RATING_ICONS[s.rating] || '';
+  const ratingLabel = RATING_LABELS[s.rating] || s.rating || 'Pending';
+  left.className = 'session-left';
+  left.innerHTML = `<div class="session-rating">${icon} ${ratingLabel}</div><div class="session-meta">${Math.round(s.length / 60)} min focus • ${new Date(s.timestamp).toLocaleTimeString([], SESSION_DATE_OPTS)}</div>`;
+
+  if (s.auto) right.innerHTML = `<span class="session-badge">Auto</span>`;
+
+  li.appendChild(left);
+  li.appendChild(right);
+  return li;
+}
+
 export function renderSessions() {
   if (!el.sessionList) return;
   el.sessionList.innerHTML = '';
@@ -208,32 +230,22 @@ export function renderSessions() {
     li.className = 'empty-state';
     li.innerHTML = '<i class="ph ph-clock-counter-clockwise" style="font-size:24px;color:var(--muted);opacity:0.5;"></i><span>No sessions yet</span><span class="empty-hint">Complete a session to see it here</span>';
     el.sessionList.appendChild(li);
+    if (el.historyViewAllBtn) el.historyViewAllBtn.hidden = true;
+    if (el.historyModalList) el.historyModalList.innerHTML = '';
     return;
   }
 
-  const dateOpts = { hour: 'numeric', minute: '2-digit' };
   state.sessions.slice(0, SESSION_DISPLAY_LIMIT).forEach((s, i) => {
-    const li = document.createElement('li');
-    li.style.setProperty('--i', i);
-    const left = document.createElement('div');
-    const right = document.createElement('div');
-
-    const icon = RATING_ICONS[s.rating] || '';
-    const ratingLabel = RATING_LABELS[s.rating] || s.rating || 'Pending';
-    left.className = 'session-left';
-    left.innerHTML = `<div class="session-rating">${icon} ${ratingLabel}</div><div class="session-meta">${Math.round(s.length / 60)} min focus • ${new Date(s.timestamp).toLocaleTimeString([], dateOpts)}</div>`;
-
-    if (s.auto) right.innerHTML = `<span class="session-badge">Auto</span>`;
-
-    li.appendChild(left);
-    li.appendChild(right);
-    el.sessionList.appendChild(li);
+    el.sessionList.appendChild(sessionItem(s, i));
   });
-  if (state.sessions.length > SESSION_DISPLAY_LIMIT) {
-    const note = document.createElement('li');
-    note.className = 'empty-state';
-    note.innerHTML = `<span class="empty-hint">Showing latest ${SESSION_DISPLAY_LIMIT} of ${state.sessions.length} sessions</span>`;
-    el.sessionList.appendChild(note);
+
+  if (el.historyViewAllBtn) {
+    el.historyViewAllBtn.hidden = state.sessions.length <= SESSION_DISPLAY_LIMIT;
+  }
+
+  if (el.historyModalList) {
+    el.historyModalList.innerHTML = '';
+    state.sessions.forEach((s, i) => el.historyModalList.appendChild(sessionItem(s, i)));
   }
 }
 
@@ -252,25 +264,15 @@ const KPI_ITEMS = [
 ];
 
 export function renderStats() {
-  if (!el.statsCard || !el.statsKpis) return;
+  if (!el.statsModalKpis) return;
   const s = computeStats(state.sessions, state.nextFocusDuration, new Date());
 
-  for (const target of [el.statsKpis, el.statsModalKpis]) {
-    if (!target) continue;
-    target.innerHTML = '';
-    for (const k of KPI_ITEMS) {
-      const item = document.createElement('div');
-      item.className = 'stats-kpi';
-      item.innerHTML = `<i class="ph ${k.icon}"></i><span class="stats-kpi-value">${formatFocus(s[k.key])}</span><span class="stats-kpi-label">${k.label}</span>`;
-      target.appendChild(item);
-    }
-  }
-
-  if (el.statsHeatmap) {
-    el.statsHeatmap.innerHTML = '';
-    for (const cell of s.month) {
-      el.statsHeatmap.appendChild(heatCell(cell, { month: 'short', day: 'numeric' }));
-    }
+  el.statsModalKpis.innerHTML = '';
+  for (const k of KPI_ITEMS) {
+    const item = document.createElement('div');
+    item.className = 'stats-kpi';
+    item.innerHTML = `<i class="ph ${k.icon}"></i><span class="stats-kpi-value">${formatFocus(s[k.key])}</span><span class="stats-kpi-label">${k.label}</span>`;
+    el.statsModalKpis.appendChild(item);
   }
 
   if (el.statsYearHeatmap) {
@@ -281,23 +283,24 @@ export function renderStats() {
     }
   }
 
+  if (el.statsEncouragement) {
+    el.statsEncouragement.textContent = statsMessage(s);
+  }
+
   if (el.statsRatingInsight) {
     const insight = ratingInsight(state.sessions);
     if (insight) {
       el.statsRatingInsight.hidden = false;
-      el.statsRatingInsight.innerHTML = `<i class="ph ph-gauge"></i> <strong>${insight.pct}%</strong> of your rated sessions were focused (flow or focused) — ${insight.good} of ${insight.rated}`;
+      el.statsRatingInsight.innerHTML = `<i class="ph ph-gauge"></i> ${ratingInsightMessage(insight)}`;
     } else {
       el.statsRatingInsight.hidden = true;
     }
   }
-
-  if (el.statsPeriodHint) el.statsPeriodHint.textContent = `Last 35 days · ${formatFocus(s.monthTotal)}`;
 }
 
 function heatCell(cell, dateOpts) {
   const d = document.createElement('span');
-  const lvl = cell.minutes === 0 ? 0 : Math.min(4, Math.ceil(cell.minutes / 15));
-  d.className = `stats-cell stats-cell-${lvl}`;
+  d.className = `stats-cell stats-cell-${heatLevel(cell.minutes)}`;
   const label = `${cell.date.toLocaleDateString(undefined, dateOpts)} · ${cell.minutes}m focus`;
   d.title = label;
   d.setAttribute('aria-label', label);
@@ -434,6 +437,24 @@ export function closeStats() {
    document.body.style.overflow = '';
 }
 
+export function openHistoryModal() {
+   if (!el.historyModal) return;
+   renderSessions();
+   _savedFocus = document.activeElement;
+   el.historyModal.classList.remove('hidden');
+   el.historyModal.setAttribute('aria-hidden', 'false');
+   el.historyModalCloseBtn?.focus();
+   document.body.style.overflow = 'hidden';
+}
+
+export function closeHistoryModal() {
+   if (!el.historyModal) return;
+   el.historyModal.classList.add('hidden');
+   el.historyModal.setAttribute('aria-hidden', 'true');
+   if (_savedFocus && _savedFocus.focus) _savedFocus.focus();
+   document.body.style.overflow = '';
+}
+
 export function populateSettingsForm() {
   if (!el.warmupInput || !el.breakInput) return;
   el.warmupInput.value = Math.round(state.settings.warmupDuration / 60);
@@ -462,6 +483,9 @@ export function populateSettingsForm() {
   // GitHub toggle
   if (el.githubVisible) el.githubVisible.checked = state.settings.githubVisible !== false;
 
+  // Stats button toggle
+  if (el.statsVisible) el.statsVisible.checked = state.settings.statsVisible !== false;
+
   // Card customization
   if (el.tasksCardVisible) el.tasksCardVisible.checked = state.settings.tasksCardVisible !== false;
   if (el.historyCardVisible) el.historyCardVisible.checked = state.settings.historyCardVisible !== false;
@@ -481,7 +505,6 @@ export function populateSettingsForm() {
 /** Called once on init and after every settings save to reflect card prefs. */
 export function applyCardSettings() {
   const s = state.settings;
-
   // Desktop layout: split (timer beside cards) vs stacked
   document.body.classList.toggle('split-layout', s.sideBySideLayout !== false);
 
@@ -500,15 +523,9 @@ export function applyCardSettings() {
     }
   }
 
-  // Stats card visibility
-  if (el.statsCard) {
-    const show = s.statsDisplay === 'card';
-    el.statsCard.style.display = show ? '' : 'none';
-  }
-
-  // Header Stats button (modal-only mode)
+  // Stats button visibility (header, opens the stats modal)
   if (el.statsModalBtn) {
-    el.statsModalBtn.style.display = s.statsDisplay === 'modal' ? '' : 'none';
+    el.statsModalBtn.style.display = s.statsVisible !== false ? '' : 'none';
   }
 
   // GitHub link visibility (in header)
@@ -644,8 +661,10 @@ export function populateAudioSettings() {
 }
 
 export function updateBeatsAutoStartVisibility() {
+  const visible = state.settings.showBeatsAutoStart !== false;
+  if (el.beatsSplitWrap) el.beatsSplitWrap.style.display = visible ? '' : 'none';
   if (el.beatsAutoStart) {
     const row = el.beatsAutoStart.closest('.card-setting-row');
-    if (row) row.style.display = state.settings.showBeatsAutoStart !== false ? '' : 'none';
+    if (row) row.style.display = visible ? '' : 'none';
   }
 }

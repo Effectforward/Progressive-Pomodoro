@@ -69,6 +69,12 @@
   color: var(--muted);
 }
 
+.card-header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
 /* Task Progress Bar */
 .task-progress-wrap {
   margin-bottom: var(--space-xl);
@@ -279,4 +285,19 @@
   border-radius: 99px;
   font-size: 13px;
   font-weight: 800;
+}
+
+/* History modal */
+.history-modal .modal-content {
+  max-width: 560px;
+}
+
+.history-modal-scroll {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+/* No entry stagger in the full-history modal — hundreds of items */
+.history-modal .session-list li {
+  animation: none;
 }

@@ -1,6 +1,6 @@
 // Cache version — bump this whenever you change any app files.
 // The activate handler automatically cleans up old caches.
-const CACHE_NAME = 'progpomo-v36';
+const CACHE_NAME = 'progpomo-v38';
 
 // Static assets that never change between deploys (fonts, icons, images).
 // These are served cache-first for instant loading.
@@ -74,10 +74,6 @@ self.addEventListener('notificationclick', (e) => {
   e.notification.close();
   e.waitUntil((async () => {
     const url = new URL('./index.html', self.location.href).href;
-    const targets = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
-    for (const c of targets) {
-      if (new URL(c.url).pathname === new URL(url).pathname) return c.focus();
-    }
     return self.clients.openWindow(url);
   })());
 });

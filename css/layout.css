@@ -59,6 +59,10 @@ button {
   text-decoration: none;
 }
 
+.icon-btn[hidden] {
+  display: none;
+}
+
 .icon-btn i {
   font-size: 18px;
 }

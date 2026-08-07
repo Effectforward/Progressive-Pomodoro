@@ -67,13 +67,24 @@ test('saving sessions enforces the 365-day retention', async ({ page }) => {
   expect(stored).toHaveLength(1);
 });
 
-test('history list caps rendering at 100 with a note', async ({ page }) => {
+test('history list caps rendering at 5 with a View all modal', async ({ page }) => {
   const many = [];
   for (let i = 0; i < 120; i++) many.push(mk(i));
   await seed(page, many);
   await page.reload();
   const items = await page.locator('#sessionList li:not(.empty-state)').count();
-  const note = await page.locator('#sessionList .empty-state').textContent();
-  expect(items).toBe(100);
-  expect(note).toContain('Showing latest 100 of 120 sessions');
+  expect(items).toBe(5);
+  await expect(page.locator('#historyViewAllBtn')).toBeVisible();
+  await page.click('#historyViewAllBtn');
+  await expect(page.locator('#historyModal')).not.toHaveClass(/hidden/);
+  const allItems = await page.locator('#historyModalList li:not(.empty-state)').count();
+  expect(allItems).toBe(120);
+  await page.keyboard.press('Escape');
+  await expect(page.locator('#historyModal')).toHaveClass(/hidden/);
+});
+
+test('View all button hidden when few sessions exist', async ({ page }) => {
+  await seed(page, [mk(0), mk(1)]);
+  await page.reload();
+  await expect(page.locator('#historyViewAllBtn')).toBeHidden();
 });

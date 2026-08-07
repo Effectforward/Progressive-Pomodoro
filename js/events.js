@@ -8,6 +8,7 @@ import {
   renderTasks,
   openSettings, closeSettings, populateSettingsForm,
   openStats, closeStats,
+  openHistoryModal, closeHistoryModal,
   applyCardSettings, applyTimerSize, applySettingsLayout,
   activateSettingsTab, showToast,
   updateBeatsToggle, populateAudioSettings,
@@ -175,7 +176,6 @@ export function setupEventListeners() {
 
   // Stats modal
   el.statsModalBtn?.addEventListener('click', openStats);
-  el.statsExpandBtn?.addEventListener('click', openStats);
   el.statsModalCloseBtn?.addEventListener('click', closeStats);
   el.statsModal?.addEventListener('click', (e) => {
     if (e.target === el.statsModal) closeStats();
@@ -192,6 +192,29 @@ export function setupEventListeners() {
       e.preventDefault();
       last.focus();
     } else if (!e.shiftKey && (document.activeElement === last || !el.statsModal.contains(document.activeElement))) {
+      e.preventDefault();
+      first.focus();
+    }
+  });
+
+  // History modal
+  el.historyViewAllBtn?.addEventListener('click', openHistoryModal);
+  el.historyModalCloseBtn?.addEventListener('click', closeHistoryModal);
+  el.historyModal?.addEventListener('click', (e) => {
+    if (e.target === el.historyModal) closeHistoryModal();
+  });
+  el.historyModal?.addEventListener('keydown', (e) => {
+    if (e.key !== 'Tab') return;
+    const focusable = [...el.historyModal.querySelectorAll(
+      'button:not([hidden]):not([disabled]), [tabindex]:not([tabindex="-1"])'
+    )].filter(el => el.offsetParent !== null);
+    if (focusable.length < 1) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey && (document.activeElement === first || !el.historyModal.contains(document.activeElement))) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && (document.activeElement === last || !el.historyModal.contains(document.activeElement))) {
       e.preventDefault();
       first.focus();
     }
@@ -431,6 +454,10 @@ export function setupEventListeners() {
         closeStats();
         return;
       }
+      if (el.historyModal && !el.historyModal.classList.contains('hidden')) {
+        closeHistoryModal();
+        return;
+      }
       const onboarding = document.getElementById('onboardingOverlay');
       if (onboarding && !onboarding.classList.contains('hidden')) {
         onboarding.classList.add('hidden');
@@ -479,6 +506,15 @@ export function setupEventListeners() {
     input.dispatchEvent(new Event('input', { bubbles: true }));
     input.dispatchEvent(new Event('change', { bubbles: true }));
   }, { passive: false });
+
+  // Horizontal wheel scroll on heatmap
+  document.addEventListener('wheel', (e) => {
+    const wrap = e.target.closest('.stats-heatmap-scroll');
+    if (!wrap) return;
+    if (e.deltaY === 0) return;
+    e.preventDefault();
+    wrap.scrollLeft += e.deltaY;
+  }, { passive: false });
 }
 
 // ─── Settings Form ──────────────────────────────────────────────────────────
@@ -507,7 +543,7 @@ export function saveSettingsForm() {
   state.settings.githubVisible = el.githubVisible?.checked !== false;
 
   // Settings layout
-  const activeLayoutBtn = document.querySelector('.layout-option.active');
+  const activeLayoutBtn = document.querySelector('.layout-picker .layout-option.active');
   state.settings.settingsLayout = activeLayoutBtn?.dataset.layout || 'sidebar';
 
   // Mobile: force fixed timer size and top tabs layout
@@ -521,6 +557,7 @@ export function saveSettingsForm() {
   state.settings.historyCardVisible = el.historyCardVisible?.checked !== false;
   state.settings.sideBySideLayout   = el.sideBySideLayout?.checked !== false;
   state.settings.showBeatsAutoStart = el.showBeatsAutoStart?.checked !== false;
+  state.settings.statsVisible       = el.statsVisible?.checked !== false;
 
   // Audio settings
   state.settings.beatsAutoStart = el.beatsAutoStart?.checked === true;
