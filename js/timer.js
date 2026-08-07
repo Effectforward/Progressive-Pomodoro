@@ -3,7 +3,7 @@ import { saveTimerState, saveSessions } from './storage.js';
 import { 
   render, updateToggleBtn,
   showRating, hideRating, showDurationPicker, hideDurationPicker,
-  renderSessions, showToast, updateBeatsToggle,
+  renderSessions, renderStats, showToast, updateBeatsToggle,
 } from './ui.js';
 import * as beats from './beats.js';
 import { playAlarm } from './sounds.js';
@@ -194,6 +194,7 @@ export function onTimerComplete() {
     saveSessions();
     saveTimerState();
     renderSessions();
+    renderStats();
     announce('Focus session complete. Rate your focus to continue.');
     showRating();
   } else {
@@ -218,6 +219,7 @@ export function submitRating(rating, auto = false) {
   }
   saveSessions();
   renderSessions();
+  renderStats();
   afterRating(rating);
 }
 
@@ -334,6 +336,7 @@ export function doClearHistory() {
   state.sessions = [];
   saveSessions();
   renderSessions();
+  renderStats();
 }
 
 // ─── Alarm + notification ──────────────────────────────────────────────────

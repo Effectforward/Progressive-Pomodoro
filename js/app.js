@@ -10,7 +10,7 @@ import {
 import { initTheme, setTheme } from './themes.js';
 import {
   el, render, updateToggleBtn,
-  showRating, renderSessions, renderTasks,
+  showRating, renderSessions, renderTasks, renderStats,
   applyCardSettings, applyTimerSize,
   populateSettingsForm,
 } from './ui.js';
@@ -41,6 +41,7 @@ function init() {
   render();
   updateToggleBtn();
   renderSessions();
+  renderStats();
   renderTasks();
   applyCardSettings();
   applyTimerSize(state.settings.timerSize || 'regular');
@@ -101,6 +102,7 @@ function handleStorageChange(e) {
   if (e.key === 'pp_sessions_v1') {
     loadSessions();
     renderSessions();
+    renderStats();
   }
   if (e.key === 'pp_tasks_v1') {
     loadTasks();

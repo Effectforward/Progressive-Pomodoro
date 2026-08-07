@@ -1,5 +1,6 @@
 import { state, SESSION_DISPLAY_LIMIT } from './state.js';
 import { saveTasks } from './storage.js';
+import { computeStats } from './stats.js';
 
 export const el = {
   time: document.getElementById('time'),
@@ -43,6 +44,10 @@ export const el = {
   // Card customization
   tasksCard: document.getElementById('tasksCard'),
   historyCard: document.getElementById('historyCard'),
+  statsCard: document.getElementById('statsCard'),
+  statsKpis: document.getElementById('statsKpis'),
+  statsHeatmap: document.getElementById('statsHeatmap'),
+  statsPeriodHint: document.getElementById('statsPeriodHint'),
   tasksCardVisible: document.getElementById('tasksCardVisible'),
   historyCardVisible: document.getElementById('historyCardVisible'),
   sideBySideLayout: document.getElementById('sideBySideLayout'),
@@ -225,6 +230,48 @@ export function renderSessions() {
   }
 }
 
+function formatFocus(min) {
+  if (min < 60) return `${min}m`;
+  const h = Math.floor(min / 60);
+  const m = min % 60;
+  return m ? `${h}h ${m}m` : `${h}h`;
+}
+
+const KPI_ITEMS = [
+  { icon: 'ph-chart-line-up', label: 'Level', key: 'level' },
+  { icon: 'ph-clock', label: 'Total', key: 'total' },
+  { icon: 'ph-trophy', label: 'Best', key: 'best' },
+  { icon: 'ph-calendar-dots', label: 'Week', key: 'thisWeek' },
+];
+
+export function renderStats() {
+  if (!el.statsCard || !el.statsKpis) return;
+  const s = computeStats(state.sessions, state.nextFocusDuration, new Date());
+
+  el.statsKpis.innerHTML = '';
+  for (const k of KPI_ITEMS) {
+    const item = document.createElement('div');
+    item.className = 'stats-kpi';
+    item.innerHTML = `<i class="ph ${k.icon}"></i><span class="stats-kpi-value">${formatFocus(s[k.key])}</span><span class="stats-kpi-label">${k.label}</span>`;
+    el.statsKpis.appendChild(item);
+  }
+
+  if (el.statsHeatmap) {
+    el.statsHeatmap.innerHTML = '';
+    for (const cell of s.month) {
+      const d = document.createElement('span');
+      const lvl = cell.minutes === 0 ? 0 : Math.min(4, Math.ceil(cell.minutes / 15));
+      d.className = `stats-cell stats-cell-${lvl}`;
+      const label = `${cell.date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} · ${cell.minutes}m focus`;
+      d.title = label;
+      d.setAttribute('aria-label', label);
+      el.statsHeatmap.appendChild(d);
+    }
+  }
+
+  if (el.statsPeriodHint) el.statsPeriodHint.textContent = `Last 35 days · ${formatFocus(s.monthTotal)}`;
+}
+
 export function renderTasks() {
   if (!el.taskList) return;
   el.taskList.innerHTML = '';
@@ -401,6 +448,12 @@ export function applyCardSettings() {
     } else {
       el.historyCard.style.display = '';
     }
+  }
+
+  // Stats card visibility
+  if (el.statsCard) {
+    const show = s.statsDisplay === 'card';
+    el.statsCard.style.display = show ? '' : 'none';
   }
 
   // GitHub link visibility (in header)

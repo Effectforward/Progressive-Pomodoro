@@ -26,6 +26,7 @@ export const DEFAULT_SETTINGS = {
   tasksCardVisible: true,
   historyCardVisible: true,
   sideBySideLayout: true,
+  statsDisplay: 'card', // 'card'|'modal'|'off'
   // Binaural beats
   beatsLeftFreq: 340,
   beatsRightFreq: 380,
