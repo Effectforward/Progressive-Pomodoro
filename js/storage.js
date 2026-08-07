@@ -2,7 +2,7 @@
 // and mutate `state` — they never touch the DOM. Callers are responsible
 // for re-rendering after a load/save if needed.
 
-import { state, STORAGE_KEYS, DEFAULT_SETTINGS } from './state.js';
+import { state, STORAGE_KEYS, DEFAULT_SETTINGS, SESSION_RETENTION_DAYS } from './state.js';
 
 export function loadSettings() {
   try {
@@ -20,6 +20,18 @@ export function saveSettings() {
    catch (e) { console.warn('progPomo: settings not saved — localStorage full?', e); }
 }
 
+// Retention: drop sessions older than SESSION_RETENTION_DAYS (by completion
+// date). Records with an unparseable timestamp are kept — never let a
+// retention sweep delete data it can't date.
+export function trimSessions() {
+  const cutoff = Date.now() - SESSION_RETENTION_DAYS * 86400000;
+  const kept = (state.sessions || []).filter(s => {
+    const t = new Date(s.timestamp).getTime();
+    return !Number.isFinite(t) || t >= cutoff;
+  });
+  if (kept.length !== state.sessions.length) state.sessions = kept;
+}
+
 export function loadSessions() {
   try {
     const raw = localStorage.getItem(STORAGE_KEYS.sessions);
@@ -27,9 +39,11 @@ export function loadSessions() {
   } catch (e) {
     state.sessions = [];
   }
+  trimSessions();
 }
 
 export function saveSessions() {
+  trimSessions();
   try { localStorage.setItem(STORAGE_KEYS.sessions, JSON.stringify(state.sessions)); }
   catch (e) { console.warn('progPomo: sessions not saved — localStorage full?', e); }
 }

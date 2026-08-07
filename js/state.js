@@ -10,6 +10,9 @@ export const STORAGE_KEYS = {
   theme: 'pp_theme_v1',
 };
 
+export const SESSION_RETENTION_DAYS = 365;
+export const SESSION_DISPLAY_LIMIT = 100;
+
 export const DEFAULT_SETTINGS = {
   warmupDuration: 2 * 60,
   shortBreak: 5 * 60,

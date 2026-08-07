@@ -190,7 +190,6 @@ export function onTimerComplete() {
   if (state.mode === 'focus') {
     const s = { rating: null, auto: false, length: state.duration, timestamp: new Date().toISOString() };
     state.sessions.unshift(s);
-    if (state.sessions.length > 200) state.sessions.length = 200;
     state.pendingRating = true;
     saveSessions();
     saveTimerState();

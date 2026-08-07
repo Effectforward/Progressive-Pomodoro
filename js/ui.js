@@ -1,4 +1,4 @@
-import { state } from './state.js';
+import { state, SESSION_DISPLAY_LIMIT } from './state.js';
 import { saveTasks } from './storage.js';
 
 export const el = {
@@ -200,7 +200,7 @@ export function renderSessions() {
   }
 
   const dateOpts = { hour: 'numeric', minute: '2-digit' };
-  state.sessions.forEach((s, i) => {
+  state.sessions.slice(0, SESSION_DISPLAY_LIMIT).forEach((s, i) => {
     const li = document.createElement('li');
     li.style.setProperty('--i', i);
     const left = document.createElement('div');
@@ -217,6 +217,12 @@ export function renderSessions() {
     li.appendChild(right);
     el.sessionList.appendChild(li);
   });
+  if (state.sessions.length > SESSION_DISPLAY_LIMIT) {
+    const note = document.createElement('li');
+    note.className = 'empty-state';
+    note.innerHTML = `<span class="empty-hint">Showing latest ${SESSION_DISPLAY_LIMIT} of ${state.sessions.length} sessions</span>`;
+    el.sessionList.appendChild(note);
+  }
 }
 
 export function renderTasks() {
