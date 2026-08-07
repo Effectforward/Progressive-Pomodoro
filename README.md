@@ -10,6 +10,8 @@ Try it live: [https://progpomo.pages.dev/](https://progpomo.pages.dev/)
 - **Rating System**: Rate sessions (Distracted → Fine → Focused → Flow) to progress
 - **Task Management**: Add, complete, and delete tasks with undo
 - **Session History**: Track completed sessions with ratings
+- **Stats Modal**: Focus summary (total, best, sessions, this week/month) + yearly GitHub-style heatmap + rating insight + encouragement
+- **Full History View**: "View all" modal with every session
 - **6 Themes**: Pastel Linen, Soft Slate, Zen Graphite, Midnight Ink, Desert Linen, Midnight Slate
 - **Timer Size Presets**: Compact (0.7x), Regular (1x), Large (1.3x), XL (1.6x)
 - **Binaural Beats**: Toggle beats with presets and custom frequencies
@@ -51,7 +53,7 @@ Vanilla JS (ES modules), CSS custom properties for theming, Web Audio API for be
 ## Roadmap
 
 - [x] **Settings Export/Import** — Backup all settings to a dated JSON file and restore from it, with a confirmation step. Done in `2c0abce` (merged into `main`).
-- [ ] **Stats** — Focus time summary (total, best, sessions, this week) with a last-7-day bar chart and a monthly heatmap. In development on `feature/stats-card`.
+- [x] **Stats** — Focus time summary (total, best, sessions, this week) with a yearly heatmap, rating insight, and encouragement. Done in `6067206` (merged into `main`).
 - [ ] **Export Sessions & Tasks** — Full history export alongside settings.
 - [ ] **Isochronic Tones** — Add isochronic tone pulses alongside the existing binaural beats, as an alternative entrainment mode.
 - [ ] **Browser Extension Port** — Port the app to a browser extension. Independent copy at `Progressive-Pomodoro-Extension`.
