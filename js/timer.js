@@ -16,6 +16,7 @@ export function toggleTimer() {
 
 export function start() {
   if (state.rafId) return;
+  state.timerCompleted = false;
   if (state.remainingMs <= 0) {
     if (state.remaining > 0) {
       state.remainingMs = state.remaining * 1000;
@@ -167,6 +168,11 @@ document.addEventListener('visibilitychange', () => {
 });
 
 export function onTimerComplete() {
+  // Idempotency guard: the same completion can be fired by rafTick, the
+  // background notify timeout, the visibilitychange handler, or the boot
+  // path. Only the first call should record the session / alarm.
+  if (state.timerCompleted) return;
+  state.timerCompleted = true;
   clearNotifyTimer();
   updateToggleBtn();
   try {
@@ -209,7 +215,7 @@ export function submitRating(rating, auto = false) {
   // Update the auto-saved session with the rating
   if (state.sessions && state.sessions.length > 0) {
     state.sessions[0].rating = rating;
-    state.sessions[0].ratingScore = ({flow:3,focused:2,good:1,distracted:0}[rating] || 1);
+    state.sessions[0].ratingScore = ({flow:3,focused:2,good:1,distracted:0}[rating] ?? 0);
   }
   saveSessions();
   renderSessions();

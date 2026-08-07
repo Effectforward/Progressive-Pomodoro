@@ -52,6 +52,7 @@ export const state = {
 
   // guards
   pendingRating: false, // session completed, awaiting rating before next start
+  timerCompleted: false, // runtime-only: a completion was handled (kills duplicate fires)
 
   // binaural beats (runtime)
   beatsActive: false,
