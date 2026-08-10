@@ -5,6 +5,7 @@ package.json
 package-lock.json
 npm-debug.log*
 audit-docs/
+seed.html
 .DS_Store
 .git_old/
 .playwright-mcp/
