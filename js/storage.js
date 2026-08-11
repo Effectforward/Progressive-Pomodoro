@@ -4,6 +4,15 @@
 
 import { state, STORAGE_KEYS, DEFAULT_SETTINGS, SESSION_RETENTION_DAYS } from './state.js';
 
+// localStorage failures surface to the UI as a toast (BUG-34) instead of
+// failing silently. The layer stays DOM-free by dispatching an event.
+function warnStorageFail(msg) {
+  console.warn(`progPomo: ${msg} — localStorage full?`, new Error(msg));
+  try {
+    window.dispatchEvent(new CustomEvent('pp:storage-error', { detail: msg }));
+  } catch (e) { /* window may not exist in edge contexts */ }
+}
+
 export function loadSettings() {
   try {
     const raw = localStorage.getItem(STORAGE_KEYS.settings);
@@ -17,7 +26,7 @@ export function loadSettings() {
 
 export function saveSettings() {
    try { localStorage.setItem(STORAGE_KEYS.settings, JSON.stringify(state.settings)); }
-   catch (e) { console.warn('progPomo: settings not saved — localStorage full?', e); }
+   catch (e) { warnStorageFail('settings not saved'); }
 }
 
 // Retention: drop sessions older than SESSION_RETENTION_DAYS (by completion
@@ -45,7 +54,7 @@ export function loadSessions() {
 export function saveSessions() {
   trimSessions();
   try { localStorage.setItem(STORAGE_KEYS.sessions, JSON.stringify(state.sessions)); }
-  catch (e) { console.warn('progPomo: sessions not saved — localStorage full?', e); }
+  catch (e) { warnStorageFail('sessions not saved'); }
 }
 
 export function loadTasks() {
@@ -59,7 +68,7 @@ export function loadTasks() {
 
 export function saveTasks() {
   try { localStorage.setItem(STORAGE_KEYS.tasks, JSON.stringify(state.tasks)); }
-  catch (e) { console.warn('progPomo: tasks not saved — localStorage full?', e); }
+  catch (e) { warnStorageFail('tasks not saved'); }
 }
 
 // Loads persisted timer state into `state`. Returns true if a running
@@ -105,7 +114,7 @@ export function saveTimerState() {
       mode: state.mode,
       pendingRating: state.pendingRating,
     }));
-  } catch (e) { console.warn('progPomo: timer state not saved — localStorage full?', e); }
+  } catch (e) { warnStorageFail('timer state not saved'); }
 }
 
 export function loadThemeName() {
@@ -121,7 +130,7 @@ export function loadThemeName() {
 
 export function saveThemeName(themeKey) {
   try { localStorage.setItem(STORAGE_KEYS.theme, themeKey); }
-  catch (e) { console.warn('progPomo: theme not saved — localStorage full?', e); }
+  catch (e) { warnStorageFail('theme not saved'); }
 }
 
 // ─── Settings export / import (pure helpers, DOM-free) ───────────────────────

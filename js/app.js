@@ -57,6 +57,7 @@ function init() {
       dismissOnboarding();
       onboarding.classList.add('hidden');
     }, { once: true });
+    document.getElementById('onboardingDismiss')?.focus();
   }
 
   setupEventListeners();

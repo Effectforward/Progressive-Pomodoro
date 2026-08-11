@@ -3,7 +3,7 @@
 .onboarding-overlay {
   position: fixed; inset: 0;
   display: flex; align-items: center; justify-content: center;
-  z-index: 1000;
+  z-index: 1100;
   animation: onboarding-fadein 0.4s var(--ease-out);
 }
 .onboarding-overlay::before {

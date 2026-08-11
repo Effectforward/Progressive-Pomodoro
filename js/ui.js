@@ -6,6 +6,8 @@ export const el = {
   time: document.getElementById('time'),
   toggleBtn: document.getElementById('toggleBtn'),
   resetBtn: document.getElementById('resetBtn'),
+  onboardingOverlay: document.getElementById('onboardingOverlay'),
+  onboardingDismiss: document.getElementById('onboardingDismiss'),
   rating: document.getElementById('rating'),
   sessionList: document.getElementById('sessionList'),
   clearHistoryBtn: document.getElementById('clearHistoryBtn'),
@@ -208,17 +210,13 @@ function sessionItem(s, i) {
   const li = document.createElement('li');
   li.style.setProperty('--i', i);
   const left = document.createElement('div');
-  const right = document.createElement('div');
 
   const icon = RATING_ICONS[s.rating] || '';
   const ratingLabel = RATING_LABELS[s.rating] || s.rating || 'Pending';
   left.className = 'session-left';
   left.innerHTML = `<div class="session-rating">${icon} ${ratingLabel}</div><div class="session-meta">${Math.round(s.length / 60)} min focus • ${new Date(s.timestamp).toLocaleTimeString([], SESSION_DATE_OPTS)}</div>`;
 
-  if (s.auto) right.innerHTML = `<span class="session-badge">Auto</span>`;
-
   li.appendChild(left);
-  li.appendChild(right);
   return li;
 }
 
@@ -542,8 +540,12 @@ let _toastHasUndo = false;
 export function showToast(msg, { undo = false } = {}) {
    const t = document.getElementById('toast');
    if (!t) return;
+   // textContent wipes children, so preserve any in-flight undo button
+   // (BUG-17: a second toast used to destroy the previous task's Undo).
+   const undoBtn = t.querySelector('.toast-undo');
    t.textContent = msg;
    t.hidden = false;
+   if (undoBtn) t.appendChild(undoBtn);
    clearTimeout(_toastTimer);
    _toastHasUndo = undo;
    _toastTimer = setTimeout(() => { t.hidden = true; _toastHasUndo = false; }, 6000);
@@ -638,8 +640,17 @@ export function showBeatsPopover() {
 }
 
 export function hideBeatsPopover() {
-  el.beatsPopover?.classList.add('hidden');
+  const popover = el.beatsPopover;
+  if (!popover) return;
+  const wasOpen = !popover.classList.contains('hidden');
+  popover.classList.add('hidden');
   el.beatsChevron?.setAttribute('aria-expanded', 'false');
+  // Return focus to the trigger when the popover was open and focus was inside
+  // it (e.g. Escape). On outside-click dismissal focus is elsewhere — don't
+  // steal it back.
+  if (wasOpen && popover.contains(document.activeElement)) {
+    el.beatsChevron?.focus();
+  }
 }
 
 export function populateAudioSettings() {
@@ -660,11 +671,11 @@ export function populateAudioSettings() {
   updateBeatsAutoStartVisibility();
 }
 
-export function updateBeatsAutoStartVisibility() {
-  const visible = state.settings.showBeatsAutoStart !== false;
-  if (el.beatsSplitWrap) el.beatsSplitWrap.style.display = visible ? '' : 'none';
+export function updateBeatsAutoStartVisibility(visible) {
+  const v = visible ?? (state.settings.showBeatsAutoStart !== false);
+  if (el.beatsSplitWrap) el.beatsSplitWrap.style.display = v ? '' : 'none';
   if (el.beatsAutoStart) {
     const row = el.beatsAutoStart.closest('.card-setting-row');
-    if (row) row.style.display = visible ? '' : 'none';
+    if (row) row.style.display = v ? '' : 'none';
   }
 }

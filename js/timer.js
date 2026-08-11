@@ -141,11 +141,11 @@ function rafTick() {
   const now = Date.now();
   state.remainingMs = Math.max(0, state.endAt - now);
   state.remaining = Math.ceil(state.remainingMs / 1000);
-  render();
   if (state.remainingMs <= 0) {
     stopTimer();
     onTimerComplete();
   } else {
+    render();
     state.rafId = requestAnimationFrame(rafTick);
   }
 }
@@ -188,7 +188,7 @@ export function onTimerComplete() {
   }
   
   if (state.mode === 'focus') {
-    const s = { rating: null, auto: false, length: state.duration, timestamp: new Date().toISOString() };
+    const s = { rating: null, length: state.duration, timestamp: new Date().toISOString() };
     state.sessions.unshift(s);
     state.pendingRating = true;
     saveSessions();
@@ -207,7 +207,7 @@ export function onTimerComplete() {
   }
 }
 
-export function submitRating(rating, auto = false) {
+export function submitRating(rating) {
    if (state.rafId) return;
    if (!state.pendingRating) return;
    hideRating();
@@ -343,12 +343,20 @@ export function doClearHistory() {
 
 export function notifyComplete() {
   try {
-    if (!('Notification' in window) || Notification.permission !== 'granted') return;
-    const options = { body: 'Rate your focus, then tap to continue', silent: true };
-    if (navigator.serviceWorker?.ready) {
-      navigator.serviceWorker.ready.then(reg => reg.showNotification('Session complete', options));
+    if (!('Notification' in window)) return;
+    const show = () => {
+      if (Notification.permission !== 'granted') return;
+      const options = { body: 'Rate your focus, then tap to continue', silent: true };
+      if (navigator.serviceWorker?.ready) {
+        navigator.serviceWorker.ready.then(reg => reg.showNotification('Session complete', options));
+      } else {
+        new Notification('Session complete', options);
+      }
+    };
+    if (Notification.permission === 'default') {
+      Notification.requestPermission().then(p => { if (p === 'granted') show(); }).catch(() => {});
     } else {
-      new Notification('Session complete', options);
+      show();
     }
   } catch (e) { /* notifications unavailable */ }
 }

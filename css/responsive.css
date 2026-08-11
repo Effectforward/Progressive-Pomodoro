@@ -25,7 +25,7 @@
    .bottom-grid { gap: var(--space-md); }
 
   html, body { overflow-x: hidden; }
-  .timer-card, .rating, .duration-picker, .ring-wrap { transition-duration: 0s !important; animation-duration: 0s !important; }
+  .timer-card, .rating, .duration-picker { transition-duration: 0s !important; animation-duration: 0s !important; }
 
   /* Settings: force top tabs on mobile regardless of layout preference */
   .settings-body.layout-sidebar { grid-template-columns: 1fr; }

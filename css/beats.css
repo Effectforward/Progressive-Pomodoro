@@ -110,6 +110,8 @@
   min-width: 200px;
   padding: var(--space-xs, 4px) 0;
   z-index: 100;
+  max-height: min(70vh, 420px);
+  overflow-y: auto;
   animation: popover-in 0.15s ease;
 }
 

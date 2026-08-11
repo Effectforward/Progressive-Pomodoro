@@ -1,6 +1,6 @@
 // ─── Event Listeners ──────────────────────────────────────────────────────────
 import { state } from './state.js';
-import { saveSettings, saveTasks, saveTimerState, exportSettings, parseSettings, applySettings } from './storage.js';
+import { saveSettings, saveTasks, saveTimerState, exportSettings, parseSettings, applySettings, dismissOnboarding } from './storage.js';
 import { setTheme, THEME_META } from './themes.js';
 import {
   el, render, updateToggleBtn,
@@ -72,7 +72,7 @@ export function setupEventListeners() {
   // Rating buttons
   document.querySelectorAll('[data-rating]').forEach(btn => {
     btn.addEventListener('click', () => {
-      submitRating(btn.dataset.rating, false);
+      submitRating(btn.dataset.rating);
     });
   });
 
@@ -220,6 +220,24 @@ export function setupEventListeners() {
     }
   });
 
+  // Onboarding modal
+  el.onboardingOverlay?.addEventListener('keydown', (e) => {
+    if (e.key !== 'Tab') return;
+    const focusable = [...el.onboardingOverlay.querySelectorAll(
+      'button:not([hidden]):not([disabled]), [tabindex]:not([tabindex="-1"])'
+    )].filter(elm => elm.offsetParent !== null);
+    if (focusable.length < 1) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey && (document.activeElement === first || !el.onboardingOverlay.contains(document.activeElement))) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && (document.activeElement === last || !el.onboardingOverlay.contains(document.activeElement))) {
+      e.preventDefault();
+      first.focus();
+    }
+  });
+
   el.settingsForm?.addEventListener('submit', (e) => {
     e.preventDefault();
     saveSettingsForm();
@@ -270,6 +288,7 @@ export function setupEventListeners() {
     if (state.beatsActive) {
       beats.setFrequencies(state.settings.beatsLeftFreq, state.settings.beatsRightFreq);
     }
+    saveSettings();
   });
 
   // Beats volume slider (live preview)
@@ -282,22 +301,30 @@ export function setupEventListeners() {
   // Beats frequency inputs (live preview)
   el.beatsDefaultLeftFreq?.addEventListener('change', () => {
     state.settings.beatsPreset = null;
-    const left = parseInt(el.beatsDefaultLeftFreq.value, 10) || 340;
-    const right = parseInt(el.beatsDefaultRightFreq.value, 10) || 380;
+    const left = parseInt(el.beatsDefaultLeftFreq.value, 10) ?? 340;
+    const right = parseInt(el.beatsDefaultRightFreq.value, 10) ?? 380;
+    state.settings.beatsLeftFreq = left;
+    state.settings.beatsRightFreq = right;
     if (state.beatsActive) beats.setFrequencies(left, right);
+    saveSettings();
   });
   el.beatsDefaultRightFreq?.addEventListener('change', () => {
     state.settings.beatsPreset = null;
-    const left = parseInt(el.beatsDefaultLeftFreq.value, 10) || 340;
-    const right = parseInt(el.beatsDefaultRightFreq.value, 10) || 380;
+    const left = parseInt(el.beatsDefaultLeftFreq.value, 10) ?? 340;
+    const right = parseInt(el.beatsDefaultRightFreq.value, 10) ?? 380;
+    state.settings.beatsLeftFreq = left;
+    state.settings.beatsRightFreq = right;
     if (state.beatsActive) beats.setFrequencies(left, right);
+    saveSettings();
   });
 
-  // Show beats auto-start control
+  // Show beats auto-start control — live preview from the checkbox, committed
+  // only on form submit (like its siblings tasksCardVisible, githubVisible,
+  // ...). No state mutation / save here; BUG-45 was an inconsistent
+  // immediate save. closeSettings() re-applies from state, reverting
+  // unsaved previews.
   el.showBeatsAutoStart?.addEventListener('change', () => {
-    state.settings.showBeatsAutoStart = el.showBeatsAutoStart.checked;
-    updateBeatsAutoStartVisibility();
-    saveSettings();
+    updateBeatsAutoStartVisibility(el.showBeatsAutoStart.checked);
   });
 
   // Theme picker grid (live preview)
@@ -439,6 +466,12 @@ export function setupEventListeners() {
     if (e.key === 'Enter') addTask();
   });
 
+  // localStorage write failures (BUG-34) — raised by js/storage.js so the
+  // storage layer stays DOM-free.
+  window.addEventListener('pp:storage-error', () => {
+    showToast("Couldn't save — storage is full. Free some space.");
+  });
+
   // Keyboard shortcuts
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
@@ -460,6 +493,7 @@ export function setupEventListeners() {
       }
       const onboarding = document.getElementById('onboardingOverlay');
       if (onboarding && !onboarding.classList.contains('hidden')) {
+        dismissOnboarding();
         onboarding.classList.add('hidden');
         return;
       }
@@ -469,6 +503,9 @@ export function setupEventListeners() {
     }
     if (el.settingsModal && !el.settingsModal.classList.contains('hidden')) return;
     if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
+
+    const onboarding = document.getElementById('onboardingOverlay');
+    if (onboarding && !onboarding.classList.contains('hidden')) return;
 
     if (document.body.classList.contains('decision-active')) return;
     if (e.ctrlKey || e.metaKey || e.altKey) return;

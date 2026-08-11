@@ -1,6 +1,6 @@
 // Cache version — bump this whenever you change any app files.
 // The activate handler automatically cleans up old caches.
-const CACHE_NAME = 'progpomo-v38';
+const CACHE_NAME = 'progpomo-v39';
 
 // Static assets that never change between deploys (fonts, icons, images).
 // These are served cache-first for instant loading.
@@ -91,8 +91,10 @@ self.addEventListener('fetch', (e) => {
     e.respondWith(
       caches.match(e.request).then(cached =>
         cached || fetch(e.request).then(res => {
-          const copy = res.clone();
-          caches.open(CACHE_NAME).then(c => c.put(e.request, copy)).catch(() => {});
+          if (res.ok) {
+            const copy = res.clone();
+            caches.open(CACHE_NAME).then(c => c.put(e.request, copy)).catch(() => {});
+          }
           return res;
         })
       )
@@ -112,7 +114,8 @@ self.addEventListener('fetch', (e) => {
         return res;
       }).catch(() =>
         caches.match(e.request).then(cached =>
-          cached || (e.request.mode === 'navigate' ? caches.match('./index.html') : undefined)
+          cached ||
+          (e.request.mode === 'navigate' ? caches.match('./index.html') : new Response('Offline', { status: 503, statusText: 'Offline' }))
         )
       )
     );

@@ -19,6 +19,40 @@
       }
     } catch (e) {}
   </script>
+  <script>
+    // Apply the saved theme before first paint to avoid a FOUC flash.
+    // Mirrors THEME_META in js/themes.js — keep in sync.
+    try {
+      var T = {
+        pastel: ['#FDF9F1','#FFFFFF','#5C5449','#756B5C','#F2A2A2','#E89090','#F5EDE4','#F5EDE4','#FFFFFF','24px','12px'],
+        light: ['#F9FAFB','#FFFFFF','#1F2937','#6B7280','#6366F1','#4F46E5','#E5E7EB','#E5E7EB','#FFFFFF','16px','8px'],
+        zen: ['#F4F4F0','#FFFFFF','#222222','#7A7A7A','#555555','#333333','#EBEBEB','#E0E0DC','#FFFFFF','12px','6px'],
+        dark: ['#121212','#1E1E1E','#F3F4F6','#9CA3AF','#6366F1','#818CF8','#374151','#374151','#FFFFFF','20px','10px'],
+        desert: ['#FBF5DD','#E7E1B1','#530E0E','#7A5E45','#B46A2A','#934E1B','#EEDFB9','#DCCB9B','#FFFFFF','24px','12px'],
+        midnightSlate: ['#222831','#31363F','#EEEEEE','#A7B0BC','#5E969A','#5E969A','#3E4650','#3E4650','#FFFFFF','18px','10px']
+      };
+      var theme = localStorage.getItem('pp_theme_v1');
+      var c = T[theme];
+      if (c) {
+        var root = document.documentElement;
+        root.setAttribute('data-theme', theme);
+        root.style.setProperty('--bg', c[0]);
+        root.style.setProperty('--card', c[1]);
+        root.style.setProperty('--text', c[2]);
+        root.style.setProperty('--muted', c[3]);
+        root.style.setProperty('--accent', c[4]);
+        root.style.setProperty('--accent-hover', c[5]);
+        root.style.setProperty('--ring-bg', c[6]);
+        root.style.setProperty('--border', c[7]);
+        root.style.setProperty('--btn-text', c[8]);
+        root.style.setProperty('--radius', c[9]);
+        root.style.setProperty('--radius-sm', c[10]);
+        root.style.setProperty('color-scheme', (theme === 'dark' || theme === 'midnightSlate') ? 'dark' : 'light');
+        var meta = document.getElementById('themeColorMeta');
+        if (meta) meta.setAttribute('content', c[4]);
+      }
+    } catch (e) {}
+  </script>
   <meta name="description" content="Free adaptive focus timer PWA using the Progressive Pomodoro technique. Start with a 2-minute warm-up, rate your focus, and build longer deep-work sessions.">
   <meta property="og:title" content="Progressive Pomodoro">
   <meta property="og:description" content="Adaptive focus timer PWA. Start with 2 min, rate your focus, build deeper work sessions over time.">
