@@ -520,18 +520,13 @@ export function setupEventListeners() {
     }
   });
 
-  // Scroll wheel on number inputs — only when hovered
-  const hoveredInputs = new Set();
-  document.addEventListener('pointerover', (e) => {
-    if (e.target.matches?.('input[type="number"]')) hoveredInputs.add(e.target);
-  });
-  document.addEventListener('pointerout', (e) => {
-    if (e.target.matches?.('input[type="number"]')) hoveredInputs.delete(e.target);
-  });
+  // Scroll wheel on number inputs — only while focused, so page scrolling
+  // over the duration picker can't silently change its value.
   document.addEventListener('wheel', (e) => {
     const input = e.target;
-    if (!input.matches?.('input[type="number"]') || !hoveredInputs.has(input)) return;
+    if (!input.matches?.('input[type="number"]')) return;
     if (input.disabled || input.readOnly) return;
+    if (document.activeElement !== input) return;
     e.preventDefault();
     const step = Number(input.step) || 1;
     const min = input.min !== '' ? Number(input.min) : -Infinity;

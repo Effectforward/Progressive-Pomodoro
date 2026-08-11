@@ -174,6 +174,15 @@ export function onTimerComplete() {
   if (state.timerCompleted) return;
   state.timerCompleted = true;
   clearNotifyTimer();
+  // Completion must leave the timer fully stopped no matter which path fired
+  // it (rAF tick, hidden-tab timeout, visibilitychange, boot). Leaving a
+  // stale rafId/endAt froze the UI: Pause stayed visible and submitRating's
+  // `if (state.rafId) return` guard swallowed the rating click.
+  if (state.rafId) { cancelAnimationFrame(state.rafId); state.rafId = null; }
+  state.endAt = null;
+  state.remaining = 0;
+  state.remainingMs = 0;
+  render();
   updateToggleBtn();
   try {
     playAlarm(state.settings.alarmSound || 'chord');
@@ -201,7 +210,6 @@ export function onTimerComplete() {
     state.mode = 'focus';
     saveTimerState();
     announce('Break complete. Choose your next focus length.');
-    render();
     const suggested = Math.round(state.nextFocusDuration / 60);
     showDurationPicker(suggested, false);
   }

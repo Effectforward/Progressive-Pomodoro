@@ -124,6 +124,37 @@ test.describe('background notify fallback', () => {
     expect(result).toBe(true);
   });
 
+  test('background completion fully stops the timer so the rating is not frozen', async ({ page }) => {
+    const result = await page.evaluate(async () => {
+      const { state } = await import('./js/state.js');
+      const timer = await import('./js/timer.js');
+      // Simulate the hidden-tab timeout firing completion without stopTimer:
+      // rafId and endAt stay stale, remaining frozen at 52s.
+      state.remainingMs = 52000;
+      state.remaining = 52;
+      state.mode = 'focus';
+      timer.start();
+      state.endAt = Date.now() - 1000;
+      timer.onTimerComplete();
+      const afterComplete = {
+        rafId: state.rafId,
+        endAt: state.endAt,
+        remaining: state.remaining,
+        toggleShowsPause: !!state.rafId,
+      };
+      // The rating must be actionable — submitRating used to no-op on stale rafId.
+      const beforeSubmit = state.sessions[0].rating;
+      timer.submitRating('good');
+      return { ...afterComplete, beforeSubmit, afterSubmit: state.sessions[0].rating };
+    });
+    expect(result.rafId).toBeFalsy();
+    expect(result.endAt).toBeFalsy();
+    expect(result.remaining).toBe(0);
+    expect(result.toggleShowsPause).toBe(false);
+    expect(result.beforeSubmit).toBeNull();
+    expect(result.afterSubmit).toBe('good');
+  });
+
   test('notifyComplete routes through the service worker', async ({ page }) => {
     const result = await page.evaluate(async () => {
       const calls = [];
