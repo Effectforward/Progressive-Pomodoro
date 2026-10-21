@@ -44,6 +44,7 @@ button {
 .icon-btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: var(--space-sm);
   padding: var(--space-sm) var(--space-md);
   min-width: 44px;
