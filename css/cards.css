@@ -12,24 +12,39 @@
   pointer-events: auto;
 }
 
+/* Pre-paint preference classes, set by the head boot script in index.html
+   (and kept in sync by applyCardSettings in js/ui.js). */
+html.no-tasks #tasksCard,
+html.no-history #historyCard,
+html.no-stats #statsModalBtn,
+html.no-github #githubStarBtn {
+  display: none;
+}
+
+/* Timer size, mirrored from applyTimerSize (js/ui.js). The boot script sets
+   --pp-zoom before first paint; runtime changes write inline zoom on #main. */
+#main {
+  zoom: var(--pp-zoom, 1);
+}
+
 @media(min-width: 768px) {
-  body:not(.split-layout) .bottom-grid {
+  html:not(.split-layout) .bottom-grid {
     grid-template-columns: 1fr 1fr;
   }
 
-  body.split-layout #main {
+  html.split-layout #main {
     display: grid;
     grid-template-columns: minmax(0, 440px) minmax(0, 1fr);
     gap: var(--space-xl);
     align-items: start;
   }
 
-  body.split-layout .timer-card {
+  html.split-layout .timer-card {
     margin: 0;
     max-width: none;
   }
 
-  body.split-layout .bottom-grid {
+  html.split-layout .bottom-grid {
     grid-template-columns: 1fr;
   }
 }

@@ -53,6 +53,22 @@
       }
     } catch (e) {}
   </script>
+  <script>
+    // Apply saved card/layout prefs before first paint to avoid a FOUC flash.
+    // Mirrors js/ui.js applyCardSettings + applyTimerSize — keep in sync.
+    try {
+      var s = JSON.parse(localStorage.getItem('pp_settings_v1') || '{}');
+      var h = document.documentElement;
+      if (s.tasksCardVisible === false) h.classList.add('no-tasks');
+      if (s.historyCardVisible === false) h.classList.add('no-history');
+      if (s.statsVisible === false) h.classList.add('no-stats');
+      if (s.githubVisible === false) h.classList.add('no-github');
+      var zooms = { compact: 0.9, regular: 1.25, large: 1.6, xl: 2.0 };
+      var isMobile = window.matchMedia('(max-width: 600px)').matches;
+      var scale = isMobile ? 1.0 : (zooms[s.timerSize] ?? 1.25);
+      if (scale !== 1) h.style.setProperty('--pp-zoom', String(scale));
+    } catch (e) {}
+  </script>
   <meta name="description" content="Free adaptive focus timer PWA using the Progressive Pomodoro technique. Start with a 2-minute warm-up, rate your focus, and build longer deep-work sessions.">
   <meta property="og:title" content="Progressive Pomodoro">
   <meta property="og:description" content="Adaptive focus timer PWA. Start with 2 min, rate your focus, build deeper work sessions over time.">

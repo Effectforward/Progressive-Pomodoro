@@ -500,11 +500,17 @@ export function populateSettingsForm() {
   activateSettingsTab('timer');
 }
 
-/** Called once on init and after every settings save to reflect card prefs. */
+/** Called once on init and after every settings save to reflect card prefs.
+ *  Also keeps the <html> classes in sync with the pre-paint boot script in
+ *  index.html so the two mechanisms always agree. */
 export function applyCardSettings() {
   const s = state.settings;
-  // Desktop layout: split (timer beside cards) vs stacked
-  document.body.classList.toggle('split-layout', s.sideBySideLayout !== false);
+  const h = document.documentElement;
+  h.classList.toggle('split-layout', s.sideBySideLayout !== false);
+  h.classList.toggle('no-tasks', s.tasksCardVisible === false);
+  h.classList.toggle('no-history', s.historyCardVisible === false);
+  h.classList.toggle('no-stats', s.statsVisible === false);
+  h.classList.toggle('no-github', s.githubVisible === false);
 
   // Tasks card visibility
   if (el.tasksCard) {
