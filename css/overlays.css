@@ -15,6 +15,10 @@
 }
 .onboarding-overlay.hidden { display: none; }
 
+/* Pre-paint fallback: boot script sets html.pp-onboarding while onboarding
+   is not dismissed; app.js dismiss handler removes the class. */
+html.pp-onboarding .onboarding-overlay.hidden { display: flex; }
+
 @keyframes onboarding-fadein {
   from { opacity: 0; }
   to { opacity: 1; }

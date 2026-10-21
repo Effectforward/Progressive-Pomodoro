@@ -1,6 +1,6 @@
 // Cache version — bump this whenever you change any app files.
 // The activate handler automatically cleans up old caches.
-const CACHE_NAME = 'progpomo-v40';
+const CACHE_NAME = 'progpomo-v42';
 
 // Static assets that never change between deploys (fonts, icons, images).
 // These are served cache-first for instant loading.

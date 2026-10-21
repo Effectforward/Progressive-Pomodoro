@@ -33,7 +33,10 @@
   cursor: pointer;
 }
 
-.mode-tab.active {
+.mode-tab.active,
+/* Pre-paint fallback: the boot script in index.html sets html[data-mode]
+   for a resumed break before .active classes are applied by JS */
+html[data-mode="break"] .mode-tab[data-mode="break"] {
   background: var(--card);
   color: var(--accent);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);

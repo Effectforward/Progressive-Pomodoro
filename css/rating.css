@@ -10,6 +10,15 @@
   display: none;
 }
 
+/* Pre-paint fallback: the boot script in index.html sets html.pp-rating on
+   a refresh with pendingRating. render()/hideRating() keep the class in
+   sync with state.pendingRating. */
+html.pp-rating #rating.hidden { display: block; }
+html.pp-rating body:not(.decision-active) .timer-display,
+html.pp-rating body:not(.decision-active) .controls {
+  opacity: 0.4;
+}
+
 .rating-label {
   font-weight: 800;
   margin: 0 0 var(--space-md) 0;

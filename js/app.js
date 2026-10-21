@@ -56,6 +56,7 @@ function init() {
     document.getElementById('onboardingDismiss').addEventListener('click', () => {
       dismissOnboarding();
       onboarding.classList.add('hidden');
+      document.documentElement.classList.remove('pp-onboarding');
     }, { once: true });
     document.getElementById('onboardingDismiss')?.focus();
   }

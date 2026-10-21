@@ -104,7 +104,11 @@ export function render() {
   const timeStr = formatTime(state.remaining);
   el.time.textContent = timeStr;
   document.title = `${timeStr} - Progressive Pomodoro`;
+  // Mirror on <html> too so the pre-paint boot script (index.html) and
+  // runtime agree — the CSS [data-mode] rules match either element.
+  document.documentElement.dataset.mode = state.mode;
   document.body.dataset.mode = state.mode;
+  document.documentElement.classList.toggle('pp-rating', !!state.pendingRating);
 
   if (el.ring) {
     const progress = state.duration > 0 ? state.remaining / state.duration : 0;
@@ -173,6 +177,7 @@ export function showRating() {
 
 export function hideRating() {
   el.rating.classList.add('hidden');
+  document.documentElement.classList.remove('pp-rating');
   if (el.durationPicker?.classList.contains('hidden')) {
     document.body.classList.remove('decision-active');
   }
